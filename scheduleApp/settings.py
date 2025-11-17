@@ -1,4 +1,6 @@
 import os
+import sys
+import uuid
 from pathlib import Path
 
 import dj_database_url
@@ -12,6 +14,15 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DJANGO_DEBUG', 'True') == 'True'
+
+# SECURITY WARNING: keep the secret key used in production secret!
+# Если это collectstatic, используем дефолтный ключ
+if 'collectstatic' in sys.argv:
+    SECRET_KEY = 'temp-key-for-collectstatic'
+elif not DEBUG:
+    SECRET_KEY = env('DJANGO_SECRET_KEY')
+else:
+    SECRET_KEY = 'django-insecure-dev-key-for-local-development'
 
 # Настройки HTTPS
 if not DEBUG:
@@ -33,23 +44,18 @@ else:
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = env('DJANGO_SECRET_KEY', default='django-insecure-&2ce*-1i(v#76_*648-%9b19td3%mu3d#i2_y5#n!^*e@!u-z5')
-
 ALLOWED_HOSTS = [
     'kodamaclass.com',  # Основной домен
     'schedule.kodamaclass.com',  # домен для расписания
-    'schedule-app.dokka2.duckdns.org',
-    '.dokka2.duckdns.org',  # Все поддомены (*.dokka2.duckdns.org)\
-    '45.88.90.91',
-    'localhost',  # Для локального тестирования (если нужно)
+    'test.schedule.kodamaclass.com',  # тестовый домен для расписания
+    'localhost',  # Для локального тестирования
     '127.0.0.1',  # Для дебага
-    'test.schedule.kodamaclass.com'
 ]
 
 CSRF_TRUSTED_ORIGINS = [
-    'https://schedule-app.dokka2.duckdns.org',
-    'https://dokka2.duckdns.org',
+    'https://kodamaclass.com',
+    'https://schedule.kodamaclass.com',
+    'https://test.schedule.kodamaclass.com',
 ]
 
 # Application definition
