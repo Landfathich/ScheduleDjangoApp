@@ -100,16 +100,6 @@ nav {
     display: none; /* Webkit браузеры */
 }
 
-.scrollable-area::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    width: 10px;
-    height: 10px;
-    background-color: var(--bg);
-}
-
 /* ===== СТРУКТУРА РАСПИСАНИЯ ===== */
 .schedule-container {
     display: grid;
