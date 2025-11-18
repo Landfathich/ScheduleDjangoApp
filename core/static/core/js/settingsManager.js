@@ -29,7 +29,7 @@ export class SettingsManager {
         logger.log('🔄 Инициализация localStorage');
 
         // Тема
-        const savedTheme = localStorage.getItem('theme');
+        const savedTheme = localStorage.getItem('schedule-theme');
         if (savedTheme) {
             document.documentElement.setAttribute('data-theme', savedTheme);
             this.themeSwitch.checked = savedTheme === 'dark';
@@ -103,7 +103,7 @@ export class SettingsManager {
         try {
             logger.log('⏳ Искусственная задержка 5 сек...');
             // Задержка для имитации работы сервера
-            await new Promise(resolve => setTimeout(resolve, 5000));
+            //await new Promise(resolve => setTimeout(resolve, 5000));
             logger.log('✅ Задержка завершена, делаем запрос');
 
             const response = await fetch('/get-user-settings/');
@@ -118,7 +118,7 @@ export class SettingsManager {
                     logger.log(`🎨 Синхронизируем тему: ${currentTheme} -> ${data.theme}`);
                     document.documentElement.setAttribute('data-theme', data.theme);
                     this.themeSwitch.checked = data.theme === 'dark';
-                    localStorage.setItem('theme', data.theme);
+                    localStorage.setItem('schedule-theme', data.theme);
                 }
             }
 
@@ -283,7 +283,7 @@ export class SettingsManager {
             const theme = this.themeSwitch.checked ? 'dark' : 'light';
             document.documentElement.setAttribute('data-theme', theme);
             // Сохраняем в localStorage
-            localStorage.setItem('theme', theme);
+            localStorage.setItem('schedule-theme', theme);
             this.saveSettingsToServer({theme});
         });
 

@@ -14,7 +14,7 @@ export class Repository {
         }
 
         // Настройки задержек
-        this.enableDelays = true;
+        this.enableDelays = false;
         this.delayTimes = {
             getLessons: 5000,
             getOpenSlots: 5000
