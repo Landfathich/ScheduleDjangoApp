@@ -8,31 +8,34 @@ logger.disable()
 
 export class SettingsManager {
     constructor() {
-        this.isOpenWindowsMode = false; // Флаг для отслеживания состояния выбора открытых окон
-        this.openWindowStates = {}; // Объект для хранения состояния чекбоксов
+        // Инициализация состояний
+        this.isOpenWindowsMode = false;
+        this.openWindowStates = {};
+        this.startHour = 6;
+        this.endHour = 18;
 
-        // Добавляем свойства для рабочих часов
-        this.startHour = 6; // значение по умолчанию
-        this.endHour = 18;  // значение по умолчанию
+        // Инициализация DOM элементов
+        this.initializeDOMElements();
 
-        this.modal = document.getElementById('settings-modal');
-        this.startHourSelect = document.getElementById('start-hour');
-        this.endHourSelect = document.getElementById('end-hour');
-        this.closeButton = this.modal.querySelector('.close');
-        this.cancelButton = this.modal.querySelector('.cancel-button');
-        this.submitButton = this.modal.querySelector('.submit-button');
-        this.themeSwitch = document.getElementById('theme-switch');
-        this.openWindowsButton = document.getElementById('set-open-windows');
-        this.openWindowsControls = document.getElementById('open-windows-controls');
+        // Инициализация localStorage
+        this.initializeLocalStorage();
 
-        // Применяем тему из localStorage (на всякий случай)
+        // Настройка событий и опций
+        this.setupEventListeners();
+        this.initializeTimeOptions();
+    }
+
+    initializeLocalStorage() {
+        logger.log('🔄 Инициализация localStorage');
+
+        // Тема
         const savedTheme = localStorage.getItem('theme');
         if (savedTheme) {
             document.documentElement.setAttribute('data-theme', savedTheme);
             this.themeSwitch.checked = savedTheme === 'dark';
         }
 
-        // Загружаем рабочие часы из localStorage
+        // Рабочие часы
         const savedWorkingHours = localStorage.getItem('workingHours');
         if (savedWorkingHours) {
             try {
@@ -45,10 +48,26 @@ export class SettingsManager {
                 logger.error('Ошибка парсинга рабочих часов из localStorage:', e);
             }
         }
+    }
 
-        // Настройка событий и инициализация
-        this.setupEventListeners();
-        this.initializeTimeOptions();
+    initializeDOMElements() {
+        logger.log('🔄 Инициализация DOM элементов');
+
+        this.modal = document.getElementById('settings-modal');
+        this.startHourSelect = document.getElementById('start-hour');
+        this.endHourSelect = document.getElementById('end-hour');
+        this.closeButton = this.modal?.querySelector('.close');
+        this.cancelButton = this.modal?.querySelector('.cancel-button');
+        this.submitButton = this.modal?.querySelector('.submit-button');
+        this.themeSwitch = document.getElementById('theme-switch');
+        this.openWindowsButton = document.getElementById('set-open-windows');
+        this.openWindowsControls = document.getElementById('open-windows-controls');
+
+        // Валидация критически важных элементов
+        if (!this.modal || !this.startHourSelect || !this.endHourSelect) {
+            logger.error('Не найдены необходимые DOM элементы для SettingsManager');
+            throw new Error('Required DOM elements not found');
+        }
     }
 
     applyLocalSettings() {
@@ -84,7 +103,7 @@ export class SettingsManager {
         try {
             logger.log('⏳ Искусственная задержка 5 сек...');
             // Задержка для имитации работы сервера
-            //await new Promise(resolve => setTimeout(resolve, 5000));
+            await new Promise(resolve => setTimeout(resolve, 5000));
             logger.log('✅ Задержка завершена, делаем запрос');
 
             const response = await fetch('/get-user-settings/');

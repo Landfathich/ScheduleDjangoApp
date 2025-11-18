@@ -14,7 +14,7 @@ export class Repository {
 
         // Флаг для включения/выключения задержек для имитации работы сервера
         // Включает задержки только для некоторых методов этого класса
-        this.enableDelays = false;
+        this.enableDelays = true;
         this.delayTimes = {
             getLessons: 5000,
             getOpenSlots: 5000
