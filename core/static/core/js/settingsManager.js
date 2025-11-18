@@ -25,9 +25,51 @@ export class SettingsManager {
         this.openWindowsButton = document.getElementById('set-open-windows');
         this.openWindowsControls = document.getElementById('open-windows-controls');
 
+        // Применяем тему из localStorage (на всякий случай)
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme) {
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            this.themeSwitch.checked = savedTheme === 'dark';
+        }
+
+        // Загружаем рабочие часы из localStorage
+        const savedWorkingHours = localStorage.getItem('workingHours');
+        if (savedWorkingHours) {
+            try {
+                const {start, end} = JSON.parse(savedWorkingHours);
+                if (this.isValidWorkingHours(start, end)) {
+                    this.startHour = start;
+                    this.endHour = end;
+                }
+            } catch (e) {
+                logger.error('Ошибка парсинга рабочих часов из localStorage:', e);
+            }
+        }
+
         // Настройка событий и инициализация
         this.setupEventListeners();
         this.initializeTimeOptions();
+    }
+
+    applyLocalSettings() {
+        logger.log('🔄 Применяем настройки из localStorage');
+
+        // Рабочие часы
+        const savedWorkingHours = localStorage.getItem('workingHours');
+        if (savedWorkingHours) {
+            try {
+                const {start, end} = JSON.parse(savedWorkingHours);
+                if (this.isValidWorkingHours(start, end)) {
+                    this.startHour = start;
+                    this.endHour = end;
+                    logger.log(`🕐 Применили рабочие часы из localStorage: ${start}-${end}`);
+                    return {start, end}; // Возвращаем для применения в календаре
+                }
+            } catch (e) {
+                logger.error('Ошибка парсинга рабочих часов из localStorage:', e);
+            }
+        }
+        return null;
     }
 
     getWorkingHours() {
@@ -47,20 +89,34 @@ export class SettingsManager {
 
             const response = await fetch('/get-user-settings/');
             const data = await response.json();
-
             logger.log('📥 Данные настроек получены:', data);
 
+            // Синхронизация темы
             if (data.theme) {
-                logger.log(`🎨 Применяем тему: ${data.theme}`);
-                document.documentElement.setAttribute('data-theme', data.theme);
-                this.themeSwitch.checked = data.theme === 'dark';
+                const currentTheme = document.documentElement.getAttribute('data-theme');
+                if (currentTheme !== data.theme) {
+                    // Серверная тема отличается - обновляем
+                    logger.log(`🎨 Синхронизируем тему: ${currentTheme} -> ${data.theme}`);
+                    document.documentElement.setAttribute('data-theme', data.theme);
+                    this.themeSwitch.checked = data.theme === 'dark';
+                    localStorage.setItem('theme', data.theme);
+                }
             }
+
+            // Синхронизация рабочих часов
             if (data.workingHours) {
                 const {start, end} = data.workingHours;
                 if (this.isValidWorkingHours(start, end)) {
-                    logger.log(`🕐 Рабочие часы: ${start}-${end}`);
-                    this.startHour = start;
-                    this.endHour = end;
+                    logger.log(`🕐 Рабочие часы с сервера: ${start}-${end}`);
+                    const savedHours = localStorage.getItem('workingHours');
+                    const savedData = savedHours ? JSON.parse(savedHours) : null;
+
+                    if (!savedData || savedData.start !== start || savedData.end !== end) {
+                        // Обновляем localStorage если данные отличаются
+                        this.startHour = start;
+                        this.endHour = end;
+                        localStorage.setItem('workingHours', JSON.stringify({start, end}));
+                    }
                 }
             }
             logger.log('✅ Загрузка настроек завершена');
@@ -207,6 +263,8 @@ export class SettingsManager {
         this.themeSwitch.addEventListener('change', () => {
             const theme = this.themeSwitch.checked ? 'dark' : 'light';
             document.documentElement.setAttribute('data-theme', theme);
+            // Сохраняем в localStorage
+            localStorage.setItem('theme', theme);
             this.saveSettingsToServer({theme});
         });
 
@@ -238,18 +296,21 @@ export class SettingsManager {
             return;
         }
 
-        // Сохраняем настройки на сервере
+        // Сохраняем в localStorage
+        localStorage.setItem('workingHours', JSON.stringify({start: startHour, end: endHour}));
+
+        // Сохраняем на сервере
         this.saveSettingsToServer({
             working_hours_start: startHour,
             working_hours_end: endHour,
         })
             .then(() => {
-                console.log('Рабочие часы успешно сохранены');
-                calendarManager.updateWorkingHours(startHour, endHour); // Обновляем календарь
+                logger.log('Рабочие часы успешно сохранены');
+                calendarManager.updateWorkingHours(startHour, endHour);
                 this.close();
             })
             .catch((error) => {
-                console.error('Ошибка при сохранении рабочих часов:', error);
+                logger.error('Ошибка при сохранении рабочих часов:', error);
                 alert('Ошибка при сохранении рабочих часов');
             });
     }

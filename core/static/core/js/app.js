@@ -27,20 +27,20 @@ export async function initApp() {
     logger.log('Starting app initialization...');
     logger.log(`UserId: ${currentUserId}; TeacherId: ${currentTeacherId};`)
 
-    // Запускаем загрузку настроек и календаря ПАРАЛЛЕЛЬНО,
-    // загрузка в два раза быстрее так как запросы идут параллельно
-    // но есть проблема, иногда при загрузке да раза уведомление о конфликте в расписании выходит,
-    // возможно это из-за состояния гонки
+    // Применяем настройки из localStorage через SettingsManager
+    const localWorkingHours = settingsManager.applyLocalSettings();
+    if (localWorkingHours) {
+        calendarManager.updateWorkingHours(localWorkingHours.start, localWorkingHours.end);
+    }
+
     await Promise.all([
         settingsManager.loadSettingsFromServer().then(() => {
-            // После загрузки настроек применяем их к календарю
             const workingHours = settingsManager.getWorkingHours();
             calendarManager.updateWorkingHours(workingHours.start, workingHours.end);
         }),
         calendarManager.initialize()
     ]);
 
-    // Настраиваем функционал
     setupAdminTools();
     setupContextMenu();
     setupLessonModal();
