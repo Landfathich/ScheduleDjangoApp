@@ -1,3 +1,8 @@
+import {createLogger} from "./logger.js";
+
+const logger = createLogger('[Notifications]');
+logger.disable()
+
 let notificationQueue = [];
 let isNotificationShowing = false;
 let notificationTimer = null;
@@ -14,7 +19,7 @@ export function showNotification(message, type = 'info') {
 }
 
 export function clearAllNotifications() {
-    console.log('Clearing all notifications from queue');
+    logger.log('Clearing all notifications from queue');
 
     // Мгновенная очистка без анимаций
     if (notificationTimer) {
@@ -52,7 +57,7 @@ export function clearAllNotifications() {
         }
     }
 
-    console.log('All notifications cleared');
+    logger.log('All notifications cleared');
 }
 
 function showNextNotification() {
