@@ -8,6 +8,14 @@
 {% block content %}
     <div id="schedule-container">
         {% csrf_token %}
+
+        <div id="calendar-loading" class="calendar-loading" style="display: none;">
+            <div class="loading-content">
+                <div class="loading-spinner"></div>
+                <span>Загрузка расписания...</span>
+            </div>
+        </div>
+
         <div id="week-info">
             <div id="week-info-left">
                 <div class="button-wrapper">
@@ -272,7 +280,7 @@
     <script>
         let currentUserId = {{ user_id }};
         let currentTeacherId = {{ teacher_id }}
-        console.log(`UserId: ${currentUserId}; TeacherId: ${currentTeacherId};`)
+
         const userData = {
             isAdmin: {% if request.user.is_staff %}true{% else %}false{% endif %},
             username: "{{ request.user.username|escapejs }}"

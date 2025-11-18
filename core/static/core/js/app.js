@@ -7,6 +7,10 @@ import {showNotification} from "./notifications.js";
 import {LessonModal} from "./modals/lessonModal.js";
 import {Repository} from "./repository.js";
 import {BalanceAlertModal} from "./modals/balanceAlertModal.js";
+import {createLogger} from './logger.js';
+
+const logger = createLogger('[App]');
+logger.disable()
 
 export const scheduleState = {
     isAnother: false,
@@ -20,24 +24,34 @@ export const calendarManager = new CalendarManager();
 
 // Главная функция инициализации
 export async function initApp() {
-    console.log('Starting app initialization...');
+    logger.log('Starting app initialization...');
+    logger.log(`UserId: ${currentUserId}; TeacherId: ${currentTeacherId};`)
 
-    // Инициализируем все последовательно
-    await settingsManager.loadSettingsFromServer();
-    await calendarManager.initialize();
+    // Запускаем загрузку настроек и календаря ПАРАЛЛЕЛЬНО,
+    // загрузка в два раза быстрее так как запросы идут параллельно
+    // но есть проблема, иногда при загрузке да раза уведомление о конфликте в расписании выходит,
+    // возможно это из-за состояния гонки
+    await Promise.all([
+        settingsManager.loadSettingsFromServer().then(() => {
+            // После загрузки настроек применяем их к календарю
+            const workingHours = settingsManager.getWorkingHours();
+            calendarManager.updateWorkingHours(workingHours.start, workingHours.end);
+        }),
+        calendarManager.initialize()
+    ]);
 
     // Настраиваем функционал
     setupAdminTools();
     setupContextMenu();
     setupLessonModal();
 
-    console.log('App initialized successfully');
+    logger.log('App initialized successfully');
 }
 
 function setupAdminTools() {
     if (!userData.isAdmin) return;
 
-    console.log("Setting up admin tools");
+    logger.log("Setting up admin tools");
 
     document.getElementById('teachers-button').addEventListener('click', () => {
         new TeachersModal().open();

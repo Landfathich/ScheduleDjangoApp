@@ -1,3 +1,8 @@
+import {createLogger} from "./logger.js";
+
+const logger = createLogger('[Repository]');
+logger.disable()
+
 export class Repository {
     constructor() {
         this.csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value;
@@ -5,6 +10,23 @@ export class Repository {
         this.currentTeacherId = currentTeacherId
         if (typeof currentUserId === 'undefined') {
             throw new Error('currentUserId is not defined! Check script loading order');
+        }
+
+        // Флаг для включения/выключения задержек для имитации работы сервера
+        // Включает задержки только для некоторых методов этого класса
+        this.enableDelays = false;
+        this.delayTimes = {
+            getLessons: 5000,
+            getOpenSlots: 5000
+        };
+    }
+
+    // Вспомогательный метод для задержки
+    async _delay(ms, methodName) {
+        if (this.enableDelays) {
+            logger.log(`⏳ Задержка ${methodName}: ${ms}ms`);
+            await new Promise(resolve => setTimeout(resolve, ms));
+            logger.log(`✅ Задержка ${methodName} завершена`);
         }
     }
 
@@ -28,13 +50,17 @@ export class Repository {
 
             return await response.json();
         } catch (error) {
-            console.error("Ошибка при получении данных об учителях:", error);
+            logger.error("Ошибка при получении данных об учителях:", error);
             throw error;
         }
     }
 
     async getLessons(teacherId = null, startDate = null, endDate = null) {
+        logger.log('🔄 getLessons() - начал выполнение');
         try {
+            // Добавляем задержку
+            await this._delay(this.delayTimes.getLessons, 'getLessons');
+
             const params = new URLSearchParams();
 
             if (teacherId !== null && !isNaN(teacherId)) {
@@ -52,24 +78,31 @@ export class Repository {
                 throw new Error(error.detail || 'Failed to fetch lessons');
             }
 
+            logger.log('✅ getLessons() - завершил выполнение');
             return await response.json();
         } catch (error) {
-            console.error('Error fetching lessons:', error);
+            logger.error('❌ getLessons() - ошибка:', error);
             throw error;
         }
     }
 
     async getOpenSlots(teacherId = this.currentTeacherId) {
+        logger.log('🔄 getOpenSlots() - начал выполнение');
         try {
+            // Добавляем задержку
+            await this._delay(this.delayTimes.getOpenSlots, 'getOpenSlots');
+
             const response = await fetch(`/api/open-slots/${teacherId}/`);
             if (!response.ok) {
                 throw new Error(`Ошибка: ${response.status} ${response.statusText}`);
             }
             const data = await response.json();
-            console.log(`Open slots for teacher ${teacherId} (search by teacher id): `, data.weekly_open_slots);
+            logger.log(`Open slots for teacher ${teacherId} (search by teacher id): `, data.weekly_open_slots);
+
+            logger.log('✅ getOpenSlots() - завершил выполнение');
             return data.weekly_open_slots;
         } catch (error) {
-            console.error("Ошибка при получении свободных слотов:", error);
+            logger.error('❌ getOpenSlots() - ошибка:', error);
             throw error;
         }
     }
@@ -92,7 +125,7 @@ export class Repository {
             const data = await response.json();
             return data.weekly_open_slots;
         } catch (error) {
-            console.error("Ошибка при обновлении свободных слотов:", error);
+            logger.error("Ошибка при обновлении свободных слотов:", error);
             throw error;
         }
     }
@@ -132,7 +165,7 @@ export class Repository {
 
             return await response.json();
         } catch (error) {
-            console.error('Ошибка при завершении урока:', error);
+            logger.error('Ошибка при завершении урока:', error);
             throw error;
         }
     }
@@ -170,7 +203,7 @@ export class Repository {
 
             return await response.json();
         } catch (error) {
-            console.error('Ошибка при отмене урока:', error);
+            logger.error('Ошибка при отмене урока:', error);
             throw error;
         }
     }
@@ -205,7 +238,7 @@ export class Repository {
 
             return responseData;
         } catch (error) {
-            console.error('Error creating lesson:', error);
+            logger.error('Error creating lesson:', error);
             throw error;
         }
     }
@@ -220,11 +253,11 @@ export class Repository {
 
             const data = await response.json();
 
-            console.log('Received clients data:', data);
+            logger.log('Received clients data:', data);
 
             return data;
         } catch (error) {
-            console.error('Error fetching low balance clients:', error);
+            logger.error('Error fetching low balance clients:', error);
             return {status: 'error', clients: []};
         }
     }

@@ -3,20 +3,14 @@ import {showNotification} from "./notifications.js";
 import {repository, scheduleState, settingsManager} from "./app.js";
 import {WeekManager} from "./weekManager.js";
 import {LessonManager} from "./lessonManager.js";
+import {createLogger} from './logger.js';
 
-const LOGGING_ENABLED = false;
-const LOG_PREFIX = '[CM]';
-
-const logger = {
-    log: (...args) => LOGGING_ENABLED && console.log(...args),
-    error: (...args) => console.error(...args),
-    warn: (...args) => console.warn(...args),
-    trace: (...args) => LOGGING_ENABLED && console.trace(...args)
-};
+const logger = createLogger('[CalendarManager]');
+logger.disable()
 
 export class CalendarManager {
     constructor() {
-        logger.log(`${LOG_PREFIX} constructor() - начал выполнение`);
+        logger.log(`constructor() - начал выполнение`);
 
         this.lessonManager = new LessonManager();
         this.weekManager = new WeekManager();
@@ -33,13 +27,14 @@ export class CalendarManager {
         scheduleState.isAnother = false;
 
         this.setupEventListeners();
+        this.renderInitialGrid();
 
-        logger.log(`${LOG_PREFIX} constructor() - завершил выполнение`);
+        logger.log(`constructor() - завершил выполнение`);
     }
 
     // Новый метод для асинхронной инициализации
     async initialize() {
-        logger.log(`${LOG_PREFIX} initialize() - начал выполнение`);
+        logger.log(`initialize() - начал выполнение`);
 
         // Применяем настройки из settingsManager
         await this.applyInitialSettings();
@@ -48,28 +43,54 @@ export class CalendarManager {
         await this.loadSchedule();
 
         this.isInitializing = false;
-        logger.log(`${LOG_PREFIX} initialize() - завершил выполнение`);
+        logger.log(`initialize() - завершил выполнение`);
+    }
+
+    showLoadingState() {
+        const loader = document.getElementById('calendar-loading');
+        if (loader) {
+            loader.style.display = 'block';
+        }
+    }
+
+    hideLoadingState() {
+        const loader = document.getElementById('calendar-loading');
+        if (loader) {
+            loader.style.display = 'none';
+        }
+    }
+
+    renderInitialGrid() {
+        logger.log(`renderInitialGrid() - немедленная отрисовка базовой сетки`);
+
+        // Отрисовываем базовую структуру с дефолтными значениями
+        this.weekManager.updateHeaderDates();
+        this.weekManager.updateWeekInfo();
+        this.generateTimeSlots();
+
+        // Можно добавить индикатор загрузки в ячейки
+        this.showLoadingState();
     }
 
     // Обновленный метод applyInitialSettings
     async applyInitialSettings() {
-        logger.log(`${LOG_PREFIX} applyInitialSettings() - начал выполнение`);
+        logger.log(`applyInitialSettings() - начал выполнение`);
 
         try {
             // Получаем настройки из settingsManager
             const workingHours = settingsManager.getWorkingHours();
             if (workingHours && workingHours.start !== undefined && workingHours.end !== undefined) {
-                logger.log(`${LOG_PREFIX} applyInitialSettings() - применяем рабочие часы: ${workingHours.start}-${workingHours.end}`);
+                logger.log(`applyInitialSettings() - применяем рабочие часы: ${workingHours.start}-${workingHours.end}`);
                 this.startHour = workingHours.start;
                 this.endHour = workingHours.end;
             } else {
-                logger.log(`${LOG_PREFIX} applyInitialSettings() - настройки не найдены, используем значения по умолчанию: ${this.startHour}-${this.endHour}`);
+                logger.log(`applyInitialSettings() - настройки не найдены, используем значения по умолчанию: ${this.startHour}-${this.endHour}`);
             }
         } catch (error) {
-            console.error(`${LOG_PREFIX} applyInitialSettings() - ошибка:`, error);
+            logger.error(`applyInitialSettings() - ошибка:`, error);
         }
 
-        logger.log(`${LOG_PREFIX} applyInitialSettings() - завершил выполнение`);
+        logger.log(`applyInitialSettings() - завершил выполнение`);
     }
 
     setupEventListeners() {
@@ -99,7 +120,7 @@ export class CalendarManager {
     }
 
     prevWeek() {
-        logger.log(`${LOG_PREFIX} prevWeek() - переключение на предыдущую неделю`);
+        logger.log(`prevWeek() - переключение на предыдущую неделю`);
 
         clearAllNotifications();
 
@@ -108,7 +129,7 @@ export class CalendarManager {
     }
 
     nextWeek() {
-        logger.log(`${LOG_PREFIX} nextWeek() - переключение на следующую неделю`);
+        logger.log(`nextWeek() - переключение на следующую неделю`);
 
         clearAllNotifications();
 
@@ -117,7 +138,7 @@ export class CalendarManager {
     }
 
     goToCurrentWeek() {
-        logger.log(`${LOG_PREFIX} goToCurrentWeek() - переход к текущей неделе`);
+        logger.log(`goToCurrentWeek() - переход к текущей неделе`);
         if (this.weekManager.currentWeekOffset !== 0) {
 
             clearAllNotifications();
@@ -125,18 +146,18 @@ export class CalendarManager {
             this.weekManager.currentWeekOffset = 0;
             this.refreshCalendar();
         } else {
-            logger.log(`${LOG_PREFIX} goToCurrentWeek() - уже на текущей неделе, пропускаем`);
+            logger.log(`goToCurrentWeek() - уже на текущей неделе, пропускаем`);
         }
     }
 
     updateWorkingHours(start, end) {
-        logger.log(`${LOG_PREFIX} updateWorkingHours() - обновление рабочих часов: ${start}-${end}`);
+        logger.log(`updateWorkingHours() - обновление рабочих часов: ${start}-${end}`);
 
         this.startHour = start;
         this.endHour = end;
 
         if (!this.lessonManager.lessons) {
-            console.warn("Расписание не загружено, но рабочие часы обновлены");
+            logger.warn("Расписание не загружено, но рабочие часы обновлены");
             return;
         }
 
@@ -147,13 +168,13 @@ export class CalendarManager {
         try {
             await repository.updateOpenSlots(openSlots);
         } catch (error) {
-            console.error("Ошибка при обновлении свободных слотов:", error);
+            logger.error("Ошибка при обновлении свободных слотов:", error);
             throw error;
         }
     }
 
     async loadSchedule(teacherId = currentTeacherId, userId = currentUserId, startDate = null, endDate = null) {
-        logger.log(`${LOG_PREFIX} loadSchedule() - начал выполнение, teacherId: ${teacherId}`);
+        logger.log(`loadSchedule() - начал выполнение, teacherId: ${teacherId}`);
 
         try {
             const {start: weekStart, end: weekEnd} = this.weekManager.getWeekRange(this.weekManager.currentWeekOffset);
@@ -169,7 +190,7 @@ export class CalendarManager {
                 repository.getOpenSlots(effectiveTeacherId)
             ]);
 
-            console.log(`Lessons for teacher ${teacherId}: `, response);
+            logger.log(`Lessons for teacher ${teacherId}: `, response);
 
             const lessons = this.processLessonResponse(response);
             const fakeLessons = this.generateFakeLessons(lessons);
@@ -177,28 +198,35 @@ export class CalendarManager {
             this.lessonManager.lessons = [...lessons, ...fakeLessons];
             this.openSlots = openSlots;
 
-            logger.log(`${LOG_PREFIX} loadSchedule() - получено уроков: ${lessons.length}, сгенерировано fakeLessons: ${fakeLessons.length}`);
+            logger.log(`loadSchedule() - получено уроков: ${lessons.length}, сгенерировано fakeLessons: ${fakeLessons.length}`);
 
-            // Всегда обновляем календарь после загрузки данных
-            this.refreshCalendar();
+            // Вместо полного refreshCalendar() - только обновляем данные
+            this.renderDataOnly();
 
         } catch (error) {
-            console.error(`${LOG_PREFIX} loadSchedule() - ошибка:`, error);
+            logger.error(`loadSchedule() - ошибка:`, error);
             showNotification("Ошибка загрузки расписания", "error");
             this.lessonManager.lessons = [];
         }
 
-        logger.log(`${LOG_PREFIX} loadSchedule() - завершил выполнение`);
+        logger.log(`loadSchedule() - завершил выполнение`);
+    }
+
+    renderDataOnly() {
+        logger.log(`renderDataOnly() - обновление данных без перерисовки сетки`);
+        this.renderOpenSlots();
+        this.renderLessons();
+        this.hideLoadingState();
     }
 
     refreshCalendar() {
-        logger.log(`${LOG_PREFIX} refreshCalendar() - начал выполнение`);
+        logger.log(`refreshCalendar() - начал выполнение`);
 
         this.weekManager.updateHeaderDates();
         this.weekManager.updateWeekInfo();
         this.renderCalendar();
 
-        logger.log(`${LOG_PREFIX} refreshCalendar() - завершил выполнение`);
+        logger.log(`refreshCalendar() - завершил выполнение`);
     }
 
     renderCalendar() {
@@ -207,14 +235,14 @@ export class CalendarManager {
     }
 
     renderSchedule() {
-        logger.log(`${LOG_PREFIX} renderSchedule() - начал выполнение`);
+        logger.log(`renderSchedule() - начал выполнение`);
 
         this.clearSchedule();
         this.lessonManager.clearAllLessons();
         this.renderOpenSlots();
         this.renderLessons();
 
-        logger.log(`${LOG_PREFIX} renderSchedule() - завершил выполнение`);
+        logger.log(`renderSchedule() - завершил выполнение`);
     }
 
     generateTimeSlots() {
@@ -265,7 +293,7 @@ export class CalendarManager {
 
     renderOpenSlots() {
         if (!this.openSlots) {
-            console.warn("openSlots не загружены");
+            logger.warn("openSlots не загружены");
             return;
         }
 
@@ -281,7 +309,7 @@ export class CalendarManager {
         DAYS_OF_WEEK.forEach(day => {
             const dayElement = document.getElementById(day);
             if (!dayElement) {
-                console.error("Элемент дня не найден:", day);
+                logger.error("Элемент дня не найден:", day);
                 return;
             }
 
@@ -320,10 +348,10 @@ export class CalendarManager {
     }
 
     renderLessons() {
-        logger.log(`${LOG_PREFIX} renderLessons() - начал выполнение`);
+        logger.log(`renderLessons() - начал выполнение`);
 
         if (!Array.isArray(this.lessonManager.lessons)) {
-            console.warn("Некорректные данные уроков");
+            logger.warn("Некорректные данные уроков");
             return;
         }
 
@@ -334,7 +362,7 @@ export class CalendarManager {
         this.renderGroupedLessons(lessonsByTimeSlot);
         this.showScheduleConflicts(lessonsByTimeSlot);
 
-        logger.log(`${LOG_PREFIX} renderLessons() - завершил выполнение, обработано уроков: ${this.lessonManager.lessons?.length || 0}`);
+        logger.log(`renderLessons() - завершил выполнение, обработано уроков: ${this.lessonManager.lessons?.length || 0}`);
     }
 
     processLessonResponse(response) {
@@ -343,7 +371,7 @@ export class CalendarManager {
         } else if (Array.isArray(response)) {
             return response;
         } else {
-            console.warn('Unexpected response format, initializing empty lessons');
+            logger.warn('Unexpected response format, initializing empty lessons');
             return [];
         }
     }
@@ -392,7 +420,7 @@ export class CalendarManager {
                 lessonsByTimeSlot[timeSlotKey].push(lesson);
 
             } catch (error) {
-                console.error('Ошибка группировки уроков:', error);
+                logger.error('Ошибка группировки уроков:', error);
             }
         });
 
@@ -415,7 +443,7 @@ export class CalendarManager {
                 this.renderLessonsInTimeSlot(hourElement, lessons);
 
             } catch (error) {
-                console.error('Ошибка рендеринга ячейки:', error);
+                logger.error('Ошибка рендеринга ячейки:', error);
             }
         });
     }
@@ -444,7 +472,7 @@ export class CalendarManager {
     }
 
     showScheduleConflicts(lessonsByTimeSlot) {
-        logger.log(`${LOG_PREFIX} showScheduleConflicts() - начал выполнение`);
+        logger.log(`showScheduleConflicts() - начал выполнение`);
 
         const conflicts = Object.entries(lessonsByTimeSlot)
             .filter(([_, lessons]) => {
@@ -470,7 +498,7 @@ export class CalendarManager {
             logger.log('Конфликты расписания:', conflicts);
         }
 
-        logger.log(`${LOG_PREFIX} showScheduleConflicts() - завершил выполнение, найдено конфликтов: ${conflicts.length}`);
+        logger.log(`showScheduleConflicts() - завершил выполнение, найдено конфликтов: ${conflicts.length}`);
     }
 
     clearSchedule() {
@@ -483,22 +511,22 @@ export class CalendarManager {
     }
 
     updateOpenWindowsOnly() {
-        console.log(`${LOG_PREFIX} updateOpenWindowsOnly() - обновление только открытых окон`);
+        logger.log(`updateOpenWindowsOnly() - обновление только открытых окон`);
 
         // Пропускаем если инициализация
         if (this.isInitializing) {
-            console.log(`${LOG_PREFIX} updateOpenWindowsOnly() - пропущено из-за инициализации`);
+            logger.log(`updateOpenWindowsOnly() - пропущено из-за инициализации`);
             return;
         }
 
         if (!this.lessonManager.lessons) {
-            console.warn("Расписание не загружено");
+            logger.warn("Расписание не загружено");
             return;
         }
 
         // Обновляем только открытые окна, не трогая уроки
         this.renderOpenSlots();
 
-        console.log(`${LOG_PREFIX} updateOpenWindowsOnly() - завершил выполнение`);
+        logger.log(`updateOpenWindowsOnly() - завершил выполнение`);
     }
 }
