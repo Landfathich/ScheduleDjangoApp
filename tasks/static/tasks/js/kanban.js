@@ -8,6 +8,18 @@ class SimpleKanban {
     init() {
         console.log('Simple Kanban initialized');
         this.bindEvents();
+        this.bindClickEvents();
+    }
+
+    bindClickEvents() {
+        // Обработчик клика по карточке задачи
+        document.addEventListener('click', (e) => {
+            const taskCard = e.target.closest('.task-card');
+            if (taskCard && !e.target.closest('.edit-link')) {
+                const taskId = taskCard.dataset.taskId;
+                window.location.href = `/tasks/edit/${taskId}/`;
+            }
+        });
     }
 
     bindEvents() {

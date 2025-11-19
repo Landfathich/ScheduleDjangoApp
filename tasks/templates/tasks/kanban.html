@@ -36,14 +36,14 @@
                                 {% endif %}
 
                                 <div class="task-footer">
-                        <span>
-                            {% if task.assignee %}
-                                {{ task.assignee.first_name|default:task.assignee.username }}
-                            {% else %}
-                                Не назначен
-                            {% endif %}
-                        </span>
-                                    <a href="{% url 'tasks:edit_task' task.id %}"
+                                    <span>
+                                        {% if task.assignee %}
+                                            {{ task.assignee.first_name|default:task.assignee.username }}
+                                        {% else %}
+                                            Не назначен
+                                        {% endif %}
+                                    </span>
+                                    <a href="{% url 'tasks:edit_task' task.id %}" class="edit-link"
                                        style="color: #336699; text-decoration: none;">✏️</a>
                                 </div>
                             </div>
