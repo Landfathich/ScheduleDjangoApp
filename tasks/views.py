@@ -1,6 +1,7 @@
 from django.contrib.auth.decorators import login_required
-from django.http import JsonResponse
-from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib.auth.models import User
+from django.http import JsonResponse  # ← ДОБАВИТЬ
+from django.shortcuts import render, get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 
@@ -10,7 +11,6 @@ from .models import Task
 
 @login_required
 def kanban_board(request):
-    """Упрощенная канбан-доска"""
     statuses = dict(Task.STATUS_CHOICES)
     tasks_by_status = {}
 
@@ -23,6 +23,7 @@ def kanban_board(request):
 
     context = {
         'tasks_by_status': tasks_by_status,
+        'users': User.objects.filter(is_active=True),
     }
     return render(request, 'tasks/kanban.html', context)
 
@@ -46,33 +47,59 @@ def update_task_status(request):
 
 
 @login_required
-def task_form(request, task_id=None):
-    """Единая форма для создания и редактирования задачи"""
-    task = None
-    if task_id:
-        task = get_object_or_404(Task, id=task_id)
+@csrf_exempt
+def create_task(request):
+    """Создание задачи через AJAX"""
+    if request.method == 'POST':
+        form = TaskForm(request.POST)
+        if form.is_valid():
+            task = form.save(commit=False)
+            task.creator = request.user
+            task.save()
+            return JsonResponse({'success': True})
+        return JsonResponse({'success': False, 'errors': form.errors})
+    return JsonResponse({'success': False, 'error': 'Invalid method'})
+
+
+@login_required
+@csrf_exempt
+def edit_task(request, task_id):
+    """Редактирование задачи через AJAX"""
+    task = get_object_or_404(Task, id=task_id)
+
+    if task.creator != request.user and not request.user.is_staff:
+        return JsonResponse({'success': False, 'error': 'No permission'})
 
     if request.method == 'POST':
         form = TaskForm(request.POST, instance=task)
         if form.is_valid():
-            task_obj = form.save(commit=False)
-            if not task_id:  # Если создаем новую задачу
-                task_obj.creator = request.user
-            task_obj.save()
-            return redirect('tasks:kanban_board')
-    else:
-        form = TaskForm(instance=task)
-
-    context = {
-        'form': form,
-        'task': task,
-    }
-    return render(request, 'tasks/task_form.html', context)
+            form.save()
+            return JsonResponse({'success': True})
+        return JsonResponse({'success': False, 'errors': form.errors})
+    return JsonResponse({'success': False, 'error': 'Invalid method'})
 
 
 @login_required
+@csrf_exempt
 def delete_task(request, task_id):
-    """Удаление задачи"""
+    """Удаление задачи через AJAX"""
     task = get_object_or_404(Task, id=task_id)
-    task.delete()
-    return redirect('tasks:kanban_board')
+
+    if task.creator != request.user and not request.user.is_staff:
+        return JsonResponse({'success': False, 'error': 'No permission'})
+
+    if request.method == 'POST':
+        task.delete()
+        return JsonResponse({'success': True})
+    return JsonResponse({'success': False, 'error': 'Invalid method'})
+
+
+@login_required
+def get_task_data(request, task_id):
+    """Получение данных задачи для модального окна"""
+    task = get_object_or_404(Task, id=task_id)
+    return JsonResponse({
+        'title': task.title,
+        'description': task.description,
+        'assignee': task.assignee.id if task.assignee else None,
+    })
