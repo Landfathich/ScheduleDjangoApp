@@ -1,3 +1,4 @@
+from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.http import JsonResponse  # ← ДОБАВИТЬ
@@ -9,7 +10,7 @@ from .forms import TaskForm
 from .models import Task
 
 
-@login_required
+@staff_member_required
 def kanban_board(request):
     statuses = dict(Task.STATUS_CHOICES)
     tasks_by_status = {}
@@ -28,7 +29,7 @@ def kanban_board(request):
     return render(request, 'tasks/kanban.html', context)
 
 
-@login_required
+@staff_member_required
 @require_http_methods(["POST"])
 @csrf_exempt
 def update_task_status(request):
@@ -46,7 +47,7 @@ def update_task_status(request):
         return JsonResponse({'success': False, 'error': str(e)})
 
 
-@login_required
+@staff_member_required
 @csrf_exempt
 def create_task(request):
     """Создание задачи через AJAX"""
@@ -61,7 +62,7 @@ def create_task(request):
     return JsonResponse({'success': False, 'error': 'Invalid method'})
 
 
-@login_required
+@staff_member_required
 @csrf_exempt
 def edit_task(request, task_id):
     """Редактирование задачи через AJAX"""
@@ -80,7 +81,7 @@ def edit_task(request, task_id):
     return JsonResponse({'success': False, 'error': 'Invalid method'})
 
 
-@login_required
+@staff_member_required
 @csrf_exempt
 def delete_task(request, task_id):
     """Удаление задачи через AJAX"""
@@ -95,7 +96,7 @@ def delete_task(request, task_id):
     return JsonResponse({'success': False, 'error': 'Invalid method'})
 
 
-@login_required
+@staff_member_required
 def get_task_data(request, task_id):
     """Получение данных задачи для модального окна"""
     task = get_object_or_404(Task, id=task_id)
