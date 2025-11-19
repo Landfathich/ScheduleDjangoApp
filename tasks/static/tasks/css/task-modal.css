@@ -173,3 +173,38 @@
     cursor: not-allowed;
     border-color: #999;
 }
+
+input[type="file"] {
+    color: #333; /* Темный цвет текста */
+    font-family: Tahoma, Arial, sans-serif;
+    font-size: 11px;
+}
+
+input[type="file"]::file-selector-button {
+    background: linear-gradient(to bottom, #f0f0f0, #d4d0c8);
+    color: #000;
+    border: 2px outset #d4d0c8;
+    padding: 4px 8px;
+    font-family: Tahoma, Arial, sans-serif;
+    font-size: 11px;
+    cursor: pointer;
+}
+
+input[type="checkbox"] {
+    margin-right: 5px;
+}
+
+label {
+    font-size: 11px;
+    color: #333;
+    font-family: Tahoma, Arial, sans-serif;
+}
+
+input[type="file"]::file-selector-button:hover {
+    background: linear-gradient(to bottom, #e8e8e8, #c8c4bc);
+}
+
+input[type="file"]::file-selector-button:active {
+    border: 2px inset #d4d0c8;
+    background: linear-gradient(to bottom, #d4d0c8, #f0f0f0);
+}

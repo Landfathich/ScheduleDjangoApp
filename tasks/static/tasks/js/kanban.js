@@ -9,6 +9,7 @@ class SimpleKanban {
         console.log('Simple Kanban initialized');
         this.bindEvents();
         this.bindModalEvents();
+        this.bindImagePreview();
     }
 
     bindModalEvents() {
@@ -67,6 +68,14 @@ class SimpleKanban {
 
     closeModal() {
         this.modal.style.display = 'none';
+
+        // Очищаем поле файла
+        const fileInput = document.querySelector('input[name="image"]');
+        fileInput.value = ''; // Это сбросит выбранный файл
+
+        // Также скрываем превью
+        const currentImageDiv = document.getElementById('currentImage');
+        currentImageDiv.style.display = 'none';
     }
 
     async loadTaskData(taskId) {
@@ -78,8 +87,57 @@ class SimpleKanban {
             document.querySelector('textarea[name="description"]').value = task.description || '';
             document.querySelector('select[name="assignee"]').value = task.assignee || '';
             document.getElementById('taskId').value = taskId;
+
+            // Показываем текущее изображение если оно есть
+            this.displayCurrentImage(task.image_url);
         } catch (error) {
             console.error('Error loading task data:', error);
+        }
+    }
+
+    displayCurrentImage(imageUrl) {
+        const currentImageDiv = document.getElementById('currentImage');
+        const imagePreview = document.getElementById('imagePreview');
+        const deleteCheckbox = document.getElementById('deleteImageCheckbox');
+
+        if (imageUrl) {
+            imagePreview.innerHTML = `<img src="${imageUrl}" style="max-width: 200px; max-height: 150px; border: 1px solid #ccc;">`;
+            currentImageDiv.style.display = 'block';
+            deleteCheckbox.style.display = 'block';
+            deleteCheckbox.checked = false; // сбрасываем чекбокс
+        } else {
+            currentImageDiv.style.display = 'none';
+            deleteCheckbox.style.display = 'none';
+        }
+    }
+
+    bindImagePreview() {
+        const fileInput = document.querySelector('input[name="image"]');
+        fileInput.addEventListener('change', (e) => {
+            this.previewSelectedImage(e.target.files[0]);
+        });
+    }
+
+    previewSelectedImage(file) {
+        const imagePreview = document.getElementById('imagePreview');
+        const currentImageDiv = document.getElementById('currentImage');
+
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                imagePreview.innerHTML = `<img src="${e.target.result}" style="max-width: 200px; max-height: 150px; border: 1px solid #ccc; margin-top: 5px;">`;
+                currentImageDiv.style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+        } else {
+            // Если файл не выбран, но есть текущее изображение - оставляем его
+            const taskId = document.getElementById('taskId').value;
+            if (taskId) {
+                // Перезагружаем исходное изображение задачи
+                this.loadTaskData(taskId);
+            } else {
+                currentImageDiv.style.display = 'none';
+            }
         }
     }
 
@@ -87,6 +145,12 @@ class SimpleKanban {
         const form = document.getElementById('taskForm');
         const formData = new FormData(form);
         const taskId = document.getElementById('taskId').value;
+
+        // Добавляем значение чекбокса удаления изображения
+        const deleteCheckbox = document.getElementById('deleteImageCheckbox');
+        if (deleteCheckbox.checked) {
+            formData.append('delete_image', 'true');
+        }
 
         try {
             const url = taskId ? `/tasks/edit/${taskId}/` : '/tasks/create/';

@@ -51,7 +51,7 @@ def update_task_status(request):
 def create_task(request):
     """Создание задачи через AJAX"""
     if request.method == 'POST':
-        form = TaskForm(request.POST)
+        form = TaskForm(request.POST, request.FILES)
         if form.is_valid():
             task = form.save(commit=False)
             task.creator = request.user
@@ -71,11 +71,12 @@ def edit_task(request, task_id):
         return JsonResponse({'success': False, 'error': 'No permission'})
 
     if request.method == 'POST':
-        form = TaskForm(request.POST, instance=task)
+        form = TaskForm(request.POST, request.FILES, instance=task)
         if form.is_valid():
             form.save()
             return JsonResponse({'success': True})
-        return JsonResponse({'success': False, 'errors': form.errors})
+        else:
+            return JsonResponse({'success': False, 'errors': form.errors})
     return JsonResponse({'success': False, 'error': 'Invalid method'})
 
 
@@ -98,8 +99,10 @@ def delete_task(request, task_id):
 def get_task_data(request, task_id):
     """Получение данных задачи для модального окна"""
     task = get_object_or_404(Task, id=task_id)
+
     return JsonResponse({
         'title': task.title,
         'description': task.description,
         'assignee': task.assignee.id if task.assignee else None,
+        'image_url': task.image.url if task.image else None
     })

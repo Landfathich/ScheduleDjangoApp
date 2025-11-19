@@ -24,6 +24,13 @@ class Task(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     order = models.IntegerField(default=0)  # Для будущей сортировки
 
+    image = models.ImageField(
+        upload_to='tasks/images/',
+        blank=True,
+        null=True,
+        verbose_name="Изображение"
+    )
+
     class Meta:
         ordering = ['-created_at']
 

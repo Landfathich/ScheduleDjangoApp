@@ -81,6 +81,20 @@
                             {% endfor %}
                         </select>
                     </div>
+                    <div id="currentImage" style="display: none;">
+                        <label class="form-label">Изображение:</label>
+                        <div id="imagePreview" style="position: relative; display: inline-block;"></div>
+                        <div style="margin-top: 5px;">
+                            <label style="font-size: 11px; display: inline-flex; align-items: center; gap: 5px;">
+                                <input type="checkbox" name="delete_image" id="deleteImageCheckbox" style="margin: 0;">
+                                Удалить изображение
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Изображение:</label>
+                        <input type="file" name="image" class="form-input" accept="image/*">
+                    </div>
                     <input type="hidden" name="task_id" id="taskId">
                 </form>
             </div>

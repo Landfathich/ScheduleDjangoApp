@@ -4,9 +4,11 @@ from .models import Task
 
 
 class TaskForm(forms.ModelForm):
+    delete_image = forms.BooleanField(required=False, label="Удалить изображение")
+
     class Meta:
         model = Task
-        fields = ['title', 'description', 'assignee']
+        fields = ['title', 'description', 'assignee', 'image']
         widgets = {
             'title': forms.TextInput(attrs={
                 'class': 'form-input',
@@ -21,6 +23,20 @@ class TaskForm(forms.ModelForm):
                 'class': 'form-select'
             })
         }
+
+    def save(self, commit=True):
+        task = super().save(commit=False)
+
+        # Если отмечен чекбокс удаления
+        if self.cleaned_data.get('delete_image'):
+            if task.image:
+                task.image.delete()  # удаляем файл
+                task.image = None  # очищаем поле
+
+        if commit:
+            task.save()
+
+        return task
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
