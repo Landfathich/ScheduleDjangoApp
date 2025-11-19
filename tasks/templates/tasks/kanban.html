@@ -1,0 +1,60 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Задачи | Kodama{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'tasks/css/kanban.css' %}">
+{% endblock %}
+
+{% block content %}
+    <div class="kanban-container">
+        <div class="kanban-header">
+            <h1 style="margin: 0; color: #333; font-size: 24px;">Канбан-доска задач</h1>
+            <a href="{% url 'tasks:create_task' %}" class="btn">
+                + Создать задачу
+            </a>
+        </div>
+
+        <div class="kanban-board">
+            {% for status_key, status_data in tasks_by_status.items %}
+                <div class="kanban-column {{ status_key }}">
+                    <div class="column-header">
+                        {{ status_data.name }}
+                        <span class="column-count">{{ status_data.tasks|length }}</span>
+                    </div>
+
+                    <div class="task-list" data-status="{{ status_key }}">
+                        {% for task in status_data.tasks %}
+                            <div class="task-card" draggable="true" data-task-id="{{ task.id }}">
+                                <div class="task-title">{{ task.title }}</div>
+
+                                {% if task.description %}
+                                    <div class="task-description">
+                                        {{ task.description|truncatewords:15 }}
+                                    </div>
+                                {% endif %}
+
+                                <div class="task-footer">
+                        <span>
+                            {% if task.assignee %}
+                                {{ task.assignee.first_name|default:task.assignee.username }}
+                            {% else %}
+                                Не назначен
+                            {% endif %}
+                        </span>
+                                    <a href="{% url 'tasks:edit_task' task.id %}"
+                                       style="color: #336699; text-decoration: none;">✏️</a>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    <script src="{% static 'tasks/js/kanban.js' %}"></script>
+{% endblock %}

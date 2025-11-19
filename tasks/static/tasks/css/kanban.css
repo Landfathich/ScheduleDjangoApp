@@ -1,0 +1,144 @@
+.kanban-container {
+    padding: 20px;
+    font-family: Arial, sans-serif;
+    background: #f0f0f0;
+    height: 100%;
+}
+
+.kanban-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding: 10px;
+    background: #e0e0e0;
+    border: 1px solid #ccc;
+}
+
+.kanban-board {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+}
+
+.kanban-column {
+    background: #fff;
+    border: 2px solid #336699;
+    border-radius: 0;
+}
+
+.column-header {
+    background: #336699;
+    color: white;
+    padding: 8px;
+    font-weight: bold;
+    border-bottom: 2px solid #336699;
+}
+
+.column-count {
+    background: #ff9900;
+    color: black;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 11px;
+    float: right;
+}
+
+.task-list {
+    min-height: 400px;
+    padding: 5px;
+    background: #f9f9f9;
+}
+
+.task-card {
+    background: #ffffcc;
+    border: 1px solid #cccc99;
+    padding: 8px;
+    margin-bottom: 5px;
+    cursor: move;
+    font-size: 12px;
+}
+
+.task-card:hover {
+    background: #ffff99;
+    border-color: #999966;
+}
+
+.task-card.dragging {
+    opacity: 0.7;
+    border: 2px dashed #336699;
+}
+
+.task-title {
+    font-weight: bold;
+    margin-bottom: 4px;
+    color: #333;
+}
+
+.task-description {
+    color: #666;
+    margin-bottom: 6px;
+    line-height: 1.2;
+}
+
+.task-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #666;
+    font-size: 11px;
+}
+
+/* Цвета статусов */
+.backlog .column-header {
+    background: #666666;
+}
+
+.todo .column-header {
+    background: #336699;
+}
+
+.in_progress .column-header {
+    background: #cc6600;
+}
+
+.review .column-header {
+    background: #663366;
+}
+
+.done .column-header {
+    background: #339966;
+}
+
+/* Кнопки в стиле старой школы */
+.btn {
+    background: #336699;
+    color: white;
+    padding: 6px 12px;
+    text-decoration: none;
+    border: 1px solid #2a5580;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.btn:hover {
+    background: #2a5580;
+}
+
+/* Адаптивность */
+@media (max-width: 1200px) {
+    .kanban-board {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .kanban-board {
+        grid-template-columns: 1fr;
+    }
+
+    .kanban-header {
+        flex-direction: column;
+        gap: 10px;
+    }
+}

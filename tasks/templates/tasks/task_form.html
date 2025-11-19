@@ -1,0 +1,73 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}{% if task %}Редактировать задачу{% else %}Создать задачу{% endif %} | Kodama{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'tasks/css/form.css' %}">
+{% endblock %}
+
+{% block content %}
+    <div class="form-container">
+        <h2 class="form-title">
+            {% if task %}
+                ✏️ Редактировать задачу
+            {% else %}
+                ➕ Создать задачу
+            {% endif %}
+        </h2>
+
+        <form method="post">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label class="form-label">Название:</label>
+                {{ form.title }}
+                {% if form.title.errors %}
+                    <div style="color: #cc3333; font-size: 12px; margin-top: 5px;">
+                        {{ form.title.errors }}
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Описание:</label>
+                {{ form.description }}
+                {% if form.description.errors %}
+                    <div style="color: #cc3333; font-size: 12px; margin-top: 5px;">
+                        {{ form.description.errors }}
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Исполнитель:</label>
+                {{ form.assignee }}
+                {% if form.assignee.errors %}
+                    <div style="color: #cc3333; font-size: 12px; margin-top: 5px;">
+                        {{ form.assignee.errors }}
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-success">
+                    {% if task %}
+                        Сохранить изменения
+                    {% else %}
+                        Создать задачу
+                    {% endif %}
+                </button>
+
+                {% if task %}
+                    <a href="{% url 'tasks:delete_task' task.id %}" class="btn btn-danger"
+                       onclick="return confirm('Вы уверены, что хотите удалить эту задачу?')">
+                        Удалить
+                    </a>
+                {% endif %}
+
+                <a href="{% url 'tasks:kanban_board' %}" class="btn btn-cancel">Отмена</a>
+            </div>
+        </form>
+    </div>
+{% endblock %}

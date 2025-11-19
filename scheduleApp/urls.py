@@ -24,6 +24,7 @@ urlpatterns = [
     path('', include('core.urls')),
     path('', include('finance.urls')),
     path("materials/", include("materials.urls")),
+    path('tasks/', include('tasks.urls')),
     # TODO СДЕЛАТЬ ЧТОБЫ ЗДЕСЬ ПОДКЛЮЧАЛОСЬ ПРИЛОЖЕНИЕ CORE, А В КОРЕ УЖЕ КОРОВЫКЕ ССЫЛКИ ТОЛЬКО, И НОРМАЛЬНОЕ ИМЕНОВАНИЕ В ОДНОМ СТИЛЕ
     path('', include('pwa.urls')),
 ]
