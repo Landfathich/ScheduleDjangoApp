@@ -1,14 +1,62 @@
 import {createLogger} from "./logger.js";
 
 const logger = createLogger('[Notifications]');
-logger.disable()
+logger.enable()
 
 let notificationQueue = [];
 let isNotificationShowing = false;
 let notificationTimer = null;
 let currentNotificationData = null;
 
+// 🔒 Защита от дублирования - храним хеши последних уведомлений
+let notificationHistory = new Set();
+const NOTIFICATION_HISTORY_SIZE = 10; // Храним последние 10 уведомлений
+const DUPLICATE_COOLDOWN = 3000; // 3 секунды cooldown для одинаковых уведомлений
+
+// Функция для создания хеша уведомления
+function createNotificationHash(message, type) {
+    return `${type}:${message}`;
+}
+
+// Проверка, можно ли показать уведомление (нет дубликата)
+function canShowNotification(message, type) {
+    const hash = createNotificationHash(message, type);
+
+    // Если уведомление уже в истории - не показываем
+    if (notificationHistory.has(hash)) {
+        logger.log(`🔒 Пропускаем дубликат уведомления: "${message}"`);
+        return false;
+    }
+
+    return true;
+}
+
+// Добавление уведомления в историю
+function addToNotificationHistory(message, type) {
+    const hash = createNotificationHash(message, type);
+
+    // Добавляем в историю
+    notificationHistory.add(hash);
+
+    // Ограничиваем размер истории
+    if (notificationHistory.size > NOTIFICATION_HISTORY_SIZE) {
+        const firstItem = notificationHistory.values().next().value;
+        notificationHistory.delete(firstItem);
+    }
+
+    // Автоматически удаляем из истории через cooldown время
+    setTimeout(() => {
+        notificationHistory.delete(hash);
+        logger.log(`🕒 Удаляем уведомление из истории: "${message}"`);
+    }, DUPLICATE_COOLDOWN);
+}
+
 export function showNotification(message, type = 'info') {
+    // 🔒 Проверяем, не является ли уведомление дубликатом
+    if (!canShowNotification(message, type)) {
+        return;
+    }
+
     notificationQueue.push({message, type});
 
     if (!isNotificationShowing) {
@@ -69,6 +117,9 @@ function showNextNotification() {
 
     isNotificationShowing = true;
     currentNotificationData = notificationQueue[0];
+
+    // 🔒 Добавляем текущее уведомление в историю
+    addToNotificationHistory(currentNotificationData.message, currentNotificationData.type);
 
     const notification = document.getElementById('notification');
     const notificationText = notification.querySelector('.notification-text');

@@ -101,9 +101,9 @@ export class SettingsManager {
     async loadSettingsFromServer() {
         logger.log('🔄 loadSettingsFromServer() - начал выполнение');
         try {
-            logger.log('⏳ Искусственная задержка 5 сек...');
+            logger.log('⏳ Искусственная задержка 2 сек...');
             // Задержка для имитации работы сервера
-            //await new Promise(resolve => setTimeout(resolve, 5000));
+            // new Promise(resolve => setTimeout(resolve, 2000));
             logger.log('✅ Задержка завершена, делаем запрос');
 
             const response = await fetch('/get-user-settings/');
