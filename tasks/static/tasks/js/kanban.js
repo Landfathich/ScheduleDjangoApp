@@ -10,6 +10,7 @@ class SimpleKanban {
         this.bindEvents();
         this.bindModalEvents();
         this.bindImagePreview();
+        this.bindImageViewer();
     }
 
     bindModalEvents() {
@@ -101,14 +102,31 @@ class SimpleKanban {
         const deleteCheckbox = document.getElementById('deleteImageCheckbox');
 
         if (imageUrl) {
-            imagePreview.innerHTML = `<img src="${imageUrl}" style="max-width: 200px; max-height: 150px; border: 1px solid #ccc;">`;
+            const img = document.createElement('img');
+            img.src = imageUrl;
+            img.style.cssText = 'max-width: 200px; max-height: 150px; border: 1px solid #ccc; cursor: pointer;';
+            img.addEventListener('click', () => {
+                this.viewFullImage(imageUrl);
+            });
+
+            imagePreview.innerHTML = '';
+            imagePreview.appendChild(img);
             currentImageDiv.style.display = 'block';
             deleteCheckbox.style.display = 'block';
-            deleteCheckbox.checked = false; // сбрасываем чекбокс
+            deleteCheckbox.checked = false;
         } else {
             currentImageDiv.style.display = 'none';
             deleteCheckbox.style.display = 'none';
         }
+    }
+
+    viewFullImage(imageUrl) {
+        document.getElementById('fullSizeImage').src = imageUrl;
+        document.getElementById('imageViewModal').style.display = 'block';
+    }
+
+    closeImageView() {
+        document.getElementById('imageViewModal').style.display = 'none';
     }
 
     bindImagePreview() {
@@ -140,6 +158,21 @@ class SimpleKanban {
             }
         }
     }
+
+    bindImageViewer() {
+        // Закрытие модалки просмотра
+        document.getElementById('closeImageView').addEventListener('click', () => {
+            this.closeImageView();
+        });
+
+        // Клик вне изображения для закрытия
+        document.getElementById('imageViewModal').addEventListener('click', (e) => {
+            if (e.target === document.getElementById('imageViewModal')) {
+                this.closeImageView();
+            }
+        });
+    }
+
 
     async saveTask() {
         const form = document.getElementById('taskForm');

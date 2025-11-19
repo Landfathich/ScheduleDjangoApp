@@ -208,3 +208,60 @@ input[type="file"]::file-selector-button:active {
     border: 2px inset #d4d0c8;
     background: linear-gradient(to bottom, #d4d0c8, #f0f0f0);
 }
+
+#imageViewModal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.9);
+    z-index: 10001;
+    padding: 0;
+    margin: 0;
+}
+
+#imageViewModal .modal-content {
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    max-width: 90vw;
+    max-height: 90vh;
+    width: auto;
+    height: auto;
+}
+
+#fullSizeImage {
+    max-width: 90vw;
+    max-height: 90vh;
+    display: block;
+}
+
+#closeImageView {
+    color: white;
+    font-size: 24px;
+    position: fixed;
+    top: 20px;
+    right: 30px;
+    z-index: 10002;
+    cursor: pointer;
+    background: #333;
+    border: 2px outset #d4d0c8;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: Tahoma, Arial, sans-serif;
+}
+
+#closeImageView:hover {
+    background: #555;
+    border: 2px inset #d4d0c8;
+}
