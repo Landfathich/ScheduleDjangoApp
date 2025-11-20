@@ -178,6 +178,10 @@ class SimpleKanban {
         const form = document.getElementById('taskForm');
         const formData = new FormData(form);
         const taskId = document.getElementById('taskId').value;
+        const projectId = document.getElementById('projectId').value;
+
+        // Добавляем project_id к данным
+        formData.append('project', projectId);
 
         // Добавляем значение чекбокса удаления изображения
         const deleteCheckbox = document.getElementById('deleteImageCheckbox');

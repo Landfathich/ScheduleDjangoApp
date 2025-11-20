@@ -1,6 +1,13 @@
 from django.contrib import admin
 
-from .models import Task
+from .models import Task, Project
+
+
+@admin.register(Project)
+class ProjectAdmin(admin.ModelAdmin):
+    list_display = ['name', 'creator', 'created_at']
+    list_filter = ['creator']
+    search_fields = ['name']
 
 
 @admin.register(Task)

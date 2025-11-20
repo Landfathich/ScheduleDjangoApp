@@ -123,6 +123,7 @@
     background: linear-gradient(to bottom, #f0f0f0, #d4d0c8);
     color: #000;
     text-shadow: none;
+    margin: 0 !important;
 }
 
 .btn:hover {

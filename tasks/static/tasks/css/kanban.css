@@ -1,30 +1,3 @@
-.kanban-container {
-    padding: 15px;
-    font-family: Tahoma, Arial, sans-serif;
-    background: #d4d0c8;
-    height: 100%;
-    border: 1px solid #808080;
-}
-
-.kanban-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 15px;
-    padding: 8px 12px;
-    background: linear-gradient(to bottom, #3a7bd5, #003366);
-    border: 2px outset #d4d0c8;
-    color: white;
-}
-
-.kanban-header h1 {
-    margin: 0;
-    color: white;
-    font-size: 18px;
-    font-weight: bold;
-    text-shadow: 1px 1px 1px #000;
-}
-
 .kanban-board {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
@@ -109,7 +82,7 @@
     margin-top: 4px;
 }
 
-/* Цвета статусов в стиле 2000-х */
+/* Цвета статусов */
 .backlog .column-header {
     background: linear-gradient(to bottom, #666666, #444444);
 }
@@ -130,29 +103,54 @@
     background: linear-gradient(to bottom, #339966, #226644);
 }
 
-/* Кнопки в стиле Windows 2000 */
-.btn {
-    background: linear-gradient(to bottom, #f0f0f0, #d4d0c8);
-    color: #000;
-    padding: 4px 12px;
-    text-decoration: none;
-    border: 2px outset #d4d0c8;
+/* Селектор проектов в канбане */
+.project-selector {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+}
+
+.project-selector select {
+    background: white;
+    border: 2px inset #d4d0c8;
+    padding: 4px 8px;
     font-size: 11px;
-    font-weight: bold;
-    cursor: pointer;
+    font-family: Tahoma, Arial, sans-serif;
+    min-width: 180px;
+}
+
+.project-selector select:focus {
+    outline: 1px solid #3a7bd5;
+}
+
+/* Сообщения в канбане */
+.no-projects, .no-project-selected {
+    background: #ffffcc;
+    border: 2px outset #cccc99;
+    padding: 30px;
+    margin: 20px 0;
+    text-align: center;
     font-family: Tahoma, Arial, sans-serif;
 }
 
-.btn:hover {
-    background: linear-gradient(to bottom, #e8e8e8, #c8c4bc);
+.no-projects h3, .no-project-selected h3 {
+    color: #333;
+    font-size: 16px;
+    margin-bottom: 10px;
 }
 
-.btn:active {
-    border: 2px inset #d4d0c8;
-    background: linear-gradient(to bottom, #d4d0c8, #f0f0f0);
+.no-projects p, .no-project-selected p {
+    color: #666;
+    font-size: 12px;
+    margin-bottom: 15px;
 }
 
-/* Адаптивность */
+.no-projects .btn {
+    margin-top: 10px;
+}
+
+/* Адаптивность канбана */
 @media (max-width: 1200px) {
     .kanban-board {
         grid-template-columns: repeat(3, 1fr);
@@ -166,6 +164,16 @@
 
     .kanban-header {
         flex-direction: column;
-        gap: 8px;
+        align-items: stretch;
+        gap: 10px;
+    }
+
+    .kanban-header > div {
+        justify-content: center;
+    }
+
+    .project-selector {
+        justify-content: center;
+        flex-wrap: wrap;
     }
 }
