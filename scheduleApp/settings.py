@@ -75,7 +75,8 @@ INSTALLED_APPS = [
     'phonenumber_field',
     'pwa',
     'django.contrib.humanize',
-    'finance.apps.FinanceConfig'
+    'finance.apps.FinanceConfig',
+    'tasks',
 ]
 
 if DEBUG:

@@ -1,0 +1,64 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Проекты | Kodama{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'tasks/css/base.css' %}">
+    <link rel="stylesheet" href="{% static 'tasks/css/project-list.css' %}">
+{% endblock %}
+
+{% block content %}
+    <div class="kanban-container">
+        <div class="kanban-header">
+            <h1>Управление проектами</h1>
+            <a href="{% url 'tasks:create_project' %}" class="btn">+ Создать проект</a>
+        </div>
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}"
+                     style="background: #ffffcc; border: 1px solid #cccc99; padding: 10px; margin-bottom: 15px;">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        {% if projects %}
+            <div class="projects-grid">
+                {% for project in projects %}
+                    <div class="project-card">
+                        <div class="project-color" style="background-color: {{ project.color }};"></div>
+                        <div class="project-info">
+                            <h3 class="project-name">{{ project.name }}</h3>
+                            {% if project.description %}
+                                <p class="project-description">{{ project.description }}</p>
+                            {% endif %}
+                            <div class="project-stats">
+                                <span>Задач: {{ project.tasks.count }}</span>
+                                <span>Создан: {{ project.created_at|date:"d.m.Y" }}</span>
+                            </div>
+                        </div>
+                        <div class="project-actions">
+                            <a href="{% url 'tasks:kanban_board' %}?project={{ project.id }}" class="btn">Открыть</a>
+                            <a href="{% url 'tasks:edit_project' project.id %}" class="btn">✏️</a>
+                            <form method="post" action="{% url 'tasks:delete_project' project.id %}"
+                                  style="display: inline;">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-danger"
+                                        onclick="return confirm('Удалить проект «{{ project.name }}»?')">🗑️
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="no-projects">
+                <h3>Проектов пока нет</h3>
+                <p>Создайте первый проект, чтобы организовать задачи</p>
+                <a href="{% url 'tasks:create_project' %}" class="btn btn-success">+ Создать проект</a>
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}

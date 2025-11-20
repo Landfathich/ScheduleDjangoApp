@@ -1,0 +1,114 @@
+::-webkit-scrollbar {
+    width: 16px;
+}
+
+::-webkit-scrollbar-track {
+    background: #d4d0c8;
+    border: 1px inset #d4d0c8;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #c0c0c0;
+    border: 1px outset #c0c0c8;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}
+
+/* Для Firefox */
+* {
+    scrollbar-width: auto;
+    scrollbar-color: #c0c0c0 #d4d0c8;
+}
+
+.kanban-container {
+    padding: 15px;
+    font-family: Tahoma, Arial, sans-serif;
+    background: #d4d0c8;
+    height: 100%;
+    border: 1px solid #808080;
+}
+
+.kanban-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding: 8px 12px;
+    background: linear-gradient(to bottom, #3a7bd5, #003366);
+    border: 2px outset #d4d0c8;
+    color: white;
+}
+
+.kanban-header h1 {
+    margin: 0;
+    color: white;
+    font-size: 18px;
+    font-weight: bold;
+    text-shadow: 1px 1px 1px #000;
+}
+
+.kanban-header > div {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+/* Общие кнопки */
+.btn {
+    background: linear-gradient(to bottom, #f0f0f0, #d4d0c8);
+    color: #000;
+    padding: 4px 12px;
+    text-decoration: none;
+    border: 2px outset #d4d0c8;
+    font-size: 11px;
+    font-weight: bold;
+    cursor: pointer;
+    font-family: Tahoma, Arial, sans-serif;
+}
+
+.btn:hover {
+    background: linear-gradient(to bottom, #e8e8e8, #c8c4bc);
+}
+
+.btn:active {
+    border: 2px inset #d4d0c8;
+    background: linear-gradient(to bottom, #d4d0c8, #f0f0f0);
+}
+
+.btn-success {
+    background: linear-gradient(to bottom, #90ee90, #32cd32);
+    border-color: #228b22;
+    color: #000;
+}
+
+.btn-success:hover {
+    background: linear-gradient(to bottom, #80de80, #22bd22);
+}
+
+.btn-danger {
+    color: #000;
+}
+
+.btn-danger:hover {
+    background: linear-gradient(to bottom, #ef5b5b, #cc042c);
+}
+
+.btn-cancel {
+    background: linear-gradient(to bottom, #f0f0f0, #d4d0c8);
+    border-color: #666;
+    color: #000;
+}
+
+.btn:active {
+    transform: translate(1px, 1px);
+}
+
+.btn:disabled {
+    background: #d4d0c8;
+    color: #888;
+    cursor: not-allowed;
+    border-color: #999;
+}

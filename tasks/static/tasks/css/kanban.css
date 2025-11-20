@@ -1,0 +1,352 @@
+.kanban-board {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+}
+
+.kanban-column {
+    background: #ece9d8;
+    border: 2px outset #d4d0c8;
+    border-radius: 0;
+}
+
+.column-header {
+    background: linear-gradient(to bottom, #3a7bd5, #003366);
+    color: white;
+    padding: 6px 8px;
+    font-weight: bold;
+    font-size: 12px;
+    border-bottom: 1px solid #003366;
+    text-shadow: 1px 1px 1px #000;
+}
+
+.column-count {
+    background: #ffcc00;
+    color: black;
+    padding: 1px 4px;
+    border-radius: 0;
+    font-size: 10px;
+    font-weight: bold;
+    float: right;
+    border: 1px solid #cc9900;
+}
+
+.task-list {
+    min-height: 400px;
+    padding: 4px;
+    background: #ece9d8;
+    border: 1px inset #d4d0c8;
+}
+
+.task-card {
+    background: #ffffcc;
+    border: 1px outset #cccc99;
+    padding: 6px;
+    margin-bottom: 4px;
+    cursor: move;
+    font-size: 11px;
+    font-family: Tahoma, Arial, sans-serif;
+}
+
+.task-card:hover {
+    background: #ffff99;
+    border: 1px inset #cccc99;
+}
+
+.task-card.dragging {
+    opacity: 0.9;
+    border: 2px dashed #003366;
+    background: #ffff99;
+}
+
+.task-title {
+    font-weight: bold;
+    margin-bottom: 3px;
+    color: #000;
+    font-size: 11px;
+}
+
+.task-description {
+    color: #666;
+    margin-bottom: 4px;
+    line-height: 1.2;
+    font-size: 10px;
+}
+
+.task-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #666;
+    font-size: 10px;
+    margin-top: 4px;
+}
+
+/* Цвета статусов */
+.backlog .column-header {
+    background: linear-gradient(to bottom, #666666, #444444);
+}
+
+.todo .column-header {
+    background: linear-gradient(to bottom, #3a7bd5, #003366);
+}
+
+.in_progress .column-header {
+    background: linear-gradient(to bottom, #cc6600, #994400);
+}
+
+.review .column-header {
+    background: linear-gradient(to bottom, #663366, #441144);
+}
+
+.done .column-header {
+    background: linear-gradient(to bottom, #339966, #226644);
+}
+
+/* Селектор проектов в канбане */
+.project-selector {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+}
+
+.project-selector select {
+    background: white;
+    border: 2px inset #d4d0c8;
+    padding: 4px 8px;
+    font-size: 11px;
+    font-family: Tahoma, Arial, sans-serif;
+    min-width: 180px;
+}
+
+.project-selector select:focus {
+    outline: 1px solid #3a7bd5;
+}
+
+/* Сообщения в канбане */
+.no-projects, .no-project-selected {
+    background: #ffffcc;
+    border: 2px outset #cccc99;
+    padding: 30px;
+    margin: 20px 0;
+    text-align: center;
+    font-family: Tahoma, Arial, sans-serif;
+}
+
+.no-projects h3, .no-project-selected h3 {
+    color: #333;
+    font-size: 16px;
+    margin-bottom: 10px;
+}
+
+.no-projects p, .no-project-selected p {
+    color: #666;
+    font-size: 12px;
+    margin-bottom: 15px;
+}
+
+.no-projects .btn {
+    margin-top: 10px;
+}
+
+@media (max-width: 768px) {
+    .kanban-container {
+        padding: 10px;
+        min-height: 100vh;
+        overflow-x: auto;
+    }
+
+    .kanban-board {
+        grid-template-columns: 1fr;
+        gap: 10px;
+        min-width: 300px;
+    }
+
+    .kanban-column {
+        min-height: auto;
+        max-height: 60vh; /* Ограничиваем максимальную высоту колонки */
+    }
+
+    .task-list {
+        min-height: 150px;
+        max-height: 50vh; /* Ограничиваем высоту списка задач */
+        overflow-y: auto; /* Скролл внутри списка задач */
+        -webkit-overflow-scrolling: touch; /* Плавный скролл на iOS */
+    }
+
+    .task-card {
+        padding: 8px;
+        font-size: 12px;
+    }
+
+    .task-title {
+        font-size: 12px;
+    }
+
+    .task-description {
+        font-size: 11px;
+    }
+
+    .column-header {
+        padding: 8px 10px;
+        font-size: 13px;
+        position: sticky;
+        top: 0;
+        background: white;
+        z-index: 1;
+        border-bottom: 1px solid #e0e0e0;
+    }
+
+    /* Хедер на мобильных */
+    .kanban-header {
+        flex-direction: column;
+        gap: 10px;
+        padding: 10px;
+    }
+
+    .kanban-header > div {
+        flex-direction: column;
+        gap: 10px;
+        width: 100%;
+    }
+
+    .project-selector {
+        flex-direction: column;
+        width: 100%;
+        gap: 8px;
+    }
+
+    .project-selector select {
+        min-width: 100%;
+    }
+
+    .project-selector form {
+        width: 100%;
+    }
+
+    .project-selector .btn {
+        width: 100%;
+        text-align: center;
+    }
+}
+
+/* Стили для touch-интерфейса в стиле Windows XP */
+@media (max-width: 768px) {
+    .task-card {
+        cursor: pointer;
+        user-select: none;
+        -webkit-user-select: none;
+        transition: transform 0.2s;
+    }
+
+    .task-card:active {
+        transform: scale(0.98);
+    }
+
+    /* Модальное окно перемещения в стиле Windows XP */
+    .move-modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.6);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+        padding: 20px;
+    }
+
+    .move-modal-content {
+        background: linear-gradient(to bottom, #ece9d8 0%, #e0dfd7 100%);
+        padding: 2px;
+        border: 2px solid #003c74;
+        border-radius: 0;
+        width: 100%;
+        max-width: 280px;
+        box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        font-family: "Tahoma", sans-serif;
+    }
+
+    .move-modal-content > div {
+        background: white;
+        padding: 16px;
+        border: 1px solid #7f9db9;
+    }
+
+    .move-modal-content h4 {
+        margin: 0 0 12px 0;
+        text-align: center;
+        color: #003c74;
+        font-size: 14px;
+        font-weight: bold;
+        background: linear-gradient(to bottom, #0a246a 0%, #a6caf0 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        text-shadow: 1px 1px 1px rgba(255, 255, 255, 0.5);
+    }
+
+    .status-option {
+        display: block;
+        width: 100%;
+        padding: 6px 12px;
+        margin: 4px 0;
+        border: 1px solid #7f9db9;
+        background: linear-gradient(to bottom, #f0f0f0 0%, #e5e5e5 100%);
+        border-radius: 3px;
+        cursor: pointer;
+        font-size: 12px;
+        font-family: "Tahoma", sans-serif;
+        color: #000;
+        text-align: center;
+        box-shadow: inset 1px 1px 0px white, 1px 1px 1px rgba(0, 0, 0, 0.1);
+    }
+
+    .status-option:active {
+        background: linear-gradient(to bottom, #d4d4d4 0%, #c9c9c9 100%);
+        box-shadow: inset 1px 1px 2px rgba(0, 0, 0, 0.2);
+        transform: translateY(1px);
+    }
+
+    /* Стиль для текущего статуса */
+    .status-option.current-status {
+        background: linear-gradient(to bottom, #d6e8ff 0%, #b8d4f0 100%);
+        border-color: #3a6ea5;
+        color: #003c74;
+        font-weight: bold;
+    }
+
+    .status-option.current-status:active {
+        background: linear-gradient(to bottom, #d6e8ff 0%, #b8d4f0 100%);
+        transform: none;
+        box-shadow: inset 1px 1px 0px white, 1px 1px 1px rgba(0, 0, 0, 0.1);
+    }
+
+    .cancel-move {
+        display: block;
+        width: 100%;
+        padding: 6px 12px;
+        margin-top: 12px;
+        background: linear-gradient(to bottom, #f0f0f0 0%, #e5e5e5 100%);
+        border: 1px solid #7f9db9;
+        color: #000;
+        border-radius: 3px;
+        cursor: pointer;
+        font-size: 12px;
+        font-family: "Tahoma", sans-serif;
+        box-shadow: inset 1px 1px 0px white, 1px 1px 1px rgba(0, 0, 0, 0.1);
+    }
+
+    .cancel-move:active {
+        background: linear-gradient(to bottom, #d4d4d4 0%, #c9c9c9 100%);
+        box-shadow: inset 1px 1px 2px rgba(0, 0, 0, 0.2);
+        transform: translateY(1px);
+    }
+
+    .mobile-hint {
+        display: block !important;
+        font-family: "Tahoma", sans-serif;
+    }
+}

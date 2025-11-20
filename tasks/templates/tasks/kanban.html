@@ -1,0 +1,163 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Задачи | Kodama{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'tasks/css/base.css' %}">
+    <link rel="stylesheet" href="{% static 'tasks/css/kanban.css' %}">
+    <link rel="stylesheet" href="{% static 'tasks/css/task-modal.css' %}">
+{% endblock %}
+
+{% block content %}
+    <div class="kanban-container">
+        <div class="kanban-header">
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <h1>Канбан-доска задач</h1>
+
+                {% if user.is_staff %}
+                    <div class="project-selector">
+                        {% if user_projects %}
+                            <form method="get" action="{% url 'tasks:kanban_board' %}" style="display: inline;">
+                                <select name="project" id="projectSelect" class="form-select"
+                                        onchange="this.form.submit()">
+                                    {% for project in user_projects %}
+                                        <option value="{{ project.id }}"
+                                                {% if project.id == current_project.id %}selected{% endif %}>
+                                            {{ project.name }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </form>
+                        {% endif %}
+                        <a href="{% url 'tasks:project_list' %}" class="btn" style="margin-left: 10px;">
+                            Управление проектами
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+
+            {% if current_project %}
+                <button id="createTaskBtn" class="btn">+ Создать задачу</button>
+            {% endif %}
+        </div>
+
+        {% if not user_projects and user.is_staff %}
+            <div class="no-projects" style="text-align: center; padding: 40px;">
+                <h3>У вас нет проектов</h3>
+                <p>Создайте первый проект чтобы начать работу с задачами</p>
+                <a href="{% url 'tasks:create_project' %}" class="btn btn-success">
+                    + Создать первый проект
+                </a>
+            </div>
+        {% elif not current_project %}
+            <div class="no-project-selected" style="text-align: center; padding: 40px;">
+                <h3>Проект не выбран</h3>
+                <p>Выберите проект из списка выше чтобы просматривать задачи</p>
+            </div>
+        {% else %}
+
+            <div class="kanban-board">
+                {% for status_key, status_data in tasks_by_status.items %}
+                    <div class="kanban-column {{ status_key }}">
+                        <div class="column-header">
+                            {{ status_data.name }}
+                            <span class="column-count">{{ status_data.tasks|length }}</span>
+                        </div>
+
+                        <div class="task-list" data-status="{{ status_key }}">
+                            {% for task in status_data.tasks %}
+                                <div class="task-card" draggable="true" data-task-id="{{ task.id }}">
+                                    <div class="task-title">{{ task.title }}</div>
+
+                                    {% if task.description %}
+                                        <div class="task-description">
+                                            {{ task.description|truncatewords:15 }}
+                                        </div>
+                                    {% endif %}
+
+                                    <div class="task-footer">
+                                    <span>
+                                        {% if task.assignee %}
+                                            {{ task.assignee.first_name|default:task.assignee.username }}
+                                        {% else %}
+                                            Не назначен
+                                        {% endif %}
+                                    </span>
+                                        <span class="edit-link">✏️</span>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            </div>
+
+
+        {% endif %}
+
+    <!-- Модальное окно -->
+    <div id="taskModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">Создать задачу</h3>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="taskForm" method="post">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label class="form-label">Название:</label>
+                        <input type="text" name="title" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Описание:</label>
+                        <textarea name="description" class="form-textarea" rows="4"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Исполнитель:</label>
+                        <select name="assignee" class="form-select">
+                            <option value="">Не назначен</option>
+                            {% for user in users %}
+                                <option value="{{ user.id }}">{{ user.get_full_name|default:user.username }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div id="currentImage" style="display: none;">
+                        <label class="form-label">Изображение:</label>
+                        <div id="imagePreview" style="position: relative; display: inline-block;"></div>
+                        <div style="margin-top: 5px;">
+                            <label style="font-size: 11px; display: inline-flex; align-items: center; gap: 5px;">
+                                <input type="checkbox" name="delete_image" id="deleteImageCheckbox" style="margin: 0;">
+                                Удалить изображение
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Изображение:</label>
+                        <input type="file" name="image" class="form-input" accept="image/*">
+                    </div>
+                    <input type="hidden" name="task_id" id="taskId">
+                    <input type="hidden" name="project" id="projectId" value="{{ current_project.id|default:'' }}">
+                </form>
+            </div>
+            <div class="modal-actions">
+                <button type="button" id="saveTaskBtn" class="btn btn-success">Сохранить</button>
+                <button type="button" id="deleteTaskBtn" class="btn btn-danger">Удалить</button>
+                <button type="button" class="btn btn-cancel close-modal">Отмена</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="imageViewModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span class="close" id="closeImageView">&times;</span>
+            <img id="fullSizeImage">
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    <script src="{% static 'tasks/js/kanban.js' %}"></script>
+{% endblock %}
