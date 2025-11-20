@@ -98,3 +98,30 @@
     border-color: #cc9999;
     color: #663333;
 }
+
+@media (max-width: 768px) {
+    .projects-grid {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+
+    .project-card {
+        margin-bottom: 10px;
+    }
+
+    .project-actions {
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    .project-actions .btn {
+        width: 100%;
+    }
+
+    /* Делаем кнопки редактирования/удаления нормального размера */
+    .project-actions .btn:nth-child(2),
+    .project-actions .btn:nth-child(3) {
+        flex: 1;
+        min-width: auto;
+    }
+}

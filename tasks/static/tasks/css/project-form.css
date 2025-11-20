@@ -98,3 +98,31 @@
     color: #666;
     font-size: 10px;
 }
+
+@media (max-width: 768px) {
+    .form-container {
+        width: 95%;
+        margin: 10px auto;
+        padding: 15px;
+    }
+
+    .color-field {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+
+    .color-field .form-input {
+        width: 80px;
+    }
+
+    .form-actions {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .form-actions .btn {
+        width: 100%;
+        text-align: center;
+    }
+}

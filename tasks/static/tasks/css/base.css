@@ -1,3 +1,27 @@
+::-webkit-scrollbar {
+    width: 16px;
+}
+
+::-webkit-scrollbar-track {
+    background: #d4d0c8;
+    border: 1px inset #d4d0c8;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #c0c0c0;
+    border: 1px outset #c0c0c8;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}
+
+/* Для Firefox */
+* {
+    scrollbar-width: auto;
+    scrollbar-color: #c0c0c0 #d4d0c8;
+}
+
 .kanban-container {
     padding: 15px;
     font-family: Tahoma, Arial, sans-serif;
@@ -65,8 +89,6 @@
 }
 
 .btn-danger {
-    background: linear-gradient(to bottom, #ff6b6b, #dc143c);
-    border-color: #b22222;
     color: #000;
 }
 

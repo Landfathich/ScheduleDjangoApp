@@ -266,3 +266,84 @@ input[type="file"]::file-selector-button:active {
     background: #555;
     border: 2px inset #d4d0c8;
 }
+
+@media (max-width: 768px) {
+    .modal-content {
+        width: 95%;
+        margin: 10% auto;
+        max-height: 90vh;
+        overflow-y: auto;
+    }
+
+    .modal-header {
+        padding: 10px 15px;
+        font-size: 13px;
+    }
+
+    .modal-header h3 {
+        font-size: 14px;
+    }
+
+    .modal-body {
+        padding: 15px;
+    }
+
+    .modal-actions {
+        padding: 12px 15px;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .modal-actions .btn {
+        width: 100%;
+        text-align: center;
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    .form-label {
+        font-size: 12px;
+        margin-bottom: 6px;
+    }
+
+    .form-input, .form-textarea, .form-select {
+        padding: 8px 10px;
+        font-size: 14px;
+    }
+
+    .form-textarea {
+        min-height: 100px;
+    }
+
+    input[type="file"] {
+        font-size: 12px;
+    }
+
+    input[type="file"]::file-selector-button {
+        padding: 8px 12px;
+        font-size: 12px;
+    }
+}
+
+/* Адаптивность для модалки просмотра изображений */
+@media (max-width: 768px) {
+    #imageViewModal .modal-content {
+        max-width: 98vw;
+        max-height: 98vh;
+    }
+
+    #fullSizeImage {
+        max-width: 98vw;
+        max-height: 98vh;
+    }
+
+    #closeImageView {
+        top: 10px;
+        right: 15px;
+        width: 35px;
+        height: 35px;
+        font-size: 20px;
+    }
+}
