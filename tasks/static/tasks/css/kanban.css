@@ -127,7 +127,6 @@
 @media (max-width: 768px) {
     .kanban-container {
         padding: 10px;
-        min-height: 100vh;
         overflow-x: auto;
     }
 
