@@ -124,32 +124,6 @@
     outline: 1px solid #3a7bd5;
 }
 
-/* Сообщения в канбане */
-.no-projects, .no-project-selected {
-    background: #ffffcc;
-    border: 2px outset #cccc99;
-    padding: 30px;
-    margin: 20px 0;
-    text-align: center;
-    font-family: Tahoma, Arial, sans-serif;
-}
-
-.no-projects h3, .no-project-selected h3 {
-    color: #333;
-    font-size: 16px;
-    margin-bottom: 10px;
-}
-
-.no-projects p, .no-project-selected p {
-    color: #666;
-    font-size: 12px;
-    margin-bottom: 15px;
-}
-
-.no-projects .btn {
-    margin-top: 10px;
-}
-
 @media (max-width: 768px) {
     .kanban-container {
         padding: 10px;

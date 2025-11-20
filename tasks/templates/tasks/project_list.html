@@ -54,10 +54,12 @@
                 {% endfor %}
             </div>
         {% else %}
-            <div class="no-projects">
-                <h3>Проектов пока нет</h3>
-                <p>Создайте первый проект, чтобы организовать задачи</p>
-                <a href="{% url 'tasks:create_project' %}" class="btn btn-success">+ Создать проект</a>
+            <div class="no-projects" style="text-align: center; padding: 40px;">
+                <h3>У вас нет проектов</h3>
+                <p>Создайте первый проект чтобы начать работу с задачами</p>
+                <a href="{% url 'tasks:create_project' %}" class="btn btn-success">
+                    + Создать первый проект
+                </a>
             </div>
         {% endif %}
     </div>

@@ -14,7 +14,6 @@
         <div class="kanban-header">
             <div style="display: flex; align-items: center; gap: 15px;">
                 <h1>Канбан-доска задач</h1>
-
                 {% if user.is_staff %}
                     <div class="project-selector">
                         {% if user_projects %}
@@ -29,10 +28,10 @@
                                     {% endfor %}
                                 </select>
                             </form>
+                            <a href="{% url 'tasks:project_list' %}" class="btn" style="margin-left: 10px;">
+                                Управление проектами
+                            </a>
                         {% endif %}
-                        <a href="{% url 'tasks:project_list' %}" class="btn" style="margin-left: 10px;">
-                            Управление проектами
-                        </a>
                     </div>
                 {% endif %}
             </div>
@@ -56,7 +55,6 @@
                 <p>Выберите проект из списка выше чтобы просматривать задачи</p>
             </div>
         {% else %}
-
             <div class="kanban-board">
                 {% for status_key, status_data in tasks_by_status.items %}
                     <div class="kanban-column {{ status_key }}">
@@ -93,8 +91,6 @@
                 {% endfor %}
             </div>
             </div>
-
-
         {% endif %}
 
     <!-- Модальное окно -->
