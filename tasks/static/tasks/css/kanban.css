@@ -165,12 +165,14 @@
 
     .kanban-column {
         min-height: auto;
+        max-height: 60vh; /* Ограничиваем максимальную высоту колонки */
     }
 
     .task-list {
-        min-height: 200px;
-        max-height: 400px;
-        overflow-y: auto;
+        min-height: 150px;
+        max-height: 50vh; /* Ограничиваем высоту списка задач */
+        overflow-y: auto; /* Скролл внутри списка задач */
+        -webkit-overflow-scrolling: touch; /* Плавный скролл на iOS */
     }
 
     .task-card {
@@ -189,6 +191,11 @@
     .column-header {
         padding: 8px 10px;
         font-size: 13px;
+        position: sticky;
+        top: 0;
+        background: white;
+        z-index: 1;
+        border-bottom: 1px solid #e0e0e0;
     }
 
     /* Хедер на мобильных */
@@ -214,8 +221,132 @@
         min-width: 100%;
     }
 
+    .project-selector form {
+        width: 100%;
+    }
+
     .project-selector .btn {
         width: 100%;
         text-align: center;
+    }
+}
+
+/* Стили для touch-интерфейса в стиле Windows XP */
+@media (max-width: 768px) {
+    .task-card {
+        cursor: pointer;
+        user-select: none;
+        -webkit-user-select: none;
+        transition: transform 0.2s;
+    }
+
+    .task-card:active {
+        transform: scale(0.98);
+    }
+
+    /* Модальное окно перемещения в стиле Windows XP */
+    .move-modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.6);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+        padding: 20px;
+    }
+
+    .move-modal-content {
+        background: linear-gradient(to bottom, #ece9d8 0%, #e0dfd7 100%);
+        padding: 2px;
+        border: 2px solid #003c74;
+        border-radius: 0;
+        width: 100%;
+        max-width: 280px;
+        box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        font-family: "Tahoma", sans-serif;
+    }
+
+    .move-modal-content > div {
+        background: white;
+        padding: 16px;
+        border: 1px solid #7f9db9;
+    }
+
+    .move-modal-content h4 {
+        margin: 0 0 12px 0;
+        text-align: center;
+        color: #003c74;
+        font-size: 14px;
+        font-weight: bold;
+        background: linear-gradient(to bottom, #0a246a 0%, #a6caf0 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        text-shadow: 1px 1px 1px rgba(255, 255, 255, 0.5);
+    }
+
+    .status-option {
+        display: block;
+        width: 100%;
+        padding: 6px 12px;
+        margin: 4px 0;
+        border: 1px solid #7f9db9;
+        background: linear-gradient(to bottom, #f0f0f0 0%, #e5e5e5 100%);
+        border-radius: 3px;
+        cursor: pointer;
+        font-size: 12px;
+        font-family: "Tahoma", sans-serif;
+        color: #000;
+        text-align: center;
+        box-shadow: inset 1px 1px 0px white, 1px 1px 1px rgba(0, 0, 0, 0.1);
+    }
+
+    .status-option:active {
+        background: linear-gradient(to bottom, #d4d4d4 0%, #c9c9c9 100%);
+        box-shadow: inset 1px 1px 2px rgba(0, 0, 0, 0.2);
+        transform: translateY(1px);
+    }
+
+    /* Стиль для текущего статуса */
+    .status-option.current-status {
+        background: linear-gradient(to bottom, #d6e8ff 0%, #b8d4f0 100%);
+        border-color: #3a6ea5;
+        color: #003c74;
+        font-weight: bold;
+    }
+
+    .status-option.current-status:active {
+        background: linear-gradient(to bottom, #d6e8ff 0%, #b8d4f0 100%);
+        transform: none;
+        box-shadow: inset 1px 1px 0px white, 1px 1px 1px rgba(0, 0, 0, 0.1);
+    }
+
+    .cancel-move {
+        display: block;
+        width: 100%;
+        padding: 6px 12px;
+        margin-top: 12px;
+        background: linear-gradient(to bottom, #f0f0f0 0%, #e5e5e5 100%);
+        border: 1px solid #7f9db9;
+        color: #000;
+        border-radius: 3px;
+        cursor: pointer;
+        font-size: 12px;
+        font-family: "Tahoma", sans-serif;
+        box-shadow: inset 1px 1px 0px white, 1px 1px 1px rgba(0, 0, 0, 0.1);
+    }
+
+    .cancel-move:active {
+        background: linear-gradient(to bottom, #d4d4d4 0%, #c9c9c9 100%);
+        box-shadow: inset 1px 1px 2px rgba(0, 0, 0, 0.2);
+        transform: translateY(1px);
+    }
+
+    .mobile-hint {
+        display: block !important;
+        font-family: "Tahoma", sans-serif;
     }
 }

@@ -11,6 +11,19 @@ class SimpleKanban {
         this.bindModalEvents();
         this.bindImagePreview();
         this.bindImageViewer();
+
+        // Показываем подсказку для мобильных
+        if (this.isTouchDevice()) {
+            const hint = document.createElement('div');
+            hint.className = 'mobile-hint';
+            hint.innerHTML = '💡 Нажмите и удерживайте задачу для перемещения';
+            hint.style.cssText = 'text-align: center; padding: 10px; font-size: 14px; color: #666; background: #f8f9fa; border-radius: 4px; margin: 10px 0;';
+
+            const kanbanBoard = document.querySelector('.kanban-board');
+            if (kanbanBoard) {
+                kanbanBoard.parentNode.insertBefore(hint, kanbanBoard);
+            }
+        }
     }
 
     bindModalEvents() {
@@ -238,17 +251,47 @@ class SimpleKanban {
     }
 
     bindEvents() {
-        // Обработчик клика по карточке задачи
-        document.addEventListener('click', (e) => {
-            const taskCard = e.target.closest('.task-card');
+        // Определяем тип устройства
+        if (this.isTouchDevice()) {
+            this.bindTouchEvents();
+        } else {
+            this.bindDragEvents();
+        }
 
+        // Обработчик клика по карточке задачи (общий для всех устройств)
+        document.addEventListener('click', (e) => {
+            // Исключаем клики по кнопкам редактирования
+            if (e.target.classList.contains('edit-link') || e.target.closest('.edit-link')) {
+                return;
+            }
+
+            const taskCard = e.target.closest('.task-card');
             if (taskCard) {
                 const taskId = taskCard.dataset.taskId;
                 this.openModal(taskId);
             }
         });
 
-        // Drag & drop
+        // Обработчики для кнопок редактирования (карандаши)
+        document.querySelectorAll('.edit-link').forEach(editBtn => {
+            editBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const taskCard = e.target.closest('.task-card');
+                if (taskCard) {
+                    const taskId = taskCard.dataset.taskId;
+                    this.openModal(taskId);
+                }
+            });
+        });
+    }
+
+// Добавьте этот метод для определения touch-устройств
+    isTouchDevice() {
+        return 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+    }
+
+    bindDragEvents() {
+        // Ваш текущий drag & drop код
         document.querySelectorAll('.task-card').forEach(card => {
             this.makeDraggable(card);
         });
@@ -256,6 +299,118 @@ class SimpleKanban {
         document.querySelectorAll('.task-list').forEach(column => {
             this.makeDroppable(column);
         });
+    }
+
+    bindTouchEvents() {
+        // Долгое нажатие для выбора задачи
+        document.querySelectorAll('.task-card').forEach(card => {
+            let pressTimer;
+
+            card.addEventListener('touchstart', (e) => {
+                pressTimer = setTimeout(() => {
+                    this.showMoveOptions(card);
+                }, 500); // 0.5 секунды
+            });
+
+            card.addEventListener('touchend', (e) => {
+                clearTimeout(pressTimer);
+            });
+
+            card.addEventListener('touchmove', (e) => {
+                clearTimeout(pressTimer);
+            });
+        });
+    }
+
+    showMoveOptions(taskCard) {
+        const taskId = taskCard.dataset.taskId;
+        const currentStatus = taskCard.closest('.task-list').dataset.status;
+
+        // Получаем все доступные статусы из колонок на доске
+        const statusColumns = document.querySelectorAll('.kanban-column');
+        let statusOptions = '';
+
+        statusColumns.forEach(column => {
+            const statusKey = column.querySelector('.task-list').dataset.status;
+            const columnHeader = column.querySelector('.column-header');
+            // Берем весь текст кроме счетчика
+            const statusName = columnHeader.childNodes[0].textContent.trim();
+            const isCurrent = statusKey === currentStatus;
+
+            statusOptions += `
+            <button class="status-option ${isCurrent ? 'current-status' : ''}" 
+                    data-status="${statusKey}" 
+                    ${isCurrent ? 'disabled' : ''}>
+                ${statusName}
+                ${isCurrent ? ' (текущий)' : ''}
+            </button>
+        `;
+        });
+
+        // Создаем модальное окно для выбора статуса
+        const modal = document.createElement('div');
+        modal.className = 'move-modal';
+        modal.innerHTML = `
+        <div class="move-modal-content">
+            <h4>Переместить задачу</h4>
+            ${statusOptions}
+            <button class="cancel-move">Отмена</button>
+        </div>
+    `;
+
+        document.body.appendChild(modal);
+
+        // Обработчики для кнопок статусов
+        modal.querySelectorAll('.status-option').forEach(btn => {
+            if (!btn.disabled) {
+                btn.addEventListener('click', () => {
+                    const newStatus = btn.dataset.status;
+                    this.moveTaskToStatus(taskId, newStatus, taskCard);
+                    modal.remove();
+                });
+            }
+        });
+
+        modal.querySelector('.cancel-move').addEventListener('click', () => {
+            modal.remove();
+        });
+
+        // Закрытие по клику вне модального окна
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.remove();
+            }
+        });
+    }
+
+    async moveTaskToStatus(taskId, newStatus, taskCard) {
+        try {
+            const formData = new FormData();
+            formData.append('task_id', taskId);
+            formData.append('new_status', newStatus);
+            formData.append('csrfmiddlewaretoken', document.querySelector('[name=csrfmiddlewaretoken]').value);
+
+            const response = await fetch('/tasks/update-status/', {
+                method: 'POST',
+                body: formData
+            });
+
+            const data = await response.json();
+            if (data.success) {
+                // Перемещаем карточку визуально
+                const targetColumn = document.querySelector(`[data-status="${newStatus}"]`);
+                if (targetColumn) {
+                    targetColumn.appendChild(taskCard);
+                    this.updateColumnCounters();
+                }
+            } else {
+                console.error('Error moving task:', data.error);
+                alert('Ошибка при перемещении задачи');
+            }
+        } catch (error) {
+            console.error('Network error:', error);
+            alert('Ошибка при перемещении задачи');
+        }
     }
 
     makeDraggable(element) {
