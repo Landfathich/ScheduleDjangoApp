@@ -360,27 +360,56 @@ class SimpleKanban {
 
         document.body.appendChild(modal);
 
-        // Обработчики для кнопок статусов
-        modal.querySelectorAll('.status-option').forEach(btn => {
-            if (!btn.disabled) {
-                btn.addEventListener('click', () => {
-                    const newStatus = btn.dataset.status;
-                    this.moveTaskToStatus(taskId, newStatus, taskCard);
-                    modal.remove();
-                });
-            }
-        });
+        // Добавляем небольшую задержку перед добавлением обработчиков
+        setTimeout(() => {
+            // Обработчики для кнопок статусов
+            modal.querySelectorAll('.status-option').forEach(btn => {
+                if (!btn.disabled) {
+                    btn.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        const newStatus = btn.dataset.status;
+                        this.moveTaskToStatus(taskId, newStatus, taskCard);
+                        modal.remove();
+                    });
 
-        modal.querySelector('.cancel-move').addEventListener('click', () => {
-            modal.remove();
-        });
+                    // Также добавляем обработчик touchend для мобильных
+                    btn.addEventListener('touchend', (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        const newStatus = btn.dataset.status;
+                        this.moveTaskToStatus(taskId, newStatus, taskCard);
+                        modal.remove();
+                    });
+                }
+            });
 
-        // Закрытие по клику вне модального окна
-        modal.addEventListener('click', (e) => {
-            if (e.target === modal) {
+            modal.querySelector('.cancel-move').addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
                 modal.remove();
-            }
-        });
+            });
+
+            modal.querySelector('.cancel-move').addEventListener('touchend', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                modal.remove();
+            });
+
+            // Закрытие по клику вне модального окна
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.remove();
+                }
+            });
+
+            modal.addEventListener('touchend', (e) => {
+                if (e.target === modal) {
+                    e.preventDefault();
+                    modal.remove();
+                }
+            });
+        }, 50); // Небольшая задержка в 50мс
     }
 
     async moveTaskToStatus(taskId, newStatus, taskCard) {
