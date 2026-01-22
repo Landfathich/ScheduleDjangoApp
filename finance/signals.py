@@ -48,6 +48,27 @@ def balance_operation_created(sender, instance: BalanceOperation, created, **kwa
 
     logger.info(f"Список исключенных преподавателей: {get_excluded_teacher_ids()}")
 
+    # 🔴 ИЗМЕНЕНИЕ №1: Сначала проверяем доход школы
+    # Добавляем проверку на исключение преподавателей для дохода школы
+    if not any(student.teacher and student.teacher.user.id in get_excluded_teacher_ids() for student in students):
+        # 🔴 ИЗМЕНЕНИЕ №2: ДОХОД ШКОЛЫ ПЕРВЫМ!
+        income_amount = Decimal(instance.amount * PRICE_PER_LESSON)
+        logger.info(f"Создание финансового события для дохода школы: {income_amount} (операция {instance.pk})")
+
+        FinanceEvent.create_idempotent(
+            external_id=f'balanceop_{instance.pk}_income',
+            event_type=FinanceEvent.EVENT_INCOME,
+            amount=income_amount,
+            metadata={
+                'client_id': instance.client_id,
+                'student_id': instance.student_id,
+                'balance_operation_id': instance.pk
+            }
+        )
+    else:
+        logger.info(f"Доход школы пропущен, так как хотя бы один студент имеет преподавателя из списка исключений.")
+
+    # 🔴 ИЗМЕНЕНИЕ №3: РЕЗЕРВЫ ПОСЛЕ ДОХОДА
     # Для каждого студента проверяем, есть ли у него преподаватель и входит ли он в список исключений
     for student in students:
         logger.info(f"Проверка преподавателя для студента: {student.name} (ID: {student.pk})")
@@ -61,7 +82,7 @@ def balance_operation_created(sender, instance: BalanceOperation, created, **kwa
                 logger.info(f"Преподаватель {teacher.name} входит в список исключений. Пропускаем.")
                 continue  # Пропускаем создание события для этого преподавателя
 
-            # 1️⃣ Резерв на преподавателя
+            # Резерв на преподавателя (теперь после дохода)
             reserve_amount = Decimal(instance.amount * TEACHER_RATE_PER_LESSON)
             logger.info(
                 f"Создание финансового события для резерва преподавателя: {reserve_amount} (операция {instance.pk})")
@@ -79,25 +100,6 @@ def balance_operation_created(sender, instance: BalanceOperation, created, **kwa
             )
         else:
             logger.info(f"У студента {student.name} нет преподавателя. Пропускаем.")
-
-    # Добавляем проверку на исключение преподавателей для дохода школы
-    if not any(student.teacher and student.teacher.user.id in get_excluded_teacher_ids() for student in students):
-        # 1️⃣ Доход школы
-        income_amount = Decimal(instance.amount * PRICE_PER_LESSON)
-        logger.info(f"Создание финансового события для дохода школы: {income_amount} (операция {instance.pk})")
-
-        FinanceEvent.create_idempotent(
-            external_id=f'balanceop_{instance.pk}_income',
-            event_type=FinanceEvent.EVENT_INCOME,
-            amount=income_amount,
-            metadata={
-                'client_id': instance.client_id,
-                'student_id': instance.student_id,
-                'balance_operation_id': instance.pk
-            }
-        )
-    else:
-        logger.info(f"Доход школы пропущен, так как хотя бы один студент имеет преподавателя из списка исключений.")
 
 
 from django.db.models.signals import post_save
