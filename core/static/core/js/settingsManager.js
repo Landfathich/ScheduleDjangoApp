@@ -1,33 +1,94 @@
 import * as utils from "./utils.js";
 import {showNotification} from "./notifications.js";
 import {calendarManager, scheduleState} from "./app.js";
+import {createLogger} from "./logger.js";
+
+const logger = createLogger('[SettingsManager]');
+logger.disable()
 
 export class SettingsManager {
     constructor() {
-        this.isOpenWindowsMode = false; // Флаг для отслеживания состояния выбора открытых окон
-        this.openWindowStates = {}; // Объект для хранения состояния чекбоксов
+        // Инициализация состояний
+        this.isOpenWindowsMode = false;
+        this.openWindowStates = {};
+        this.startHour = 6;
+        this.endHour = 18;
 
-        // Добавляем свойства для рабочих часов
-        this.startHour = 6; // значение по умолчанию
-        this.endHour = 18;  // значение по умолчанию
+        // Инициализация DOM элементов
+        this.initializeDOMElements();
 
+        // Инициализация localStorage
+        this.initializeLocalStorage();
+
+        // Настройка событий и опций
+        this.setupEventListeners();
+        this.initializeTimeOptions();
+    }
+
+    initializeLocalStorage() {
+        logger.log('🔄 Инициализация localStorage');
+
+        // Тема
+        const savedTheme = localStorage.getItem('schedule-theme');
+        if (savedTheme) {
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            this.themeSwitch.checked = savedTheme === 'dark';
+        }
+
+        // Рабочие часы
+        const savedWorkingHours = localStorage.getItem('workingHours');
+        if (savedWorkingHours) {
+            try {
+                const {start, end} = JSON.parse(savedWorkingHours);
+                if (this.isValidWorkingHours(start, end)) {
+                    this.startHour = start;
+                    this.endHour = end;
+                }
+            } catch (e) {
+                logger.error('Ошибка парсинга рабочих часов из localStorage:', e);
+            }
+        }
+    }
+
+    initializeDOMElements() {
+        logger.log('🔄 Инициализация DOM элементов');
 
         this.modal = document.getElementById('settings-modal');
         this.startHourSelect = document.getElementById('start-hour');
         this.endHourSelect = document.getElementById('end-hour');
-        this.closeButton = this.modal.querySelector('.close');
-        this.cancelButton = this.modal.querySelector('.cancel-button');
-        this.submitButton = this.modal.querySelector('.submit-button');
+        this.closeButton = this.modal?.querySelector('.close');
+        this.cancelButton = this.modal?.querySelector('.cancel-button');
+        this.submitButton = this.modal?.querySelector('.submit-button');
         this.themeSwitch = document.getElementById('theme-switch');
         this.openWindowsButton = document.getElementById('set-open-windows');
         this.openWindowsControls = document.getElementById('open-windows-controls');
 
-        // Загружаем сохраненные настройки
-        this.loadSettingsFromServer();
+        // Валидация критически важных элементов
+        if (!this.modal || !this.startHourSelect || !this.endHourSelect) {
+            logger.error('Не найдены необходимые DOM элементы для SettingsManager');
+            throw new Error('Required DOM elements not found');
+        }
+    }
 
-        // Настройка событий и инициализация
-        this.setupEventListeners();
-        this.initializeTimeOptions();
+    applyLocalSettings() {
+        logger.log('🔄 Применяем настройки из localStorage');
+
+        // Рабочие часы
+        const savedWorkingHours = localStorage.getItem('workingHours');
+        if (savedWorkingHours) {
+            try {
+                const {start, end} = JSON.parse(savedWorkingHours);
+                if (this.isValidWorkingHours(start, end)) {
+                    this.startHour = start;
+                    this.endHour = end;
+                    logger.log(`🕐 Применили рабочие часы из localStorage: ${start}-${end}`);
+                    return {start, end}; // Возвращаем для применения в календаре
+                }
+            } catch (e) {
+                logger.error('Ошибка парсинга рабочих часов из localStorage:', e);
+            }
+        }
+        return null;
     }
 
     getWorkingHours() {
@@ -38,25 +99,48 @@ export class SettingsManager {
     }
 
     async loadSettingsFromServer() {
+        logger.log('🔄 loadSettingsFromServer() - начал выполнение');
         try {
+            logger.log('⏳ Искусственная задержка 2 сек...');
+            // Задержка для имитации работы сервера
+            // new Promise(resolve => setTimeout(resolve, 2000));
+            logger.log('✅ Задержка завершена, делаем запрос');
+
             const response = await fetch('/get-user-settings/');
             const data = await response.json();
+            logger.log('📥 Данные настроек получены:', data);
 
+            // Синхронизация темы
             if (data.theme) {
-                document.documentElement.setAttribute('data-theme', data.theme);
-                this.themeSwitch.checked = data.theme === 'dark';
+                const currentTheme = document.documentElement.getAttribute('data-theme');
+                if (currentTheme !== data.theme) {
+                    // Серверная тема отличается - обновляем
+                    logger.log(`🎨 Синхронизируем тему: ${currentTheme} -> ${data.theme}`);
+                    document.documentElement.setAttribute('data-theme', data.theme);
+                    this.themeSwitch.checked = data.theme === 'dark';
+                    localStorage.setItem('schedule-theme', data.theme);
+                }
             }
+
+            // Синхронизация рабочих часов
             if (data.workingHours) {
                 const {start, end} = data.workingHours;
                 if (this.isValidWorkingHours(start, end)) {
-                    // Сохраняем настройки, но НЕ вызываем calendarManager
-                    this.startHour = start;
-                    this.endHour = end;
-                    console.log(`SettingsManager: loaded working hours ${start}-${end}`);
+                    logger.log(`🕐 Рабочие часы с сервера: ${start}-${end}`);
+                    const savedHours = localStorage.getItem('workingHours');
+                    const savedData = savedHours ? JSON.parse(savedHours) : null;
+
+                    if (!savedData || savedData.start !== start || savedData.end !== end) {
+                        // Обновляем localStorage если данные отличаются
+                        this.startHour = start;
+                        this.endHour = end;
+                        localStorage.setItem('workingHours', JSON.stringify({start, end}));
+                    }
                 }
             }
+            logger.log('✅ Загрузка настроек завершена');
         } catch (error) {
-            console.error('Ошибка при загрузке настроек:', error);
+            logger.error('❌ Ошибка загрузки настроек:', error);
         }
     }
 
@@ -75,9 +159,9 @@ export class SettingsManager {
                 body: new URLSearchParams(settings).toString(),
             });
             const data = await response.json();
-            console.log('Настройки сохранены:', data);
+            logger.log('Настройки сохранены:', data);
         } catch (error) {
-            console.error('Ошибка при сохранении настроек:', error);
+            logger.error('Ошибка при сохранении настроек:', error);
             throw error;
         }
     }
@@ -94,7 +178,7 @@ export class SettingsManager {
 
     initializeTimeOptions() {
         if (!this.startHourSelect || !this.endHourSelect) {
-            console.error('Элементы startHourSelect или endHourSelect не найдены');
+            logger.error('Элементы startHourSelect или endHourSelect не найдены');
             return;
         }
 
@@ -112,7 +196,7 @@ export class SettingsManager {
 
     open() {
         if (!this.startHourSelect || !this.endHourSelect || !this.modal) {
-            console.error('Не найдены необходимые элементы DOM');
+            logger.error('Не найдены необходимые элементы DOM');
             return;
         }
 
@@ -130,7 +214,7 @@ export class SettingsManager {
         if (modalContent) {
             modalContent.scrollTop = 0;
         } else {
-            console.warn('Элемент .modal-content не найден');
+            logger.warn('Элемент .modal-content не найден');
         }
     }
 
@@ -198,6 +282,8 @@ export class SettingsManager {
         this.themeSwitch.addEventListener('change', () => {
             const theme = this.themeSwitch.checked ? 'dark' : 'light';
             document.documentElement.setAttribute('data-theme', theme);
+            // Сохраняем в localStorage
+            localStorage.setItem('schedule-theme', theme);
             this.saveSettingsToServer({theme});
         });
 
@@ -229,18 +315,21 @@ export class SettingsManager {
             return;
         }
 
-        // Сохраняем настройки на сервере
+        // Сохраняем в localStorage
+        localStorage.setItem('workingHours', JSON.stringify({start: startHour, end: endHour}));
+
+        // Сохраняем на сервере
         this.saveSettingsToServer({
             working_hours_start: startHour,
             working_hours_end: endHour,
         })
             .then(() => {
-                console.log('Рабочие часы успешно сохранены');
-                calendarManager.updateWorkingHours(startHour, endHour); // Обновляем календарь
+                logger.log('Рабочие часы успешно сохранены');
+                calendarManager.updateWorkingHours(startHour, endHour);
                 this.close();
             })
             .catch((error) => {
-                console.error('Ошибка при сохранении рабочих часов:', error);
+                logger.error('Ошибка при сохранении рабочих часов:', error);
                 alert('Ошибка при сохранении рабочих часов');
             });
     }
@@ -265,7 +354,7 @@ export class SettingsManager {
         const isChanged = JSON.stringify(newOpenSlots) !== JSON.stringify(currentOpenSlots);
 
         if (!isChanged) {
-            console.log('Открытые окна не изменились');
+            logger.log('Открытые окна не изменились');
             showNotification("Открытые окна не изменились", "info");
             this.turnOffOpenWindowsMode();
             return;
@@ -294,7 +383,7 @@ export class SettingsManager {
             return
         }
 
-        console.log("Режим настройки окон переключен");
+        logger.log("Режим настройки окон переключен");
         this.isOpenWindowsMode = !this.isOpenWindowsMode;
 
         if (this.openWindowsControls) {
@@ -396,7 +485,7 @@ export class SettingsManager {
         const selectedCountPanel = document.getElementById('selected-count');
 
         if (!countElement || !selectedCountPanel) {
-            console.error('Элементы count или selected-count не найдены');
+            logger.error('Элементы count или selected-count не найдены');
             return;
         }
 
@@ -407,6 +496,6 @@ export class SettingsManager {
         countElement.textContent = selectedCount.toString();
         selectedCountPanel.style.display = selectedCount > 0 ? 'block' : 'none';
 
-        console.log(`Обновлен счетчик: ${selectedCount} открытых окон`);
+        logger.log(`Обновлен счетчик: ${selectedCount} открытых окон`);
     }
 }

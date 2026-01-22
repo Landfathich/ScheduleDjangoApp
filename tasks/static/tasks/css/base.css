@@ -1,0 +1,199 @@
+::-webkit-scrollbar {
+    width: 16px;
+}
+
+::-webkit-scrollbar-track {
+    background: #d4d0c8;
+    border: 1px inset #d4d0c8;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #c0c0c0;
+    border: 1px outset #c0c0c8;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}
+
+/* Для Firefox */
+* {
+    scrollbar-width: auto;
+    scrollbar-color: #c0c0c0 #d4d0c8;
+}
+
+.kanban-container {
+    padding: 15px;
+    font-family: Tahoma, Arial, sans-serif;
+    background: #d4d0c8;
+    height: 100%;
+    border: 1px solid #808080;
+}
+
+.kanban-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding: 8px 12px;
+    background: linear-gradient(to bottom, #3a7bd5, #003366);
+    border: 2px outset #d4d0c8;
+    color: white;
+}
+
+.kanban-header h1 {
+    margin: 0;
+    color: white;
+    font-size: 18px;
+    font-weight: bold;
+    text-shadow: 1px 1px 1px #000;
+}
+
+.kanban-header > div {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+/* Общие кнопки */
+.btn {
+    background: linear-gradient(to bottom, #f0f0f0, #d4d0c8);
+    color: #000;
+    padding: 4px 12px;
+    text-decoration: none;
+    border: 2px outset #d4d0c8;
+    font-size: 11px;
+    font-weight: bold;
+    cursor: pointer;
+    font-family: Tahoma, Arial, sans-serif;
+}
+
+.btn:hover {
+    background: linear-gradient(to bottom, #e8e8e8, #c8c4bc);
+}
+
+.btn:active {
+    border: 2px inset #d4d0c8;
+    background: linear-gradient(to bottom, #d4d0c8, #f0f0f0);
+}
+
+.btn-success {
+    background: linear-gradient(to bottom, #90ee90, #32cd32);
+    border-color: #228b22;
+    color: #000;
+}
+
+.btn-success:hover {
+    background: linear-gradient(to bottom, #80de80, #22bd22);
+}
+
+.btn-danger {
+    color: #000;
+}
+
+.btn-danger:hover {
+    background: linear-gradient(to bottom, #ef5b5b, #cc042c);
+}
+
+.btn-cancel {
+    background: linear-gradient(to bottom, #f0f0f0, #d4d0c8);
+    border-color: #666;
+    color: #000;
+}
+
+.btn:active {
+    transform: translate(1px, 1px);
+}
+
+.btn:disabled {
+    background: #d4d0c8;
+    color: #888;
+    cursor: not-allowed;
+    border-color: #999;
+}
+
+/* Сообщения в канбане в стиле Windows XP */
+.no-projects, .no-project-selected {
+    background: linear-gradient(to bottom, #ece9d8 0%, #e0dfd7 100%);
+    border: 2px outset #d4d0c8;
+    padding: 30px 20px;
+    margin: 20px auto;
+    text-align: center;
+    font-family: Tahoma, Arial, sans-serif;
+    max-width: 500px;
+    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.no-projects h3, .no-project-selected h3 {
+    color: #003366;
+    font-size: 16px;
+    margin-bottom: 12px;
+    font-weight: bold;
+    text-shadow: 1px 1px 1px rgba(255, 255, 255, 0.5);
+}
+
+.no-projects p, .no-project-selected p {
+    color: #333;
+    font-size: 12px;
+    margin-bottom: 20px;
+    line-height: 1.4;
+}
+
+.no-projects .btn, .no-project-selected .btn {
+    margin-top: 10px;
+    background: linear-gradient(to bottom, #f0f0f0 0%, #e5e5e5 100%);
+    border: 2px outset #d4d0c8;
+    padding: 8px 16px;
+    font-size: 11px;
+    font-family: Tahoma, Arial, sans-serif;
+    color: #000;
+    text-decoration: none;
+    display: inline-block;
+    cursor: pointer;
+    box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1);
+}
+
+.no-projects .btn:hover, .no-project-selected .btn:hover {
+    background: linear-gradient(to bottom, #e8e8e8 0%, #ddd 100%);
+}
+
+.no-projects .btn:active, .no-project-selected .btn:active {
+    border: 2px inset #d4d0c8;
+    background: linear-gradient(to bottom, #ddd 0%, #d0d0d0 100%);
+}
+
+.no-projects .btn-success {
+    background: linear-gradient(to bottom, #90ee90 0%, #7cd87c 100%);
+    border-color: #32cd32;
+    color: #006400;
+    font-weight: bold;
+}
+
+.no-projects .btn-success:hover {
+    background: linear-gradient(to bottom, #80e080 0%, #6cc86c 100%);
+}
+
+.no-projects .btn-success:active {
+    background: linear-gradient(to bottom, #70d070 0%, #5cb85c 100%);
+    border: 2px inset #32cd32;
+}
+
+/* Иконка для визуального акцента */
+.no-projects::before, .no-project-selected::before {
+    content: "💡";
+    font-size: 24px;
+    display: block;
+    margin-bottom: 10px;
+}
+
+/* Дополнительные стили для лучшей читаемости */
+.no-projects {
+    background: linear-gradient(to bottom, #fffacd 0%, #fff8c4 100%);
+    border-color: #ffd700;
+}
+
+.no-project-selected {
+    background: linear-gradient(to bottom, #e6f3ff 0%, #d9edf7 100%);
+    border-color: #3a7bd5;
+}

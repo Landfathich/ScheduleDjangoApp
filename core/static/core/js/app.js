@@ -7,6 +7,10 @@ import {showNotification} from "./notifications.js";
 import {LessonModal} from "./modals/lessonModal.js";
 import {Repository} from "./repository.js";
 import {BalanceAlertModal} from "./modals/balanceAlertModal.js";
+import {createLogger} from './logger.js';
+
+const logger = createLogger('[App]');
+logger.disable()
 
 export const scheduleState = {
     isAnother: false,
@@ -20,24 +24,34 @@ export const calendarManager = new CalendarManager();
 
 // Главная функция инициализации
 export async function initApp() {
-    console.log('Starting app initialization...');
+    logger.log('Starting app initialization...');
+    logger.log(`UserId: ${currentUserId}; TeacherId: ${currentTeacherId};`)
 
-    // Инициализируем все последовательно
-    await settingsManager.loadSettingsFromServer();
-    await calendarManager.initialize();
+    // Применяем настройки из localStorage через SettingsManager
+    const localWorkingHours = settingsManager.applyLocalSettings();
+    if (localWorkingHours) {
+        calendarManager.updateWorkingHours(localWorkingHours.start, localWorkingHours.end);
+    }
 
-    // Настраиваем функционал
+    await Promise.all([
+        settingsManager.loadSettingsFromServer().then(() => {
+            const workingHours = settingsManager.getWorkingHours();
+            calendarManager.updateWorkingHours(workingHours.start, workingHours.end);
+        }),
+        calendarManager.initialize()
+    ]);
+
     setupAdminTools();
     setupContextMenu();
     setupLessonModal();
 
-    console.log('App initialized successfully');
+    logger.log('App initialized successfully');
 }
 
 function setupAdminTools() {
     if (!userData.isAdmin) return;
 
-    console.log("Setting up admin tools");
+    logger.log("Setting up admin tools");
 
     document.getElementById('teachers-button').addEventListener('click', () => {
         new TeachersModal().open();
