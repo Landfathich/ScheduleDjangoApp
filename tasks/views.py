@@ -277,3 +277,30 @@ def move_column(request):
 
     except Exception as e:
         return JsonResponse({'success': False, 'error': str(e)})
+
+
+@staff_member_required
+@require_http_methods(["POST"])
+def delete_column(request):
+    """Удаление колонки"""
+    try:
+        import json
+        data = json.loads(request.body)
+
+        column_id = data.get('column_id')
+        column = get_object_or_404(ProjectColumn, id=column_id, project__creator=request.user)
+
+        # Проверяем, есть ли задачи в колонке
+        if column.tasks.exists():
+            return JsonResponse({
+                'success': False,
+                'error': 'В колонке есть задачи. Сначала переместите их.'
+            })
+
+        # Удаляем колонку
+        column.delete()
+
+        return JsonResponse({'success': True})
+
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)})
