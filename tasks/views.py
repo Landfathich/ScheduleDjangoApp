@@ -198,3 +198,25 @@ def delete_project(request, project_id):
     project.delete()
     messages.success(request, 'Проект удален')
     return redirect('tasks:project_list')
+
+
+@staff_member_required
+@require_http_methods(["POST"])
+def update_column(request):
+    """Обновление колонки (название, цвет)"""
+    try:
+        import json
+        data = json.loads(request.body)
+
+        column_id = data.get('column_id')
+        name = data.get('name')
+        color = data.get('color')
+
+        column = get_object_or_404(ProjectColumn, id=column_id, project__creator=request.user)
+        column.name = name
+        column.color = color
+        column.save()
+
+        return JsonResponse({'success': True})
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)})

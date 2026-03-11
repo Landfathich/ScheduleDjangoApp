@@ -2,6 +2,7 @@ class SimpleKanban {
     constructor() {
         this.draggedTask = null;
         this.modal = document.getElementById('taskModal');
+        this.columnModal = document.getElementById('columnModal');
         this.init();
     }
 
@@ -11,6 +12,7 @@ class SimpleKanban {
         this.bindModalEvents();
         this.bindImagePreview();
         this.bindImageViewer();
+        this.bindColumnEvents();
 
         // Показываем подсказку для мобильных
         if (this.isTouchDevice()) {
@@ -27,36 +29,134 @@ class SimpleKanban {
     }
 
     bindModalEvents() {
-        // Кнопка создания задачи
-        document.getElementById('createTaskBtn').addEventListener('click', () => {
-            this.openModal();
-        });
+        console.log('Binding modal events');
 
-        // Закрытие модального окна
-        document.querySelector('.close').addEventListener('click', () => {
-            this.closeModal();
-        });
+        try {
+            // Проверяем, что все элементы существуют
+            console.log('closeColumnModal:', document.getElementById('closeColumnModal'));
+            console.log('cancelColumnBtn:', document.getElementById('cancelColumnBtn'));
+            console.log('saveColumnBtn:', document.getElementById('saveColumnBtn'));
+            console.log('columnModal:', this.columnModal);
 
-        document.querySelector('.close-modal').addEventListener('click', () => {
-            this.closeModal();
-        });
+            // Кнопка создания задачи
+            document.getElementById('createTaskBtn').addEventListener('click', () => {
+                this.openModal();
+            });
 
-        // Клик вне модального окна
-        window.addEventListener('click', (e) => {
-            if (e.target === this.modal) {
+            // Закрытие модального окна
+            document.querySelector('.close').addEventListener('click', () => {
                 this.closeModal();
+            });
+
+            document.querySelector('.close-modal').addEventListener('click', () => {
+                this.closeModal();
+            });
+
+            // Клик вне модального окна
+            window.addEventListener('click', (e) => {
+                if (e.target === this.modal) {
+                    this.closeModal();
+                }
+            });
+
+            // Сохранение задачи
+            document.getElementById('saveTaskBtn').addEventListener('click', () => {
+                this.saveTask();
+            });
+
+            // Удаление задачи
+            document.getElementById('deleteTaskBtn').addEventListener('click', () => {
+                this.deleteTask();
+            });
+
+            // Для модального окна колонки
+            const closeColumnModal = document.getElementById('closeColumnModal');
+            if (closeColumnModal) {
+                closeColumnModal.addEventListener('click', () => {
+                    console.log('Close button clicked');
+                    this.closeColumnModal();
+                });
             }
-        });
 
-        // Сохранение задачи
-        document.getElementById('saveTaskBtn').addEventListener('click', () => {
-            this.saveTask();
-        });
+            // В bindModalEvents, после saveColumnBtn:
+            const deleteColumnBtn = document.getElementById('deleteColumnBtn');
+            if (deleteColumnBtn) {
+                deleteColumnBtn.addEventListener('click', () => {
+                    console.log('Delete column button clicked');
+                    this.deleteColumnFromModal();
+                });
+            }
 
-        // Удаление задачи
-        document.getElementById('deleteTaskBtn').addEventListener('click', () => {
-            this.deleteTask();
-        });
+            const cancelColumnBtn = document.getElementById('cancelColumnBtn');
+            if (cancelColumnBtn) {
+                cancelColumnBtn.addEventListener('click', () => {
+                    console.log('Cancel button clicked');
+                    this.closeColumnModal();
+                });
+            }
+
+            const saveColumnBtn = document.getElementById('saveColumnBtn');
+            if (saveColumnBtn) {
+                saveColumnBtn.addEventListener('click', () => {
+                    console.log('Save button clicked');
+                    this.saveColumn();
+                });
+            }
+
+            window.addEventListener('click', (e) => {
+                if (e.target === this.columnModal) {
+                    console.log('Clicked outside column modal');
+                    this.closeColumnModal();
+                }
+            });
+
+            console.log('Column modal events bound successfully');
+        } catch (error) {
+            console.error('Error in bindModalEvents:', error);
+        }
+    }
+
+    async deleteColumnFromModal() {
+        const columnId = document.getElementById('editColumnId').value;
+        const columnName = document.getElementById('columnName').value;
+
+        // Получаем количество задач в колонке
+        const column = document.querySelector(`.kanban-column[data-column-id="${columnId}"]`);
+        const taskCount = column.querySelectorAll('.task-card').length;
+
+        if (taskCount > 0) {
+            alert(`Нельзя удалить колонку "${columnName}", в ней есть задачи (${taskCount} шт.)`);
+            return;
+        }
+
+        if (!confirm(`Удалить колонку "${columnName}"?`)) {
+            return;
+        }
+
+        try {
+            const response = await fetch('/tasks/delete-column/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+                },
+                body: JSON.stringify({
+                    column_id: columnId
+                })
+            });
+
+            const data = await response.json();
+            if (data.success) {
+                // Удаляем колонку из DOM
+                column.remove();
+                this.closeColumnModal();
+            } else {
+                alert('Ошибка при удалении колонки');
+            }
+        } catch (error) {
+            console.error('Error deleting column:', error);
+            alert('Ошибка при удалении колонки');
+        }
     }
 
     openModal(taskId = null) {
@@ -169,6 +269,100 @@ class SimpleKanban {
             } else {
                 currentImageDiv.style.display = 'none';
             }
+        }
+    }
+
+    bindColumnEvents() {
+        // Редактирование колонки
+        document.querySelectorAll('.edit-column-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const column = e.target.closest('.kanban-column');
+                const columnId = column.dataset.columnId;
+                const columnName = column.querySelector('.column-name').textContent;
+
+                // Получаем цвет из инлайн-стиля
+                let columnColor = '#336699';
+                const headerStyle = column.querySelector('.column-header').style.background;
+                console.log('Header style:', headerStyle);
+
+                if (headerStyle) {
+                    // Сначала пробуем найти hex
+                    const hexMatch = headerStyle.match(/#[A-Fa-f0-9]{6}/);
+                    if (hexMatch && hexMatch[0]) {
+                        columnColor = hexMatch[0];
+                    } else {
+                        // Ищем rgb()
+                        const rgbMatch = headerStyle.match(/rgb\((\d+),\s*(\d+),\s*(\d+)\)/);
+                        if (rgbMatch) {
+                            const r = parseInt(rgbMatch[1]).toString(16).padStart(2, '0');
+                            const g = parseInt(rgbMatch[2]).toString(16).padStart(2, '0');
+                            const b = parseInt(rgbMatch[3]).toString(16).padStart(2, '0');
+                            columnColor = `#${r}${g}${b}`;
+                        }
+                    }
+                }
+
+                console.log('Final column color:', columnColor);
+                this.openColumnModal(columnId, columnName, columnColor);
+            });
+        });
+    }
+
+    openColumnModal(columnId, name, color) {
+        console.log('openColumnModal called with:', columnId, name, color);
+
+        document.getElementById('editColumnId').value = columnId || '';
+        document.getElementById('columnName').value = name || '';
+
+        // Убеждаемся, что цвет передан правильно
+        const colorInput = document.getElementById('columnColor');
+        if (color && color.match(/#[A-Fa-f0-9]{6}/)) {
+            colorInput.value = color;
+        } else {
+            colorInput.value = '#336699'; // дефолтный синий
+        }
+
+        this.columnModal.style.display = 'block';
+    }
+
+    closeColumnModal() {
+        this.columnModal.style.display = 'none';
+    }
+
+    async saveColumn() {
+        const columnId = document.getElementById('editColumnId').value;
+        const name = document.getElementById('columnName').value;
+        const color = document.getElementById('columnColor').value;
+
+        try {
+            const response = await fetch('/tasks/update-column/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+                },
+                body: JSON.stringify({
+                    column_id: columnId,
+                    name: name,
+                    color: color
+                })
+            });
+
+            const data = await response.json();
+            if (data.success) {
+                // Обновляем отображение колонки
+                const column = document.querySelector(`.kanban-column[data-column-id="${columnId}"]`);
+                column.querySelector('.column-name').textContent = name;
+                column.querySelector('.column-header').style.background = `linear-gradient(to bottom, ${color}80, ${color})`;
+
+                this.closeColumnModal();
+            } else {
+                alert('Ошибка при сохранении колонки');
+            }
+        } catch (error) {
+            console.error('Error saving column:', error);
+            alert('Ошибка при сохранении колонки');
         }
     }
 

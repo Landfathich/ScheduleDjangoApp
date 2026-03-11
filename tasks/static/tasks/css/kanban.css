@@ -102,6 +102,20 @@
     outline: 1px solid #3a7bd5;
 }
 
+/* Стили для модального окна колонки */
+#columnModal .modal-content {
+    max-width: 400px;
+}
+
+#columnModal .form-group {
+    margin-bottom: 15px;
+}
+
+#columnModal input[type="color"] {
+    width: 100%;
+    padding: 5px;
+}
+
 @media (max-width: 768px) {
     .kanban-container {
         padding: 10px;

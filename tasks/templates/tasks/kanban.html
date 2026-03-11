@@ -57,35 +57,23 @@
         {% else %}
             <div class="kanban-board">
                 {% for column_id, column_data in tasks_by_status.items %}
-                    <div class="kanban-column">
-                        <div class="column-header" style="background: linear-gradient(to bottom, {{ column_data.color }}80, {{ column_data.color }});">
-                            {{ column_data.name }}
-                            <span class="column-count">{{ column_data.tasks|length }}</span>
+                    <div class="kanban-column" data-column-id="{{ column_data.column_id }}">
+                        <div class="column-header"
+                             style="background: linear-gradient(to bottom, {{ column_data.color }}80, {{ column_data.color }});">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <span style="display: flex; align-items: center; gap: 4px;">
+                                    <span class="column-name">{{ column_data.name }}</span>
+                                    <span class="column-count">{{ column_data.tasks|length }}</span>
+                                </span>
+                                <button class="edit-column-btn"
+                                        style="background: none; border: none; color: white; cursor: pointer; padding: 2px 4px;">
+                                    ✏️
+                                </button>
+                            </div>
                         </div>
 
                         <div class="task-list" data-column-id="{{ column_data.column_id }}">
-                            {% for task in column_data.tasks %}
-                                <div class="task-card" draggable="true" data-task-id="{{ task.id }}">
-                                    <div class="task-title">{{ task.title }}</div>
-
-                                    {% if task.description %}
-                                        <div class="task-description">
-                                            {{ task.description|truncatewords:15 }}
-                                        </div>
-                                    {% endif %}
-
-                                    <div class="task-footer">
-                                        <span>
-                                            {% if task.assignee %}
-                                                {{ task.assignee.first_name|default:task.assignee.username }}
-                                            {% else %}
-                                                Не назначен
-                                            {% endif %}
-                                        </span>
-                                        <span class="edit-link">✏️</span>
-                                    </div>
-                                </div>
-                            {% endfor %}
+                            <!-- задачи -->
                         </div>
                     </div>
                 {% endfor %}
@@ -142,6 +130,37 @@
                 <button type="button" id="saveTaskBtn" class="btn btn-success">Сохранить</button>
                 <button type="button" id="deleteTaskBtn" class="btn btn-danger">Удалить</button>
                 <button type="button" class="btn btn-cancel close-modal">Отмена</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно для редактирования колонки -->
+    <div id="columnModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="columnModalTitle">Редактировать колонку</h3>
+                <span class="close" id="closeColumnModal">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="columnForm">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label class="form-label">Название колонки:</label>
+                        <input type="text" name="name" id="columnName" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Цвет колонки:</label>
+                        <input type="color" name="color" id="columnColor" class="form-input" style="height: 40px;">
+                    </div>
+                    <input type="hidden" name="column_id" id="editColumnId">
+                </form>
+            </div>
+            <div class="modal-actions" style="display: flex; justify-content: space-between;">
+                <button type="button" id="deleteColumnBtn" class="btn btn-danger">Удалить колонку</button>
+                <div>
+                    <button type="button" id="saveColumnBtn" class="btn btn-success">Сохранить</button>
+                    <button type="button" class="btn btn-cancel close-modal" id="cancelColumnBtn">Отмена</button>
+                </div>
             </div>
         </div>
     </div>
