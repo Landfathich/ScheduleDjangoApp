@@ -111,6 +111,14 @@ class SimpleKanban {
                 });
             }
 
+            // В bindModalEvents, после остальных обработчиков
+            const createColumnBtn = document.getElementById('createColumnBtn');
+            if (createColumnBtn) {
+                createColumnBtn.addEventListener('click', () => {
+                    this.openCreateColumnModal();
+                });
+            }
+
             const saveColumnBtn = document.getElementById('saveColumnBtn');
             if (saveColumnBtn) {
                 saveColumnBtn.addEventListener('click', () => {
@@ -162,6 +170,34 @@ class SimpleKanban {
             console.error('Error moving column:', error);
             alert('Ошибка при перемещении колонки');
         }
+    }
+
+    openCreateColumnModal() {
+        console.log('Opening create column modal');
+        console.log('Project ID element:', document.getElementById('projectId'));
+        console.log('Project ID value:', document.getElementById('projectId')?.value);
+
+        // Очищаем форму
+        document.getElementById('editColumnId').value = '';
+        document.getElementById('columnName').value = '';
+        document.getElementById('columnColor').value = '#336699';
+
+        // Меняем заголовок
+        document.getElementById('columnModalTitle').textContent = 'Создать новую колонку';
+
+        // Прячем кнопку удаления
+        const deleteBtn = document.getElementById('deleteColumnBtn');
+        if (deleteBtn) {
+            deleteBtn.style.display = 'none';
+        }
+
+        // Прячем стрелки перемещения
+        const moveControls = document.querySelector('#columnModal .modal-body > div:first-child');
+        if (moveControls) {
+            moveControls.style.display = 'none';
+        }
+
+        this.columnModal.style.display = 'block';
     }
 
     async deleteColumnFromModal() {
@@ -379,40 +415,53 @@ class SimpleKanban {
     }
 
     async saveColumn() {
-        const columnId = document.getElementById('editColumnId').value;
-        const name = document.getElementById('columnName').value;
-        const color = document.getElementById('columnColor').value;
+    const columnId = document.getElementById('editColumnId').value;
+    const name = document.getElementById('columnName').value;
+    const color = document.getElementById('columnColor').value;
+    const projectId = document.getElementById('projectId').value;
 
-        try {
-            const response = await fetch('/tasks/update-column/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
-                },
-                body: JSON.stringify({
-                    column_id: columnId,
-                    name: name,
-                    color: color
-                })
-            });
+    console.log('Saving column:', { columnId, name, color, projectId, isNew: !columnId });
 
-            const data = await response.json();
-            if (data.success) {
-                // Обновляем отображение колонки
-                const column = document.querySelector(`.kanban-column[data-column-id="${columnId}"]`);
-                column.querySelector('.column-name').textContent = name;
-                column.querySelector('.column-header').style.background = `linear-gradient(to bottom, ${color}80, ${color})`;
+    const isNew = !columnId;
 
-                this.closeColumnModal();
-            } else {
-                alert('Ошибка при сохранении колонки');
-            }
-        } catch (error) {
-            console.error('Error saving column:', error);
-            alert('Ошибка при сохранении колонки');
+    try {
+        const url = isNew ? '/tasks/create-column/' : '/tasks/update-column/';
+        console.log('Sending to URL:', url);
+        console.log('Request body:', JSON.stringify({
+            column_id: columnId,
+            name: name,
+            color: color,
+            project_id: projectId
+        }));
+
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+            },
+            body: JSON.stringify({
+                column_id: columnId,
+                name: name,
+                color: color,
+                project_id: projectId
+            })
+        });
+
+        console.log('Response status:', response.status);
+        const data = await response.json();
+        console.log('Response data:', data);
+
+        if (data.success) {
+            window.location.reload();
+        } else {
+            alert('Ошибка при сохранении колонки: ' + (data.error || 'неизвестная ошибка'));
         }
+    } catch (error) {
+        console.error('Error saving column:', error);
+        alert('Ошибка при сохранении колонки');
     }
+}
 
     bindImageViewer() {
         // Закрытие модалки просмотра

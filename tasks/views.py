@@ -1,6 +1,7 @@
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.models import User
+from django.db import models
 from django.http import JsonResponse  # ← ДОБАВИТЬ
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.decorators.csrf import csrf_exempt
@@ -90,6 +91,11 @@ def create_task(request):
             project_id = request.POST.get('project')
             if project_id:
                 task.project = get_object_or_404(Project, id=project_id)
+
+                # Привязываем к первой колонке проекта
+                first_column = task.project.columns.order_by('order').first()
+                if first_column:
+                    task.column = first_column
 
             task.save()
             return JsonResponse({'success': True})
@@ -301,6 +307,42 @@ def delete_column(request):
         column.delete()
 
         return JsonResponse({'success': True})
+
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)})
+
+
+@staff_member_required
+@require_http_methods(["POST"])
+def create_column(request):
+    """Создание новой колонки"""
+    try:
+        import json
+        data = json.loads(request.body)
+
+        name = data.get('name')
+        color = data.get('color')
+        project_id = data.get('project_id')
+
+        # Получаем проект
+        project = get_object_or_404(Project, id=project_id, creator=request.user)
+
+        # Определяем порядок (новая колонка будет последней)
+        max_order = project.columns.aggregate(models.Max('order'))['order__max']
+        new_order = (max_order or -1) + 1
+
+        # Создаем колонку
+        column = ProjectColumn.objects.create(
+            project=project,
+            name=name,
+            color=color,
+            order=new_order
+        )
+
+        return JsonResponse({
+            'success': True,
+            'column_id': column.id
+        })
 
     except Exception as e:
         return JsonResponse({'success': False, 'error': str(e)})

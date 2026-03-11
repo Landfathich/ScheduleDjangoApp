@@ -21,4 +21,5 @@ urlpatterns = [
     path('update-column/', views.update_column, name='update_column'),
     path('move-column/', views.move_column, name='move_column'),
     path('delete-column/', views.delete_column, name='delete_column'),
+    path('create-column/', views.create_column, name='create_column'),
 ]

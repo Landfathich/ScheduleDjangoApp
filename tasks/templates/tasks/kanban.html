@@ -73,10 +73,38 @@
                         </div>
 
                         <div class="task-list" data-column-id="{{ column_data.column_id }}">
-                            <!-- задачи -->
+                            {% for task in column_data.tasks %}
+                                <div class="task-card" draggable="true" data-task-id="{{ task.id }}">
+                                    <div class="task-title">{{ task.title }}</div>
+
+                                    {% if task.description %}
+                                        <div class="task-description">
+                                            {{ task.description|truncatewords:15 }}
+                                        </div>
+                                    {% endif %}
+
+                                    <div class="task-footer">
+                <span>
+                    {% if task.assignee %}
+                        {{ task.assignee.first_name|default:task.assignee.username }}
+                    {% else %}
+                        Не назначен
+                    {% endif %}
+                </span>
+                                        <span class="edit-link">✏️</span>
+                                    </div>
+                                </div>
+                            {% empty %}
+                                <!-- Если задач нет, можно ничего не показывать или показать подсказку -->
+                            {% endfor %}
                         </div>
                     </div>
                 {% endfor %}
+            </div>
+            <div style="text-align: center; margin: 20px 0;">
+                <button id="createColumnBtn" class="btn btn-success" style="padding: 10px 30px; font-size: 16px;">
+                    + Добавить колонку
+                </button>
             </div>
         {% endif %}
     </div>
