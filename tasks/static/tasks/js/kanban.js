@@ -259,6 +259,13 @@ class SimpleKanban {
             deleteBtn.style.display = 'none';
             form.reset();
             document.getElementById('taskId').value = '';
+
+            // Автоматически выбираем текущего пользователя в селекторе исполнителя
+            const assigneeSelect = document.querySelector('select[name="assignee"]');
+            const currentUserId = document.getElementById('currentUserId')?.value;
+            if (assigneeSelect && currentUserId) {
+                assigneeSelect.value = currentUserId;
+            }
         }
 
         this.modal.style.display = 'block';
@@ -415,53 +422,53 @@ class SimpleKanban {
     }
 
     async saveColumn() {
-    const columnId = document.getElementById('editColumnId').value;
-    const name = document.getElementById('columnName').value;
-    const color = document.getElementById('columnColor').value;
-    const projectId = document.getElementById('projectId').value;
+        const columnId = document.getElementById('editColumnId').value;
+        const name = document.getElementById('columnName').value;
+        const color = document.getElementById('columnColor').value;
+        const projectId = document.getElementById('projectId').value;
 
-    console.log('Saving column:', { columnId, name, color, projectId, isNew: !columnId });
+        console.log('Saving column:', {columnId, name, color, projectId, isNew: !columnId});
 
-    const isNew = !columnId;
+        const isNew = !columnId;
 
-    try {
-        const url = isNew ? '/tasks/create-column/' : '/tasks/update-column/';
-        console.log('Sending to URL:', url);
-        console.log('Request body:', JSON.stringify({
-            column_id: columnId,
-            name: name,
-            color: color,
-            project_id: projectId
-        }));
-
-        const response = await fetch(url, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
-            },
-            body: JSON.stringify({
+        try {
+            const url = isNew ? '/tasks/create-column/' : '/tasks/update-column/';
+            console.log('Sending to URL:', url);
+            console.log('Request body:', JSON.stringify({
                 column_id: columnId,
                 name: name,
                 color: color,
                 project_id: projectId
-            })
-        });
+            }));
 
-        console.log('Response status:', response.status);
-        const data = await response.json();
-        console.log('Response data:', data);
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+                },
+                body: JSON.stringify({
+                    column_id: columnId,
+                    name: name,
+                    color: color,
+                    project_id: projectId
+                })
+            });
 
-        if (data.success) {
-            window.location.reload();
-        } else {
-            alert('Ошибка при сохранении колонки: ' + (data.error || 'неизвестная ошибка'));
+            console.log('Response status:', response.status);
+            const data = await response.json();
+            console.log('Response data:', data);
+
+            if (data.success) {
+                window.location.reload();
+            } else {
+                alert('Ошибка при сохранении колонки: ' + (data.error || 'неизвестная ошибка'));
+            }
+        } catch (error) {
+            console.error('Error saving column:', error);
+            alert('Ошибка при сохранении колонки');
         }
-    } catch (error) {
-        console.error('Error saving column:', error);
-        alert('Ошибка при сохранении колонки');
     }
-}
 
     bindImageViewer() {
         // Закрытие модалки просмотра

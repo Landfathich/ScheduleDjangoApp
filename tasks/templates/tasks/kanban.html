@@ -152,6 +152,7 @@
                     </div>
                     <input type="hidden" name="task_id" id="taskId">
                     <input type="hidden" name="project" id="projectId" value="{{ current_project.id|default:'' }}">
+                    <input type="hidden" id="currentUserId" value="{{ user.id }}">
                 </form>
             </div>
             <div class="modal-actions">
