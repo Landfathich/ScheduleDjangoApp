@@ -9,6 +9,30 @@ class Project(models.Model):
     creator = models.ForeignKey(User, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
 
+    def save(self, *args, **kwargs):
+        # Сначала сохраняем проект
+        super().save(*args, **kwargs)
+
+        # Если это новый проект (проверяем, что у него нет колонок)
+        if not self.columns.exists():
+            # Дефолтные колонки
+            default_columns = [
+                {'name': 'Бэклог', 'color': '#6c757d', 'order': 0},
+                {'name': 'К выполнению', 'color': '#007bff', 'order': 1},
+                {'name': 'В работе', 'color': '#ffc107', 'order': 2},
+                {'name': 'На проверке', 'color': '#17a2b8', 'order': 3},
+                {'name': 'Завершено', 'color': '#28a745', 'order': 4},
+            ]
+
+            # Создаем колонки
+            for column_data in default_columns:
+                ProjectColumn.objects.create(
+                    project=self,
+                    name=column_data['name'],
+                    color=column_data['color'],
+                    order=column_data['order']
+                )
+
     class Meta:
         verbose_name = "Проект"
         verbose_name_plural = "Проекты"

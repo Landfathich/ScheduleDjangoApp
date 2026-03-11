@@ -58,7 +58,7 @@
             <div class="kanban-board">
                 {% for column_id, column_data in tasks_by_status.items %}
                     <div class="kanban-column">
-                        <div class="column-header" style="background-color: {{ column_data.color }};">
+                        <div class="column-header" style="background: linear-gradient(to bottom, {{ column_data.color }}80, {{ column_data.color }});">
                             {{ column_data.name }}
                             <span class="column-count">{{ column_data.tasks|length }}</span>
                         </div>

@@ -11,7 +11,6 @@
 }
 
 .column-header {
-    background: linear-gradient(to bottom, #3a7bd5, #003366);
     color: white;
     padding: 6px 8px;
     font-weight: bold;
@@ -82,27 +81,6 @@
     margin-top: 4px;
 }
 
-/* Цвета статусов */
-.backlog .column-header {
-    background: linear-gradient(to bottom, #666666, #444444);
-}
-
-.todo .column-header {
-    background: linear-gradient(to bottom, #3a7bd5, #003366);
-}
-
-.in_progress .column-header {
-    background: linear-gradient(to bottom, #cc6600, #994400);
-}
-
-.review .column-header {
-    background: linear-gradient(to bottom, #663366, #441144);
-}
-
-.done .column-header {
-    background: linear-gradient(to bottom, #339966, #226644);
-}
-
 /* Селектор проектов в канбане */
 .project-selector {
     display: flex;
@@ -159,16 +137,6 @@
 
     .task-description {
         font-size: 11px;
-    }
-
-    .column-header {
-        padding: 8px 10px;
-        font-size: 13px;
-        position: sticky;
-        top: 0;
-        background: white;
-        z-index: 1;
-        border-bottom: 1px solid #e0e0e0;
     }
 
     /* Хедер на мобильных */
