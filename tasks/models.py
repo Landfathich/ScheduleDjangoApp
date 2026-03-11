@@ -9,6 +9,10 @@ class Project(models.Model):
     creator = models.ForeignKey(User, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        verbose_name = "Проект"
+        verbose_name_plural = "Проекты"
+
     def __str__(self):
         return self.name
 
@@ -61,6 +65,8 @@ class Task(models.Model):
 
     class Meta:
         ordering = ['-created_at']
+        verbose_name = "Задача"
+        verbose_name_plural = "Задачи"
 
     def __str__(self):
         return self.title
