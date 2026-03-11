@@ -13,6 +13,21 @@ class Project(models.Model):
         return self.name
 
 
+class ProjectColumn(models.Model):
+    project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name='columns')
+    name = models.CharField(max_length=100, verbose_name="Название колонки")
+    color = models.CharField(max_length=7, default="#336699", verbose_name="Цвет колонки")
+    order = models.IntegerField(default=0, verbose_name="Порядок сортировки")
+
+    class Meta:
+        ordering = ['order']
+        verbose_name = "Колонка проекта"
+        verbose_name_plural = "Колонки проектов"
+
+    def __str__(self):
+        return f"{self.project.name} - {self.name}"
+
+
 class Task(models.Model):
     STATUS_CHOICES = [
         ('backlog', 'Бэклог'),
