@@ -465,11 +465,11 @@ class SimpleKanban {
             e.preventDefault();
             if (!this.draggedTask) return;
 
-            const newStatus = element.dataset.status;
+            const newColumnId = element.dataset.columnId;  // Изменили с data-status на data-column-id
             const taskId = this.draggedTask.dataset.taskId;
 
             element.appendChild(this.draggedTask);
-            this.updateTaskStatus(taskId, newStatus);
+            this.updateTaskStatus(taskId, newColumnId);
             this.updateColumnCounters();
         });
     }
@@ -485,11 +485,11 @@ class SimpleKanban {
         });
     }
 
-    async updateTaskStatus(taskId, newStatus) {
+    async updateTaskStatus(taskId, newColumnId) {
         try {
             const formData = new FormData();
             formData.append('task_id', taskId);
-            formData.append('new_status', newStatus);
+            formData.append('new_column_id', newColumnId);  // Изменили с new_status на new_column_id
             formData.append('csrfmiddlewaretoken', document.querySelector('[name=csrfmiddlewaretoken]').value);
 
             const response = await fetch('/tasks/update-status/', {
@@ -499,12 +499,16 @@ class SimpleKanban {
 
             const data = await response.json();
             if (data.success) {
-                console.log(`✓ Task ${taskId} status updated to ${newStatus}`);
+                console.log(`✓ Task ${taskId} moved to column ${newColumnId}`);
+                this.updateColumnCounters();
             } else {
                 console.error('✗ Error updating task:', data.error);
+                // Если ошибка - возвращаем задачу на место
+                window.location.reload(); // Простой способ откатить изменения
             }
         } catch (error) {
             console.error('✗ Network error:', error);
+            window.location.reload();
         }
     }
 }

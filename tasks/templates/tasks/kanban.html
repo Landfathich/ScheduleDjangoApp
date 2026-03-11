@@ -56,15 +56,15 @@
             </div>
         {% else %}
             <div class="kanban-board">
-                {% for status_key, status_data in tasks_by_status.items %}
-                    <div class="kanban-column {{ status_key }}">
-                        <div class="column-header">
-                            {{ status_data.name }}
-                            <span class="column-count">{{ status_data.tasks|length }}</span>
+                {% for column_id, column_data in tasks_by_status.items %}
+                    <div class="kanban-column">
+                        <div class="column-header" style="background-color: {{ column_data.color }};">
+                            {{ column_data.name }}
+                            <span class="column-count">{{ column_data.tasks|length }}</span>
                         </div>
 
-                        <div class="task-list" data-status="{{ status_key }}">
-                            {% for task in status_data.tasks %}
+                        <div class="task-list" data-column-id="{{ column_data.column_id }}">
+                            {% for task in column_data.tasks %}
                                 <div class="task-card" draggable="true" data-task-id="{{ task.id }}">
                                     <div class="task-title">{{ task.title }}</div>
 
@@ -75,13 +75,13 @@
                                     {% endif %}
 
                                     <div class="task-footer">
-                                    <span>
-                                        {% if task.assignee %}
-                                            {{ task.assignee.first_name|default:task.assignee.username }}
-                                        {% else %}
-                                            Не назначен
-                                        {% endif %}
-                                    </span>
+                                        <span>
+                                            {% if task.assignee %}
+                                                {{ task.assignee.first_name|default:task.assignee.username }}
+                                            {% else %}
+                                                Не назначен
+                                            {% endif %}
+                                        </span>
                                         <span class="edit-link">✏️</span>
                                     </div>
                                 </div>
@@ -90,8 +90,8 @@
                     </div>
                 {% endfor %}
             </div>
-            </div>
         {% endif %}
+    </div>
 
     <!-- Модальное окно -->
     <div id="taskModal" class="modal">

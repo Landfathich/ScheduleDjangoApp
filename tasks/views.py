@@ -7,7 +7,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 
 from .forms import TaskForm, ProjectForm
-from .models import Task, Project
+from .models import Task, Project, ProjectColumn
 
 
 @staff_member_required
@@ -21,22 +21,28 @@ def kanban_board(request):
         # Берем первый проект админа или None
         current_project = Project.objects.filter(creator=request.user).first()
 
-    # Фильтруем задачи по проекту
-    statuses = dict(Task.STATUS_CHOICES)
+    # Получаем колонки для текущего проекта
     tasks_by_status = {}
 
     if current_project:
-        for status_key, status_name in statuses.items():
+        # Берем активные колонки проекта, сортируем по order
+        columns = current_project.columns.all().order_by('order')
+
+        for column in columns:
+            # Получаем задачи для этой колонки
             tasks = Task.objects.filter(
                 project=current_project,
-                status=status_key
-            ).select_related('assignee', 'creator')
-            tasks_by_status[status_key] = {
-                'name': status_name,
+                column=column  # Используем новое поле column
+            ).select_related('assignee', 'creator').order_by('-created_at')
+
+            tasks_by_status[column.id] = {  # Ключ - ID колонки
+                'name': column.name,
+                'color': column.color,
+                'column_id': column.id,
                 'tasks': tasks
             }
 
-    # Все проекты пользователя для селектора (только для админов)
+    # Все проекты пользователя для селектора
     user_projects = Project.objects.filter(creator=request.user) if request.user.is_staff else []
 
     context = {
@@ -52,13 +58,17 @@ def kanban_board(request):
 @require_http_methods(["POST"])
 @csrf_exempt
 def update_task_status(request):
-    """Обновление статуса задачи"""
+    """Обновление статуса задачи (перемещение между колонками)"""
     try:
         task_id = request.POST.get('task_id')
-        new_status = request.POST.get('new_status')
+        new_column_id = request.POST.get('new_column_id')  # Теперь получаем ID колонки
 
         task = get_object_or_404(Task, id=task_id)
-        task.status = new_status
+
+        # Проверяем, что колонка существует и принадлежит тому же проекту
+        new_column = get_object_or_404(ProjectColumn, id=new_column_id, project=task.project)
+
+        task.column = new_column
         task.save()
 
         return JsonResponse({'success': True})
