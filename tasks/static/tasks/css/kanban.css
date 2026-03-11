@@ -2,12 +2,16 @@
     display: grid;
     grid-template-columns: repeat(5, 1fr);
     gap: 8px;
+    max-height: 700px;
 }
 
 .kanban-column {
     background: #ece9d8;
     border: 2px outset #d4d0c8;
     border-radius: 0;
+    display: flex;
+    max-height: 700px;
+    flex-direction: column;
 }
 
 .column-header {
@@ -31,8 +35,11 @@
 }
 
 .task-list {
-    min-height: 400px;
+    min-height: 300px;
+    flex: 1;
     padding: 4px;
+    scrollbar-width: thin;
+    overflow-y: auto;
     background: #ece9d8;
     border: 1px inset #d4d0c8;
 }
