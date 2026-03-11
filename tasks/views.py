@@ -220,3 +220,60 @@ def update_column(request):
         return JsonResponse({'success': True})
     except Exception as e:
         return JsonResponse({'success': False, 'error': str(e)})
+
+
+@staff_member_required
+@require_http_methods(["POST"])
+def move_column(request):
+    """Перемещение колонки влево или вправо"""
+    try:
+        import json
+        data = json.loads(request.body)
+
+        column_id = data.get('column_id')
+        direction = data.get('direction')  # 'left' или 'right'
+
+        # Получаем текущую колонку
+        current_column = get_object_or_404(ProjectColumn, id=column_id, project__creator=request.user)
+        project = current_column.project
+
+        # Получаем все колонки проекта в текущем порядке
+        columns = list(project.columns.all().order_by('order'))
+        current_index = None
+
+        # Находим индекс текущей колонки
+        for i, col in enumerate(columns):
+            if col.id == current_column.id:
+                current_index = i
+                break
+
+        if current_index is None:
+            return JsonResponse({'success': False, 'error': 'Column not found'})
+
+        # Определяем новый индекс (left = вверх по индексу, right = вниз по индексу)
+        if direction == 'left' and current_index > 0:
+            new_index = current_index - 1
+        elif direction == 'right' and current_index < len(columns) - 1:
+            new_index = current_index + 1
+        else:
+            return JsonResponse({'success': False, 'error': 'Cannot move further'})
+
+        # Меняем местами order у двух колонок
+        other_column = columns[new_index]
+
+        # Временно сохраняем order
+        current_order = current_column.order
+        other_order = other_column.order
+
+        # Меняем значения
+        current_column.order = other_order
+        other_column.order = current_order
+
+        # Сохраняем обе колонки
+        current_column.save()
+        other_column.save()
+
+        return JsonResponse({'success': True})
+
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)})

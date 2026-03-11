@@ -19,4 +19,5 @@ urlpatterns = [
     path('get-task-data/<int:task_id>/', views.get_task_data, name='get_task_data'),
 
     path('update-column/', views.update_column, name='update_column'),
+    path('move-column/', views.move_column, name='move_column'),
 ]

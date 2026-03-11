@@ -87,6 +87,22 @@ class SimpleKanban {
                 });
             }
 
+            // Вместо moveUpBtn/moveDownBtn
+            const moveLeftBtn = document.getElementById('moveColumnLeftBtn');
+            const moveRightBtn = document.getElementById('moveColumnRightBtn');
+
+            if (moveLeftBtn) {
+                moveLeftBtn.addEventListener('click', () => {
+                    this.moveColumn('left');
+                });
+            }
+
+            if (moveRightBtn) {
+                moveRightBtn.addEventListener('click', () => {
+                    this.moveColumn('right');
+                });
+            }
+
             const cancelColumnBtn = document.getElementById('cancelColumnBtn');
             if (cancelColumnBtn) {
                 cancelColumnBtn.addEventListener('click', () => {
@@ -113,6 +129,38 @@ class SimpleKanban {
             console.log('Column modal events bound successfully');
         } catch (error) {
             console.error('Error in bindModalEvents:', error);
+        }
+    }
+
+    async moveColumn(direction) {
+        const columnId = document.getElementById('editColumnId').value;
+        const columnName = document.getElementById('columnName').value;
+
+        console.log(`Moving column ${columnId} ${direction}`);
+
+        try {
+            const response = await fetch('/tasks/move-column/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+                },
+                body: JSON.stringify({
+                    column_id: columnId,
+                    direction: direction  // 'up' или 'down'
+                })
+            });
+
+            const data = await response.json();
+            if (data.success) {
+                // Перезагружаем страницу чтобы увидеть новый порядок
+                window.location.reload();
+            } else {
+                alert('Ошибка при перемещении колонки');
+            }
+        } catch (error) {
+            console.error('Error moving column:', error);
+            alert('Ошибка при перемещении колонки');
         }
     }
 

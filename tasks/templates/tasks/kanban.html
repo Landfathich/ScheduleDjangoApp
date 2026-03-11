@@ -142,6 +142,19 @@
                 <span class="close" id="closeColumnModal">&times;</span>
             </div>
             <div class="modal-body">
+                <!-- Блок перемещения -->
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px solid #ddd;">
+                    <span style="font-weight: bold;">Порядок колонки:</span>
+                    <div>
+                        <button type="button" id="moveColumnLeftBtn" class="btn"
+                                style="font-size: 18px; padding: 5px 10px;" title="Переместить влево">←
+                        </button>
+                        <button type="button" id="moveColumnRightBtn" class="btn"
+                                style="font-size: 18px; padding: 5px 10px;" title="Переместить вправо">→
+                        </button>
+                    </div>
+                </div>
+
                 <form id="columnForm">
                     {% csrf_token %}
                     <div class="form-group">
