@@ -183,7 +183,7 @@ class SimpleKanban {
         document.getElementById('columnColor').value = '#336699';
 
         // Меняем заголовок
-        document.getElementById('columnModalTitle').textContent = 'Создать новую колонку';
+        document.getElementById('columnModalTitle').textContent = 'Настройка колонки';
 
         // Прячем кнопку удаления
         const deleteBtn = document.getElementById('deleteColumnBtn');
