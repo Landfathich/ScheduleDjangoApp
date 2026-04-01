@@ -50,6 +50,7 @@
             {% if user.is_authenticated %}
                 <a href="{% url 'materials_hub' %}">Курсы</a>
                 <a href="{% url 'profile' %}">Профиль</a>
+                <a href="{% url 'chat:chat_list' %}">Чаты</a>
             {% endif %}
         </nav>
     </div>

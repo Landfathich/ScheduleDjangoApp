@@ -26,6 +26,7 @@ urlpatterns = [
     path("materials/", include("materials.urls")),
     # TODO СДЕЛАТЬ ЧТОБЫ ЗДЕСЬ ПОДКЛЮЧАЛОСЬ ПРИЛОЖЕНИЕ CORE, А В КОРЕ УЖЕ КОРОВЫКЕ ССЫЛКИ ТОЛЬКО, И НОРМАЛЬНОЕ ИМЕНОВАНИЕ В ОДНОМ СТИЛЕ
     path('', include('pwa.urls')),
+    path('chat/', include('chat.urls')),
 ]
 
 if settings.DEBUG:

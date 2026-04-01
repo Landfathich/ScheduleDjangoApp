@@ -57,6 +57,8 @@ CSRF_TRUSTED_ORIGINS = [
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
+    'daphne',
+    'channels',
     'django.contrib.contenttypes',
     'django_admin_inline_paginator',
     'django.contrib.sessions',
@@ -69,7 +71,8 @@ INSTALLED_APPS = [
     'phonenumber_field',
     'pwa',
     'django.contrib.humanize',
-    'finance.apps.FinanceConfig'
+    'finance.apps.FinanceConfig',
+    'chat.apps.ChatConfig',
 ]
 
 if DEBUG:
@@ -93,8 +96,7 @@ ROOT_URLCONF = 'scheduleApp.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates']
-        ,
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -106,6 +108,14 @@ TEMPLATES = [
         },
     },
 ]
+
+ASGI_APPLICATION = 'scheduleApp.asgi.application'
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels.layers.InMemoryChannelLayer',
+    },
+}
 
 WSGI_APPLICATION = 'scheduleApp.wsgi.application'
 
@@ -238,6 +248,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # Для collectstatic
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'core/static'),
     os.path.join(BASE_DIR, 'materials/static'),
+    os.path.join(BASE_DIR, 'chat/static'),
 ]
 
 # Новая система STORAGES для Django 4.2+
