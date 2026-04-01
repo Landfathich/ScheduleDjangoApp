@@ -42,14 +42,13 @@ export class SettingsManager {
             const response = await fetch('/get-user-settings/');
             const data = await response.json();
 
-            if (data.theme) {
-                document.documentElement.setAttribute('data-theme', data.theme);
+            // Тему больше не устанавливаем здесь, это делает ThemeManager
+            if (data.theme && this.themeSwitch) {
                 this.themeSwitch.checked = data.theme === 'dark';
             }
             if (data.workingHours) {
                 const {start, end} = data.workingHours;
                 if (this.isValidWorkingHours(start, end)) {
-                    // Сохраняем настройки, но НЕ вызываем calendarManager
                     this.startHour = start;
                     this.endHour = end;
                     console.log(`SettingsManager: loaded working hours ${start}-${end}`);
@@ -194,12 +193,6 @@ export class SettingsManager {
         });
 
         this.submitButton.onclick = (e) => this.handleSubmit(e);
-
-        this.themeSwitch.addEventListener('change', () => {
-            const theme = this.themeSwitch.checked ? 'dark' : 'light';
-            document.documentElement.setAttribute('data-theme', theme);
-            this.saveSettingsToServer({theme});
-        });
 
         this.openWindowsButton.onclick = (e) => {
             e.preventDefault();
