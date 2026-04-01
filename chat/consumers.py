@@ -139,10 +139,11 @@ class NotificationConsumer(AsyncWebsocketConsumer):
         await self.accept()
 
     async def disconnect(self, close_code):
-        await self.channel_layer.group_discard(
-            self.user_group,
-            self.channel_name
-        )
+        if hasattr(self, 'user_group'):
+            await self.channel_layer.group_discard(
+                self.user_group,
+                self.channel_name
+            )
 
     async def new_message_notification(self, event):
         """Получение уведомления о новом сообщении"""

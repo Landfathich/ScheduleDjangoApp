@@ -79,7 +79,6 @@ INSTALLED_APPS = [
     'django.contrib.humanize',
     'finance.apps.FinanceConfig',
     'tasks',
-    'finance.apps.FinanceConfig',
     'chat.apps.ChatConfig',
     'webpush',
 ]
