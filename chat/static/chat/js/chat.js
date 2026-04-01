@@ -1,5 +1,3 @@
-// chat/static/chat/js/chat.js
-
 let currentConversationId = null;
 let ws = null;
 let currentUserId = null;
@@ -163,23 +161,23 @@ function connectWebSocket(conversationId) {
     };
 
     ws.onmessage = function (event) {
-    const data = JSON.parse(event.data);
-    if (data.type === 'chat') {
-        addMessageToChat(data.message, data.sender_id, data.username, formatTime());
+        const data = JSON.parse(event.data);
+        if (data.type === 'chat') {
+            addMessageToChat(data.message, data.sender_id, data.username, formatTime());
 
-        // Если сообщение от другого пользователя
-        if (data.sender_id !== currentUserId) {
-            // Обновляем предпросмотр в списке диалогов
-            updateConversationPreview(currentConversationId, data.message, data.username);
+            // Если сообщение от другого пользователя
+            if (data.sender_id !== currentUserId) {
+                // Обновляем предпросмотр в списке диалогов
+                updateConversationPreview(currentConversationId, data.message, data.username);
 
-            // Если это не текущий открытый чат, увеличиваем счётчик
-            if (currentConversationId !== parseInt(data.conversation_id)) {
-                incrementConversationUnreadCount(currentConversationId);
-                updateTotalUnreadCount();
+                // Если это не текущий открытый чат, увеличиваем счётчик
+                if (currentConversationId !== parseInt(data.conversation_id)) {
+                    incrementConversationUnreadCount(currentConversationId);
+                    updateTotalUnreadCount();
+                }
             }
         }
-    }
-};
+    };
 
     ws.onerror = function (error) {
         console.error('WebSocket ошибка:', error);
@@ -264,6 +262,7 @@ function updateTotalUnreadCount() {
     });
     updateHeaderUnreadCount(total);
 }
+
 function openConversation(conversationId, otherUserName) {
     if (currentConversationId === conversationId) return;
 

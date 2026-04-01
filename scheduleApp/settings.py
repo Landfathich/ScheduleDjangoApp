@@ -73,6 +73,7 @@ INSTALLED_APPS = [
     'django.contrib.humanize',
     'finance.apps.FinanceConfig',
     'chat.apps.ChatConfig',
+    'webpush',
 ]
 
 if DEBUG:
@@ -280,7 +281,7 @@ REST_FRAMEWORK = {
 MEDIA_URL = '/media/'  # e.g. localhost:80/media/image.jpg
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-# PWA_SERVICE_WORKER_PATH = os.path.join(BASE_DIR, 'static/js', 'serviceworker.js')
+PWA_SERVICE_WORKER_PATH = os.path.join(BASE_DIR, 'templates', 'serviceworker.js')
 
 PWA_APP_NAME = 'Уроки'
 PWA_APP_DESCRIPTION = "Система управления расписанием в школе Kodama"
@@ -314,3 +315,10 @@ PWA_APP_SPLASH_SCREEN = [
 ]
 PWA_APP_DIR = 'ltr'
 PWA_APP_LANG = 'ru-RU'
+
+# Web Push настройки
+WEBPUSH_SETTINGS = {
+    "VAPID_PUBLIC_KEY": os.environ.get("VAPID_PUBLIC_KEY", ""),
+    "VAPID_PRIVATE_KEY": os.environ.get("VAPID_PRIVATE_KEY", ""),
+    "VAPID_ADMIN_EMAIL": "your-email@kodamaclass.com"
+}

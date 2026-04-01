@@ -22,6 +22,10 @@
     <link rel="icon" type="image/png" sizes="32x32" href="{% static 'core/images/favicons/favicon-32x32.png' %}">
     <link rel="icon" type="image/png" sizes="16x16" href="{% static 'core/images/favicons/favicon-16x16.png' %}">
     <link rel="shortcut icon" type="image/x-icon" href="{% static 'core/images/favicons/favicon.ico' %}">
+
+    <script>
+        window.vapidPublicKey = "{{ WEBPUSH_SETTINGS.VAPID_PUBLIC_KEY }}";
+    </script>
 </head>
 <body>
 
@@ -72,5 +76,96 @@
 </script>
 <script src="{% static 'core/js/notifications.js' %}"></script>
 <script src="{% static 'core/js/theme.js' %}"></script>
+<!-- Добавить перед закрывающим </body> -->
+
+<script>
+    // Получение CSRF токена
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    // Преобразование VAPID ключа из base64 в Uint8Array
+    function urlBase64ToUint8Array(base64String) {
+        const padding = '='.repeat((4 - base64String.length % 4) % 4);
+        const base64 = (base64String + padding)
+            .replace(/-/g, '+')
+            .replace(/_/g, '/');
+        const rawData = window.atob(base64);
+        const outputArray = new Uint8Array(rawData.length);
+        for (let i = 0; i < rawData.length; ++i) {
+            outputArray[i] = rawData.charCodeAt(i);
+        }
+        return outputArray;
+    }
+
+    // Подписка на push-уведомления
+    async function subscribeToPush() {
+        if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
+            console.log('Push notifications not supported');
+            return;
+        }
+
+        const registration = await navigator.serviceWorker.ready;
+
+        // Проверяем существующую подписку
+        let subscription = await registration.pushManager.getSubscription();
+
+        if (subscription) {
+            console.log('Already subscribed');
+            return;
+        }
+
+        const VAPID_PUBLIC_KEY = "BDrbhsC6alLRrm1APw93XZUdSPYJWDKj-AmhzVly3MRxrDgBU7_YI45fg3P7byiQDZpKQ0T53lPNcmBfaA02Xco";
+        const applicationServerKey = urlBase64ToUint8Array(vapidPublicKey);
+
+        try {
+            subscription = await registration.pushManager.subscribe({
+                userVisibleOnly: true,
+                applicationServerKey: applicationServerKey
+            });
+
+            // Отправляем подписку на сервер
+            const response = await fetch('/webpush/save_information/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken'),
+                },
+                body: JSON.stringify({subscription: subscription})
+            });
+
+            if (response.ok) {
+                console.log('Push subscription saved');
+            }
+        } catch (error) {
+            console.error('Error subscribing to push:', error);
+        }
+    }
+
+    // Запрашиваем разрешение при загрузке
+    if ('Notification' in window) {
+        Notification.requestPermission().then(permission => {
+            if (permission === 'granted') {
+                // Ждем регистрации service worker
+                if ('serviceWorker' in navigator) {
+                    navigator.serviceWorker.ready.then(() => {
+                        subscribeToPush();
+                    });
+                }
+            }
+        });
+    }
+</script>
 </body>
 </html>

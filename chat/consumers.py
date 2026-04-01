@@ -1,9 +1,10 @@
-# chat/consumers.py
-
 import json
+
 from channels.db import database_sync_to_async
 from channels.generic.websocket import AsyncWebsocketConsumer
 from django.contrib.auth import get_user_model
+from webpush import send_user_notification
+
 from .models import Conversation, Message
 
 User = get_user_model()
@@ -152,3 +153,29 @@ class NotificationConsumer(AsyncWebsocketConsumer):
             'message_preview': event['message_preview'],
             'unread_count': event['unread_count'],
         }))
+
+        # Отправляем push-уведомление
+        await self.send_push_notification(
+            user_id=self.user.id,
+            title=f"Новое сообщение от {event['sender_name']}",
+            body=event['message_preview'],
+            url=f"/chat/{event['conversation_id']}/"
+        )
+
+    @database_sync_to_async
+    def send_push_notification(self, user_id, title, body, url):
+        from django.contrib.auth import get_user_model
+        User = get_user_model()
+        user = User.objects.get(id=user_id)
+        try:
+            send_user_notification(
+                user=user,
+                payload={
+                    'title': title,
+                    'body': body,
+                    'url': url,
+                },
+                ttl=86400
+            )
+        except Exception as e:
+            print(f"Push error: {e}")
