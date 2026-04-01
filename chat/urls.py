@@ -14,4 +14,5 @@ urlpatterns = [
     path('api/messages/<int:conversation_id>/', views.get_messages, name='api_messages'),
     path('api/start/<int:user_id>/', views.start_chat_api, name='api_start_chat'),
     path('api/conversation/<int:conversation_id>/', views.get_conversation_info, name='api_conversation'),
+path('api/mark-read/<int:conversation_id>/', views.mark_messages_read, name='api_mark_read'),
 ]

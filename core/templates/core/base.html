@@ -50,7 +50,12 @@
             {% if user.is_authenticated %}
                 <a href="{% url 'materials_hub' %}">Курсы</a>
                 <a href="{% url 'profile' %}">Профиль</a>
-                <a href="{% url 'chat:chat_list' %}">Чаты</a>
+                <a href="{% url 'chat:chat_list' %}" id="chat-nav-link">
+                    Чаты
+                    {% if total_unread > 0 %}
+                        <span class="chat-unread-total" id="chat-unread-total">{{ total_unread }}</span>
+                    {% endif %}
+                </a>
             {% endif %}
         </nav>
     </div>
@@ -62,6 +67,10 @@
 </main>
 {% block scripts %}{% endblock %}
 <!-- Подключаем тему для всех страниц -->
+<script>
+    window.userIsAuthenticated = {% if user.is_authenticated %}true{% else %}false{% endif %};
+</script>
+<script src="{% static 'core/js/notifications.js' %}"></script>
 <script src="{% static 'core/js/theme.js' %}"></script>
 </body>
 </html>

@@ -36,7 +36,7 @@ class Message(models.Model):
     sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sent_messages')
     content = models.TextField(verbose_name='Текст сообщения')
     timestamp = models.DateTimeField(auto_now_add=True)
-    is_read = models.BooleanField(default=False)
+    is_read = models.BooleanField(default=False, verbose_name='Прочитано')
 
     class Meta:
         verbose_name = 'Сообщение'

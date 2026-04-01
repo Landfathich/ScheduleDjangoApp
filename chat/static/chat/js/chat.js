@@ -1,3 +1,5 @@
+// chat/static/chat/js/chat.js
+
 let currentConversationId = null;
 let ws = null;
 let currentUserId = null;
@@ -8,7 +10,7 @@ let placeholderPanel, chatPanel, chatHeader, messagesArea, messageInput, sendBtn
     searchResults;
 
 // Инициализация
-function initChat(userId, userName, initialConversationId, initialOtherUser, initialMessages) {
+function initChat(userId, userName, initialConversationId, initialOtherUser, initialMessages, totalUnread) {
     currentUserId = userId;
     currentUserName = userName;
 
@@ -25,6 +27,11 @@ function initChat(userId, userName, initialConversationId, initialOtherUser, ini
 
     // Навешиваем обработчики
     attachEventListeners();
+
+    // Обновляем счётчик в хедере
+    if (totalUnread !== undefined) {
+        updateHeaderUnreadCount(totalUnread);
+    }
 
     // Если есть начальный диалог, открываем его
     if (initialConversationId) {
@@ -51,7 +58,7 @@ function attachEventListeners() {
         const item = e.target.closest('.conversation-item');
         if (item) {
             const convId = parseInt(item.dataset.conversationId);
-            const convName = item.querySelector('.conversation-name').textContent;
+            const convName = item.querySelector('.conversation-name').textContent.replace(/[0-9]+/g, '').trim();
             openConversation(convId, convName);
         }
     });
@@ -129,6 +136,19 @@ function loadMessages(messages) {
     }
 }
 
+function updateConversationPreview(conversationId, message, senderName) {
+    const convItem = document.querySelector(`.conversation-item[data-conversation-id="${conversationId}"]`);
+    if (!convItem) return;
+
+    const previewDiv = convItem.querySelector('.conversation-preview');
+    if (previewDiv) {
+        const isOwnMessage = (senderName === currentUserName);
+        const prefix = isOwnMessage ? 'Вы: ' : `${senderName}: `;
+        previewDiv.textContent = prefix + message.substring(0, 30);
+        if (message.length > 30) previewDiv.textContent += '...';
+    }
+}
+
 function connectWebSocket(conversationId) {
     if (ws) {
         ws.close();
@@ -143,11 +163,23 @@ function connectWebSocket(conversationId) {
     };
 
     ws.onmessage = function (event) {
-        const data = JSON.parse(event.data);
-        if (data.type === 'chat') {
-            addMessageToChat(data.message, data.sender_id, data.username, formatTime());
+    const data = JSON.parse(event.data);
+    if (data.type === 'chat') {
+        addMessageToChat(data.message, data.sender_id, data.username, formatTime());
+
+        // Если сообщение от другого пользователя
+        if (data.sender_id !== currentUserId) {
+            // Обновляем предпросмотр в списке диалогов
+            updateConversationPreview(currentConversationId, data.message, data.username);
+
+            // Если это не текущий открытый чат, увеличиваем счётчик
+            if (currentConversationId !== parseInt(data.conversation_id)) {
+                incrementConversationUnreadCount(currentConversationId);
+                updateTotalUnreadCount();
+            }
         }
-    };
+    }
+};
 
     ws.onerror = function (error) {
         console.error('WebSocket ошибка:', error);
@@ -167,6 +199,71 @@ function sendMessage() {
     messageInput.style.height = 'auto';
 }
 
+function updateHeaderUnreadCount(count) {
+    const chatNavLink = document.getElementById('chat-nav-link');
+    if (!chatNavLink) return;
+
+    const existingBadge = chatNavLink.querySelector('.chat-unread-total');
+    if (existingBadge) {
+        existingBadge.remove();
+    }
+
+    if (count > 0) {
+        const badge = document.createElement('span');
+        badge.className = 'chat-unread-total';
+        badge.textContent = count;
+        chatNavLink.appendChild(badge);
+    }
+}
+
+function updateConversationUnreadCount(conversationId, newCount) {
+    const convItem = document.querySelector(`.conversation-item[data-conversation-id="${conversationId}"]`);
+    if (!convItem) return;
+
+    const nameDiv = convItem.querySelector('.conversation-name');
+    const existingBadge = nameDiv.querySelector('.unread-badge');
+    if (existingBadge) {
+        existingBadge.remove();
+    }
+
+    if (newCount > 0) {
+        const badge = document.createElement('span');
+        badge.className = 'unread-badge';
+        badge.textContent = newCount;
+        nameDiv.appendChild(badge);
+    }
+}
+
+function incrementConversationUnreadCount(conversationId) {
+    const convItem = document.querySelector(`.conversation-item[data-conversation-id="${conversationId}"]`);
+    if (!convItem) return;
+
+    const nameDiv = convItem.querySelector('.conversation-name');
+    const existingBadge = nameDiv.querySelector('.unread-badge');
+
+    let currentCount = 0;
+    if (existingBadge) {
+        currentCount = parseInt(existingBadge.textContent) || 0;
+        existingBadge.textContent = currentCount + 1;
+    } else {
+        const badge = document.createElement('span');
+        badge.className = 'unread-badge';
+        badge.textContent = '1';
+        nameDiv.appendChild(badge);
+    }
+}
+
+function updateTotalUnreadCount() {
+    const badges = document.querySelectorAll('.conversation-item .unread-badge');
+    let total = 0;
+    badges.forEach(badge => {
+        const count = parseInt(badge.textContent);
+        if (!isNaN(count)) {
+            total += count;
+        }
+    });
+    updateHeaderUnreadCount(total);
+}
 function openConversation(conversationId, otherUserName) {
     if (currentConversationId === conversationId) return;
 
@@ -199,6 +296,29 @@ function openConversation(conversationId, otherUserName) {
         .then(data => {
             loadMessages(data.messages);
             connectWebSocket(conversationId);
+
+            // Отмечаем сообщения как прочитанные
+            return fetch(`/chat/api/mark-read/${conversationId}/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': getCookie('csrftoken'),
+                }
+            });
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.marked_count > 0) {
+                // Удаляем бейдж у этого диалога в списке
+                const convItem = document.querySelector(`.conversation-item[data-conversation-id="${conversationId}"]`);
+                if (convItem) {
+                    const badge = convItem.querySelector('.unread-badge');
+                    if (badge) {
+                        badge.remove();
+                    }
+                }
+                // Обновляем общий счётчик в хедере
+                updateTotalUnreadCount();
+            }
         })
         .catch(error => {
             console.error('Ошибка загрузки сообщений:', error);

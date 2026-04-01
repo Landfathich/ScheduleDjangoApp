@@ -3,11 +3,9 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 
-from .models import Conversation
+from .models import Conversation, Message
 
 User = get_user_model()
-
-from django.db.models import Q
 
 
 @login_required
@@ -113,20 +111,34 @@ def get_conversation_info(request, conversation_id):
 
 # chat/views.py
 
+# chat/views.py (обновить функцию chat_list)
+
+from django.db.models import Count, Q
+
+
 @login_required
 def chat_list(request, conversation_id=None):
     """Главная страница чатов"""
+    # Подсчитываем непрочитанные сообщения для каждого диалога
     conversations = Conversation.objects.filter(
         participants=request.user
+    ).annotate(
+        unread_count=Count(
+            'messages',
+            filter=Q(messages__is_read=False) & ~Q(messages__sender=request.user)
+        )
     ).select_related().prefetch_related('participants', 'messages')
+
+    # Общее количество непрочитанных сообщений для кнопки в хедере
+    total_unread = sum(conv.unread_count for conv in conversations)
 
     context = {
         'conversations': conversations,
         'user_id': request.user.id,
         'user_full_name': f"{request.user.first_name} {request.user.last_name}".strip() or request.user.username,
+        'total_unread': total_unread,
     }
 
-    # Если передан ID диалога, загружаем его данные
     if conversation_id:
         try:
             conversation = Conversation.objects.get(id=conversation_id, participants=request.user)
@@ -206,3 +218,25 @@ def conversation_detail(request, conversation_id):
         'user_id': request.user.id,
         'user_full_name': f"{request.user.first_name} {request.user.last_name}".strip() or request.user.username,
     })
+
+
+# chat/views.py
+from django.views.decorators.http import require_POST
+
+
+@require_POST
+def mark_messages_read(request, conversation_id):
+    """Отметить все сообщения в диалоге как прочитанные"""
+    conversation = get_object_or_404(Conversation, id=conversation_id)
+
+    if request.user not in conversation.participants.all():
+        return JsonResponse({'error': 'Access denied'}, status=403)
+
+    updated = Message.objects.filter(
+        conversation=conversation,
+        is_read=False
+    ).exclude(
+        sender=request.user
+    ).update(is_read=True)
+
+    return JsonResponse({'marked_count': updated})
