@@ -27,22 +27,14 @@ main {
 .stats-header {
     color: #ffffff;
     text-align: center;
-    margin-bottom: 5px;
+    margin-bottom: 15px;
 }
 
-.stats-updated {
-    text-align: center;
-    color: #7f8c8d;
-    margin-bottom: 30px;
-    font-size: 0.9em;
-}
-
-/* Центрированная финансовая секция */
-.finance-centered {
+.stats {
     display: flex;
+    gap: 10px;
     justify-content: center;
     width: 100%;
-    max-width: 400px;
 }
 
 .stat-card {
@@ -64,6 +56,7 @@ main {
 /* Специфические стили для финансовой карточки */
 .stat-card.finance {
     border-top: 4px solid #f39c12;
+    max-width: 400px;
 }
 
 .finance-balance {
@@ -385,6 +378,48 @@ main {
     text-align: center;
 }
 
+.stat-card.teachers-load {
+    border-top: 4px solid #3498db;
+    max-width: 400px;
+}
+
+.teachers-stats {
+    text-align: center;
+    padding: 20px 0;
+}
+
+.teacher-availability {
+    font-size: 2em;
+    margin-bottom: 10px;
+}
+
+.availability-value {
+    font-weight: bold;
+    color: #2c3e50;
+}
+
+.availability-divider {
+    font-size: 0.7em;
+    color: #7f8c8d;
+    margin: 0 5px;
+}
+
+.availability-total {
+    font-weight: bold;
+    color: #2c3e50;
+}
+
+.availability-unit {
+    font-size: 0.5em;
+    color: #7f8c8d;
+    margin-left: 5px;
+}
+
+.teacher-load-percent {
+    color: #7f8c8d;
+    font-size: 0.9em;
+}
+
 @media (max-width: 768px) {
     .stats-container {
         padding: 5px;
@@ -392,7 +427,7 @@ main {
         overflow-x: hidden;
     }
 
-    .finance-centered {
+    .stats {
         max-width: 100%;
     }
 

@@ -10,10 +10,9 @@
     <div class="stats-container">
         <!-- Заголовок -->
         <h1 class="stats-header">📊 Аналитика школы</h1>
-        <div class="stats-updated">Обновлено: {% now "j F Y H:i" %}</div>
 
-        <!-- Финансы - центрированная секция -->
-        <div class="finance-centered">
+        <div class="stats">
+            <!-- Финансы -->
             <div class="stat-card finance">
                 <h2>💰 Финансы школы</h2>
 
@@ -56,6 +55,21 @@
                             <a href="/finance/events/create/">Последние снапшоты</a>
                         </div>
                     </div>
+                </div>
+            </div>
+
+            <!-- Занятость преподавателей -->
+            <div class="stat-card teachers-load">
+                <h2>👨‍🏫 Занятость преподавателей</h2>
+
+                <div class="teachers-stats">
+                    <div class="teacher-availability">
+                        <span class="availability-value">{{ teachers_stats.free_hours }}</span>
+                        <span class="availability-divider">из</span>
+                        <span class="availability-total">{{ teachers_stats.total_hours }}</span>
+                        <span class="availability-unit">часов свободно</span>
+                    </div>
+                    <div class="teacher-load-percent">Школа загружена на {{ teachers_stats.load_percentage }}%</div>
                 </div>
             </div>
         </div>
