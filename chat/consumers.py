@@ -3,7 +3,7 @@ import json
 from channels.db import database_sync_to_async
 from channels.generic.websocket import AsyncWebsocketConsumer
 from django.contrib.auth import get_user_model
-from webpush import send_user_notification
+#from webpush.utils import send_user_notification
 
 from .models import Conversation, Message
 
@@ -163,6 +163,7 @@ class NotificationConsumer(AsyncWebsocketConsumer):
             url=f"/chat/{event['conversation_id']}/"
         )
 
+"""
     @database_sync_to_async
     def send_push_notification(self, user_id, title, body, url):
         from django.contrib.auth import get_user_model
@@ -180,3 +181,4 @@ class NotificationConsumer(AsyncWebsocketConsumer):
             )
         except Exception as e:
             print(f"Push error: {e}")
+"""
