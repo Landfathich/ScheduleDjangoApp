@@ -2,7 +2,6 @@ import logging
 
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.models import User
-from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
@@ -113,6 +112,58 @@ class StatsDashboardView(TemplateView):
             'load_percentage': round((busy_slots / total_slots * 100)) if total_slots > 0 else 0,
         }
         return context
+
+
+from django.http import JsonResponse
+from datetime import datetime, timedelta
+from django.db.models import Q
+
+
+def teachers_load_details(request):
+    # Определяем даты прошлой недели
+    today = datetime.now().date()
+    start_of_week = today - timedelta(days=today.weekday() + 7)
+    end_of_week = start_of_week + timedelta(days=6)
+
+    # Получаем исключаемых преподавателей
+    excluded_teacher_ids = get_excluded_teacher_ids()
+    inactive_teacher_ids = User.objects.filter(is_active=False).values_list('id', flat=True)
+    all_excluded_ids = list(set(list(excluded_teacher_ids) + list(inactive_teacher_ids)))
+
+    teachers_data = []
+    open_slots_list = OpenSlots.objects.select_related('teacher').filter(
+        ~Q(teacher__user__id__in=all_excluded_ids)
+    )
+
+    for open_slot in open_slots_list:
+        teacher = open_slot.teacher
+        # Считаем общее количество слотов преподавателя
+        total_slots = 0
+        for day, times in open_slot.weekly_open_slots.items():
+            total_slots += len(times)
+
+        # Считаем занятые слоты (уроки за прошлую неделю у этого преподавателя)
+        busy_slots = Lesson.objects.filter(
+            teacher=teacher,
+            date__range=[start_of_week, end_of_week]
+        ).count()
+
+        if total_slots > 0:
+            load_percentage = round((busy_slots / total_slots) * 100)
+        else:
+            load_percentage = 0
+
+        teachers_data.append({
+            'name': teacher.name,
+            'load_percentage': load_percentage,
+            'busy_hours': busy_slots,
+            'total_hours': total_slots
+        })
+
+    # Сортируем от самых свободных к самым загруженным
+    teachers_data.sort(key=lambda x: x['load_percentage'])
+
+    return JsonResponse({'teachers': teachers_data})
 
 
 @staff_member_required

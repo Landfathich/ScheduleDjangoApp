@@ -14,64 +14,78 @@
         <div class="stats">
             <!-- Финансы -->
             <div class="stat-card finance">
-                <h2>💰 Финансы школы</h2>
+    <h2>💰 Финансы школы</h2>
 
-                <div class="finance-main">
-                    <!-- Основной баланс -->
-                    <div class="finance-balance">
-                        <div class="balance-label">Текущий баланс школы</div>
-                        <div class="balance-value">{{ finance_stats.current_balance|floatformat:0|intcomma }} ₽</div>
-                        <div class="balance-subtitle">Доходы - расходы</div>
-                    </div>
+    <div class="card-content">
+        <div class="finance-balance">
+            <div class="balance-label">Текущий баланс школы</div>
+            <div class="balance-value">{{ finance_stats.current_balance|floatformat:0|intcomma }} ₽</div>
+            <div class="balance-subtitle">Доходы - расходы</div>
+        </div>
 
-                    <!-- Свободные деньги -->
-                    <div class="free-money-section">
-                        <div class="free-money-label">💎 Свободные деньги</div>
-                        <div class="free-money-value">{{ finance_stats.free_money|floatformat:0|intcomma }} ₽</div>
-                        <div class="free-money-subtitle">Можно вкладывать в развитие</div>
-                    </div>
+        <div class="free-money-section">
+            <div class="free-money-label">💎 Свободные деньги</div>
+            <div class="free-money-value">{{ finance_stats.free_money|floatformat:0|intcomma }} ₽</div>
+            <div class="free-money-subtitle">Можно вкладывать в развитие</div>
+        </div>
+    </div>
 
-                    <!-- Кнопка раскрытия деталей -->
-                    <div class="toggle-details-section">
-                        <button class="toggle-details-btn" onclick="toggleFinanceDetails()">
-                            <span class="toggle-icon">▼</span>
-                            Показать детализацию
-                        </button>
-                    </div>
+    <div class="toggle-details-section">
+        <button class="toggle-details-btn" id="toggleFinanceBtn" onclick="toggleFinanceDetails()">
+            <span class="toggle-icon">▼</span>
+            Показать детализацию
+        </button>
+    </div>
 
-                    <!-- Детализация (скрыта по умолчанию) -->
-                    <div id="financeDetails" class="finance-details hidden">
-                        <div class="finance-row">
-                            <span class="finance-label">Зарезервировано для выплат:</span>
-                            <span class="finance-amount warning">{{ finance_stats.reserved_money|floatformat:0|intcomma }} ₽</span>
-                        </div>
-
-                        <div class="add-expense-section">
-                            <button class="add-expense-btn" onclick="openExpenseModal()">
-                                ➕ Добавить расход школы
-                            </button>
-                            <br>
-                            <br>
-                            <a href="/finance/events/create/">Последние снапшоты</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
+    <div id="financeDetails" class="card-details hidden">
+        <div class="finance-row">
+            <span class="finance-label">Зарезервировано для выплат:</span>
+            <span class="finance-amount warning">{{ finance_stats.reserved_money|floatformat:0|intcomma }} ₽</span>
+        </div>
+        <div class="add-expense-section">
+            <button class="add-expense-btn" onclick="openExpenseModal()">
+                ➕ Добавить расход школы
+            </button>
+            <br>
+            <br>
+            <a href="/finance/events/create/">Последние снапшоты</a>
+        </div>
+    </div>
+</div>
 
             <!-- Занятость преподавателей -->
             <div class="stat-card teachers-load">
-                <h2>👨‍🏫 Занятость преподавателей</h2>
+    <h2>👨‍🏫 Занятость преподавателей</h2>
 
-                <div class="teachers-stats">
-                    <div class="teacher-availability">
-                        <span class="availability-value">{{ teachers_stats.free_hours }}</span>
-                        <span class="availability-divider">из</span>
-                        <span class="availability-total">{{ teachers_stats.total_hours }}</span>
-                        <span class="availability-unit">часов свободно</span>
-                    </div>
-                    <div class="teacher-load-percent">Школа загружена на {{ teachers_stats.load_percentage }}%</div>
-                </div>
+    <div class="card-content">
+        <div class="chart-container">
+            <canvas id="teachersChart" width="200" height="200"></canvas>
+            <div class="chart-center">
+                <div class="chart-percent">{{ teachers_stats.load_percentage }}%</div>
+                <div class="chart-label">загрузка</div>
             </div>
+        </div>
+        <div class="teacher-availability">
+            <span class="availability-value">{{ teachers_stats.free_hours }}</span>
+            <span class="availability-divider">из</span>
+            <span class="availability-total">{{ teachers_stats.total_hours }}</span>
+            <span class="availability-unit">часов свободно</span>
+        </div>
+    </div>
+
+    <div class="toggle-details-section">
+        <button class="toggle-details-btn" id="toggleTeachersBtn" onclick="toggleTeachersDetails()">
+            <span class="toggle-icon">▼</span>
+            Показать детализацию
+        </button>
+    </div>
+
+    <div id="teachersDetails" class="card-details hidden">
+        <div class="teachers-list">
+            <p class="loading-text">Загрузка данных...</p>
+        </div>
+    </div>
+</div>
         </div>
     </div>
 
@@ -115,8 +129,13 @@
 
     <!-- Уведомление -->
     <div id="expenseNotification" class="notification hidden"></div>
+
+    <script>
+        const teachersLoadData = {{ teachers_stats.load_percentage }};
+    </script>
 {% endblock %}
 
 {% block scripts %}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="{% static 'finance/js/analytics.js' %}"></script>
 {% endblock %}
