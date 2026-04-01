@@ -63,6 +63,8 @@ CSRF_TRUSTED_ORIGINS = [
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
+    'daphne',
+    'channels',
     'django.contrib.contenttypes',
     'django_admin_inline_paginator',
     'django.contrib.sessions',
@@ -77,6 +79,9 @@ INSTALLED_APPS = [
     'django.contrib.humanize',
     'finance.apps.FinanceConfig',
     'tasks',
+    'finance.apps.FinanceConfig',
+    'chat.apps.ChatConfig',
+    'webpush',
 ]
 
 if DEBUG:
@@ -100,8 +105,7 @@ ROOT_URLCONF = 'scheduleApp.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates']
-        ,
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -113,6 +117,14 @@ TEMPLATES = [
         },
     },
 ]
+
+ASGI_APPLICATION = 'scheduleApp.asgi.application'
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels.layers.InMemoryChannelLayer',
+    },
+}
 
 WSGI_APPLICATION = 'scheduleApp.wsgi.application'
 
@@ -245,6 +257,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # Для collectstatic
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'core/static'),
     os.path.join(BASE_DIR, 'materials/static'),
+    os.path.join(BASE_DIR, 'chat/static'),
 ]
 
 # Новая система STORAGES для Django 4.2+
@@ -276,7 +289,7 @@ REST_FRAMEWORK = {
 MEDIA_URL = '/media/'  # e.g. localhost:80/media/image.jpg
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-# PWA_SERVICE_WORKER_PATH = os.path.join(BASE_DIR, 'static/js', 'serviceworker.js')
+PWA_SERVICE_WORKER_PATH = os.path.join(BASE_DIR, 'templates', 'serviceworker.js')
 
 PWA_APP_NAME = 'Уроки'
 PWA_APP_DESCRIPTION = "Система управления расписанием в школе Kodama"
@@ -310,3 +323,10 @@ PWA_APP_SPLASH_SCREEN = [
 ]
 PWA_APP_DIR = 'ltr'
 PWA_APP_LANG = 'ru-RU'
+
+# Web Push настройки
+WEBPUSH_SETTINGS = {
+    "VAPID_PUBLIC_KEY": os.environ.get("VAPID_PUBLIC_KEY", ""),
+    "VAPID_PRIVATE_KEY": os.environ.get("VAPID_PRIVATE_KEY", ""),
+    "VAPID_ADMIN_EMAIL": "trable228@icloud.com"
+}

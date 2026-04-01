@@ -7,4 +7,5 @@ urlpatterns = [
     path('stats/', StatsDashboardView.as_view(), name='stats_dashboard'),
     path('stats/add-expense/', SchoolExpenseCreateView.as_view(), name='add_school_expense'),
     path('finance/events/create/', views.finance_event_create, name='finance_event_create'),
+    path('stats/teachers-load-details/', views.teachers_load_details, name='teachers_load_details'),
 ]

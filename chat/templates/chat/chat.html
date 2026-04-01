@@ -1,0 +1,154 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Чаты{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'chat/css/chat.css' %}">
+{% endblock %}
+
+{% block content %}
+    <div class="chat-container">
+        <!-- Левая панель -->
+        <div class="chat-sidebar" id="chat-sidebar">
+            <div class="search-header">
+                <input type="text"
+                       id="user-search"
+                       class="search-input"
+                       placeholder="🔍 Поиск сотрудников..."
+                       autocomplete="off">
+                <div id="search-results" class="search-results" style="display: none;"></div>
+            </div>
+            <div class="conversations-list" id="conversations-list">
+                {% for conv in conversations %}
+                    <!-- Внутри conversation-item, после conversation-name -->
+                    <div class="conversation-item" data-conversation-id="{{ conv.id }}">
+                        <div class="conversation-name">
+                            {% if conv.is_group %}
+                                {{ conv.name|default:"Групповой чат" }}
+                            {% else %}
+                                {% for participant in conv.participants.all %}
+                                    {% if participant != request.user %}
+                                        {{ participant.first_name }} {{ participant.last_name }}
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
+                            {% if conv.unread_count > 0 %}
+                                <span class="unread-badge">{{ conv.unread_count }}</span>
+                            {% endif %}
+                        </div>
+                        <div class="conversation-preview">
+    {% with last_msg=conv.messages.last %}
+        {% if last_msg %}
+            {{ last_msg.sender.first_name }}: {{ last_msg.content|truncatechars:30 }}
+        {% else %}
+            Нет сообщений
+        {% endif %}
+    {% endwith %}
+</div>
+                    </div>
+                {% empty %}
+                    <div class="empty-state" style="padding: 40px; text-align: center; color: var(--text-secondary);">
+                        Нет диалогов<br>
+                        Начните чат через поиск
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Правая панель -->
+        <div class="chat-main">
+            <!-- Заглушка с кнопкой меню -->
+            <div id="placeholder-panel" class="chat-placeholder">
+                <div class="chat-header-mobile-only">
+                    <button class="chat-header-menu" id="mobile-menu-btn-placeholder">☰</button>
+                </div>
+                <div class="chat-placeholder-icon">💬</div>
+                <p>Выберите диалог из списка слева<br>или найдите сотрудника для начала чата</p>
+            </div>
+
+            <!-- Панель чата с кнопкой меню в хедере -->
+            <div id="chat-panel" class="chat-panel hidden">
+                <div class="chat-header">
+                    <button class="chat-header-menu" id="mobile-menu-btn-chat">☰</button>
+                    <span id="chat-header-name"></span>
+                </div>
+                <div class="messages-area" id="messages-area"></div>
+                <div class="chat-input-area">
+                    <textarea id="message-input" class="chat-input" rows="1"
+                              placeholder="Введите сообщение..."></textarea>
+                    <button id="send-btn" class="send-btn">Отправить</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    <script>
+    const userId = {{ user_id }};
+    const userName = "{{ user_full_name|escapejs }}";
+    const totalUnread = {{ total_unread }};
+    {% if initial_conversation %}
+        const initialConversationId = {{ initial_conversation.id }};
+        const initialOtherUser = "{% if other_user %}{{ other_user.first_name }} {{ other_user.last_name }}{% endif %}";
+        const initialMessages = [
+            {% for msg in initial_messages %}
+                {
+                    id: {{ msg.id }},
+                    content: "{{ msg.content|escapejs }}",
+                    sender_id: {{ msg.sender.id }},
+                    sender_name: "{{ msg.sender.first_name }} {{ msg.sender.last_name }}".trim() || "{{ msg.sender.username }}",
+                    timestamp: "{{ msg.timestamp|date:'H:i, d.m.y' }}"
+                },
+            {% endfor %}
+        ];
+    {% else %}
+        const initialConversationId = null;
+        const initialOtherUser = null;
+        const initialMessages = [];
+    {% endif %}
+</script>
+<script src="{% static 'chat/js/chat.js' %}"></script>
+<script>
+    initChat(userId, userName, initialConversationId, initialOtherUser, initialMessages, totalUnread);
+</script>
+    <script src="{% static 'chat/js/chat.js' %}"></script>
+    <script>
+        initChat(userId, userName, initialConversationId, initialOtherUser, initialMessages);
+
+        // Мобильное меню (общая функция для обеих кнопок)
+        const chatSidebar = document.getElementById('chat-sidebar');
+
+        function setupMobileMenu(btnId) {
+            const btn = document.getElementById(btnId);
+            if (btn && chatSidebar) {
+                btn.addEventListener('click', function (e) {
+                    e.stopPropagation();
+                    chatSidebar.classList.toggle('open');
+                });
+            }
+        }
+
+        setupMobileMenu('mobile-menu-btn-placeholder');
+        setupMobileMenu('mobile-menu-btn-chat');
+
+        // Закрывать меню при клике на диалог
+        document.getElementById('conversations-list')?.addEventListener('click', function () {
+            if (window.innerWidth <= 768) {
+                chatSidebar.classList.remove('open');
+            }
+        });
+
+        // Закрывать меню при клике вне его
+        document.addEventListener('click', function (e) {
+            if (window.innerWidth <= 768) {
+                if (!chatSidebar.contains(e.target) &&
+                    !document.getElementById('mobile-menu-btn-placeholder')?.contains(e.target) &&
+                    !document.getElementById('mobile-menu-btn-chat')?.contains(e.target)) {
+                    chatSidebar.classList.remove('open');
+                }
+            }
+        });
+    </script>
+{% endblock %}

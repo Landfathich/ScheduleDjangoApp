@@ -1,267 +1,106 @@
-import {createLogger} from "./logger.js";
+// core/static/core/js/notifications.js
 
-const logger = createLogger('[Notifications]');
-logger.enable()
-
-let notificationQueue = [];
-let isNotificationShowing = false;
-let notificationTimer = null;
-let currentNotificationData = null;
-
-// 🔒 Защита от дублирования - храним хеши последних уведомлений
-let notificationHistory = new Set();
-const NOTIFICATION_HISTORY_SIZE = 10; // Храним последние 10 уведомлений
-const DUPLICATE_COOLDOWN = 3000; // 3 секунды cooldown для одинаковых уведомлений
-
-// Функция для создания хеша уведомления
-function createNotificationHash(message, type) {
-    return `${type}:${message}`;
-}
-
-// Проверка, можно ли показать уведомление (нет дубликата)
-function canShowNotification(message, type) {
-    const hash = createNotificationHash(message, type);
-
-    // Если уведомление уже в истории - не показываем
-    if (notificationHistory.has(hash)) {
-        logger.log(`🔒 Пропускаем дубликат уведомления: "${message}"`);
-        return false;
+class NotificationManager {
+    constructor() {
+        this.ws = null;
+        this.init();
     }
 
-    return true;
-}
+    init() {
+        if (!window.userIsAuthenticated) return;
 
-// Добавление уведомления в историю
-function addToNotificationHistory(message, type) {
-    const hash = createNotificationHash(message, type);
+        const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+        const wsUrl = `${wsProtocol}//${window.location.host}/ws/notifications/`;
 
-    // Добавляем в историю
-    notificationHistory.add(hash);
+        this.ws = new WebSocket(wsUrl);
 
-    // Ограничиваем размер истории
-    if (notificationHistory.size > NOTIFICATION_HISTORY_SIZE) {
-        const firstItem = notificationHistory.values().next().value;
-        notificationHistory.delete(firstItem);
+        this.ws.onopen = () => {
+            console.log('Notification WebSocket connected');
+        };
+
+        this.ws.onmessage = (event) => {
+            const data = JSON.parse(event.data);
+            if (data.type === 'new_message') {
+                this.handleNewMessage(data);
+            }
+        };
+
+        this.ws.onclose = () => {
+            console.log('Notification WebSocket disconnected, reconnecting...');
+            setTimeout(() => this.init(), 3000);
+        };
+
+        this.ws.onerror = (error) => {
+            console.error('Notification WebSocket error:', error);
+        };
     }
 
-    // Автоматически удаляем из истории через cooldown время
-    setTimeout(() => {
-        notificationHistory.delete(hash);
-        logger.log(`🕒 Удаляем уведомление из истории: "${message}"`);
-    }, DUPLICATE_COOLDOWN);
-}
-
-export function showNotification(message, type = 'info') {
-    // 🔒 Проверяем, не является ли уведомление дубликатом
-    if (!canShowNotification(message, type)) {
-        return;
-    }
-
-    notificationQueue.push({message, type});
-
-    if (!isNotificationShowing) {
-        showNextNotification();
-    } else {
-        updateNotificationBadge();
-    }
-}
-
-export function clearAllNotifications() {
-    logger.log('Clearing all notifications from queue');
-
-    // Мгновенная очистка без анимаций
-    if (notificationTimer) {
-        clearTimeout(notificationTimer);
-        notificationTimer = null;
-    }
-
-    // Очищаем очередь
-    notificationQueue = [];
-
-    // Сбрасываем флаги
-    isNotificationShowing = false;
-    currentNotificationData = null;
-
-    // Мгновенно скрываем уведомление без анимации
-    const notification = document.getElementById('notification');
-    if (notification) {
-        notification.style.display = 'none';
-        notification.classList.remove('notification-appear', 'notification-pop');
-
-        // Сбрасываем прогресс-бар
-        const progressBar = notification.querySelector('.notification-progress');
-        if (progressBar) {
-            resetProgressBar(progressBar);
+    handleNewMessage(data) {
+        // Обновляем счётчик на кнопке "Чаты"
+        const chatNavLink = document.getElementById('chat-nav-link');
+        if (chatNavLink) {
+            const existingBadge = chatNavLink.querySelector('.chat-unread-total');
+            if (existingBadge) {
+                existingBadge.textContent = data.unread_count;
+            } else if (data.unread_count > 0) {
+                const badge = document.createElement('span');
+                badge.className = 'chat-unread-total';
+                badge.textContent = data.unread_count;
+                chatNavLink.appendChild(badge);
+            }
         }
 
-        // Сбрасываем обработчики
-        document.getElementById('hide-button').onclick = null;
-        document.getElementById('hide-all-button').onclick = null;
+        // Если мы на странице чатов, обновим также список диалогов
+        if (window.location.pathname.startsWith('/chat/')) {
+            this.updateChatList(data);
+        }
 
-        // Удаляем бейдж
-        const oldBadge = notification.querySelector('.notification-counter-badge');
-        if (oldBadge) {
-            oldBadge.remove();
+        // Показываем уведомление (если страница не активна)
+        if (document.hidden) {
+            this.showBrowserNotification(data);
         }
     }
 
-    logger.log('All notifications cleared');
-}
+    updateChatList(data) {
+        // Обновляем предпросмотр диалога
+        const convItem = document.querySelector(`.conversation-item[data-conversation-id="${data.conversation_id}"]`);
+        if (convItem) {
+            const previewDiv = convItem.querySelector('.conversation-preview');
+            if (previewDiv) {
+                previewDiv.textContent = `${data.sender_name}: ${data.message_preview}`;
+            }
 
-function showNextNotification() {
-    if (notificationQueue.length === 0) {
-        isNotificationShowing = false;
-        currentNotificationData = null;
-        return;
+            // Обновляем счётчик
+            const nameDiv = convItem.querySelector('.conversation-name');
+            const existingBadge = nameDiv.querySelector('.unread-badge');
+            if (existingBadge) {
+                existingBadge.textContent = data.unread_count;
+            } else if (data.unread_count > 0) {
+                const badge = document.createElement('span');
+                badge.className = 'unread-badge';
+                badge.textContent = data.unread_count;
+                nameDiv.appendChild(badge);
+            }
+        }
     }
 
-    isNotificationShowing = true;
-    currentNotificationData = notificationQueue[0];
+    showBrowserNotification(data) {
+        if (!("Notification" in window)) return;
 
-    // 🔒 Добавляем текущее уведомление в историю
-    addToNotificationHistory(currentNotificationData.message, currentNotificationData.type);
-
-    const notification = document.getElementById('notification');
-    const notificationText = notification.querySelector('.notification-text');
-    const progressBar = notification.querySelector('.notification-progress');
-    const hideAllButton = document.getElementById('hide-all-button');
-    const hideButton = document.getElementById('hide-button');
-
-    // Сбрасываем классы анимации
-    notification.classList.remove('notification-appear', 'notification-pop');
-
-    // Очищаем старый бейдж
-    const oldBadge = notification.querySelector('.notification-counter-badge');
-    if (oldBadge) {
-        oldBadge.remove();
-    }
-
-    // Устанавливаем класс типа уведомления
-    notification.className = 'notification';
-    notification.classList.add(currentNotificationData.type);
-
-    notificationText.textContent = currentNotificationData.message;
-    updateNotificationBadge();
-
-    // Сбрасываем прогресс-бар ПЕРЕД показом уведомления
-    resetProgressBar(progressBar);
-
-    notification.style.display = 'block';
-    notification.style.zIndex = '1001';
-
-    // Обработчики для кнопок действий
-    const handleHide = () => {
-        clearTimeout(notificationTimer);
-        hideNotificationAndShowNext(notification);
-    };
-
-    const handleHideAll = () => {
-        clearTimeout(notificationTimer);
-        notificationQueue = [notificationQueue[0]];
-        updateNotificationBadge();
-        hideNotificationAndShowNext(notification);
-    };
-
-    hideButton.onclick = handleHide;
-    hideAllButton.onclick = handleHideAll;
-
-    // Анимация появления
-    requestAnimationFrame(() => {
-        notification.classList.add('notification-appear');
-
-        // Запускаем прогресс-бар ПОСЛЕ появления уведомления
-        requestAnimationFrame(() => {
-            startProgressBar(progressBar);
-        });
-    });
-
-    // Таймер автоматического скрытия
-    notificationTimer = setTimeout(() => {
-        hideNotificationAndShowNext(notification);
-    }, 3000);
-}
-
-function updateNotificationBadge() {
-    if (!isNotificationShowing || !currentNotificationData) return;
-
-    const notification = document.getElementById('notification');
-    const hideAllButton = document.getElementById('hide-all-button');
-
-    const remainingCount = notificationQueue.length - 1;
-
-    // Удаляем старый бейдж
-    const oldBadge = notification.querySelector('.notification-counter-badge');
-    if (oldBadge) {
-        oldBadge.remove();
-    }
-
-    // Показываем/скрываем кнопку "Скрыть все" и бейдж
-    if (remainingCount > 0) {
-        hideAllButton.style.display = 'block';
-        createNotificationCounterBadge(notification, remainingCount, currentNotificationData.type);
-    } else {
-        hideAllButton.style.display = 'none';
+        if (Notification.permission === "granted") {
+            new Notification(`Новое сообщение от ${data.sender_name}`, {
+                body: data.message_preview,
+                icon: "/static/core/images/favicons/favicon-32x32.png"
+            });
+        } else if (Notification.permission !== "denied") {
+            Notification.requestPermission();
+        }
     }
 }
 
-function createNotificationCounterBadge(notification, count, type) {
-    const badge = document.createElement('div');
-    badge.className = `notification-counter-badge ${type} pulse floating`;
-    badge.textContent = `${count}`;
-
-    const notificationContent = notification.querySelector('.notification-content');
-    notificationContent.appendChild(badge);
-}
-
-function startProgressBar(progressBar) {
-    // Принудительно сбрасываем transition перед запуском анимации
-    progressBar.style.transition = 'none';
-    progressBar.style.transform = 'scaleX(1)';
-
-    // Даем браузеру время применить сброс
-    requestAnimationFrame(() => {
-        progressBar.style.transition = 'transform 3s linear';
-        progressBar.style.transform = 'scaleX(0)';
-    });
-}
-
-function hideNotificationAndShowNext(notification) {
-    const progressBar = notification.querySelector('.notification-progress');
-
-    // Останавливаем анимацию прогресс-бара
-    progressBar.style.transition = 'none';
-
-    notification.classList.remove('notification-appear');
-    notification.classList.add('notification-pop');
-
-    setTimeout(() => {
-        notification.style.display = 'none';
-        notification.classList.remove('notification-pop');
-
-        // Полностью сбрасываем прогресс-бар
-        resetProgressBar(progressBar);
-
-        notificationQueue.shift();
-        currentNotificationData = null;
-
-        // Сбрасываем обработчики
-        document.getElementById('hide-button').onclick = null;
-        document.getElementById('hide-all-button').onclick = null;
-
-        showNextNotification();
-    }, 400);
-}
-
-function resetProgressBar(progressBar) {
-    // Полный сброс прогресс-бара
-    progressBar.style.transition = 'none';
-    progressBar.style.transform = 'scaleX(1)';
-    progressBar.style.opacity = '1';
-
-    // Принудительный reflow для гарантии применения стилей
-    void progressBar.offsetWidth;
-}
-
-// Экспортируем функцию для глобального использования
-window.showNotification = showNotification;
-window.clearAllNotifications = clearAllNotifications;
+// Инициализация при загрузке
+document.addEventListener('DOMContentLoaded', () => {
+    if (window.userIsAuthenticated) {
+        window.notificationManager = new NotificationManager();
+    }
+});

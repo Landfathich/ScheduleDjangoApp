@@ -27,30 +27,28 @@ main {
 .stats-header {
     color: #ffffff;
     text-align: center;
-    margin-bottom: 5px;
+    margin-bottom: 15px;
 }
 
-.stats-updated {
-    text-align: center;
-    color: #7f8c8d;
-    margin-bottom: 30px;
-    font-size: 0.9em;
-}
-
-/* Центрированная финансовая секция */
-.finance-centered {
+.stats {
     display: flex;
+    gap: 10px;
     justify-content: center;
     width: 100%;
-    max-width: 400px;
+    align-items: flex-start;
 }
 
+/* Общие стили карточек */
 .stat-card {
     background: white;
     border-radius: 10px;
     padding: 20px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     width: 100%;
+    max-width: 400px;
+    display: flex;
+    flex-direction: column;
+    min-height: 415px;
 }
 
 .stat-card h2 {
@@ -59,13 +57,44 @@ main {
     color: #34495e;
     font-size: 1.3em;
     text-align: center;
+    flex-shrink: 0;
 }
 
-/* Специфические стили для финансовой карточки */
+.card-content {
+    flex: 1;
+    min-height: 280px;
+    overflow-y: auto;
+    margin-bottom: 15px;
+}
+
+.card-details {
+    flex-shrink: 0;
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid #ecf0f1;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.card-details.hidden {
+    display: none;
+}
+
+.toggle-details-section {
+    flex-shrink: 0;
+    text-align: center;
+}
+
+/* Специфические стили карточек */
 .stat-card.finance {
     border-top: 4px solid #f39c12;
 }
 
+.stat-card.teachers-load {
+    border-top: 4px solid #3498db;
+}
+
+/* Финансовая карточка */
 .finance-balance {
     text-align: center;
 }
@@ -87,53 +116,9 @@ main {
     margin-top: 5px;
 }
 
-/* Добавляем эти стили в analytics.css */
-
-.finance-main {
-    margin-bottom: 15px;
-}
-
-.finance-details {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    margin-top: 20px;
-}
-
-.finance-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 8px 0;
-    border-bottom: 1px solid #ecf0f1;
-}
-
-.finance-row:last-child {
-    border-bottom: none;
-}
-
-.finance-label {
-    color: #546e7a;
-    font-size: 0.95em;
-}
-
-.finance-amount {
-    font-weight: 600;
-    font-size: 1.1em;
-}
-
-.finance-amount.positive {
-    color: #27ae60;
-}
-
-.finance-amount.negative {
-    color: #e74c3c;
-}
-
-/* Секция свободных денег */
 .free-money-section {
     text-align: center;
-    margin: 20px 0;
+    margin-top: 20px;
     padding: 15px;
     background: linear-gradient(135deg, #e8f5e8, #d0f0d0);
     border-radius: 8px;
@@ -159,6 +144,32 @@ main {
     font-size: 0.8em;
 }
 
+.finance-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid #ecf0f1;
+}
+
+.finance-row:last-child {
+    border-bottom: none;
+}
+
+.finance-label {
+    color: #546e7a;
+    font-size: 0.95em;
+}
+
+.finance-amount {
+    font-weight: 600;
+    font-size: 1.1em;
+}
+
+.finance-amount.warning {
+    color: #e74c3c;
+}
+
 .add-expense-section {
     margin-top: 20px;
     text-align: center;
@@ -173,12 +184,146 @@ main {
     border-radius: 6px;
     font-weight: 500;
     transition: background 0.3s ease;
+    border: none;
+    cursor: pointer;
 }
 
 .add-expense-btn:hover {
     background: #2980b9;
     text-decoration: none;
     color: white;
+}
+
+/* Карточка преподавателей */
+.chart-container {
+    position: relative;
+    width: 200px;
+    height: 200px;
+    margin: 0 auto;
+}
+
+.chart-center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+}
+
+.chart-percent {
+    font-size: 28px;
+    font-weight: bold;
+    color: #2c3e50;
+}
+
+.chart-label {
+    font-size: 12px;
+    color: #7f8c8d;
+}
+
+.teacher-availability {
+    text-align: center;
+    font-size: 2em;
+    margin-top: 15px;
+}
+
+.availability-value {
+    font-weight: bold;
+    color: #2c3e50;
+}
+
+.availability-divider {
+    font-size: 0.7em;
+    color: #7f8c8d;
+    margin: 0 5px;
+}
+
+.availability-total {
+    font-weight: bold;
+    color: #2c3e50;
+}
+
+.availability-unit {
+    font-size: 0.5em;
+    color: #7f8c8d;
+    margin-left: 5px;
+}
+
+/* Детализация преподавателей */
+.teachers-list {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.teacher-detail-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 0;
+    border-bottom: 1px solid #ecf0f1;
+}
+
+.teacher-detail-name {
+    width: 120px;
+    font-size: 14px;
+    color: #2c3e50;
+}
+
+.teacher-detail-bar {
+    flex: 1;
+    height: 8px;
+    background: #ecf0f1;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.teacher-detail-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #3498db, #5dade2);
+    border-radius: 4px;
+    transition: width 0.3s ease;
+}
+
+.teacher-detail-percent {
+    width: 45px;
+    font-size: 12px;
+    color: #7f8c8d;
+    text-align: right;
+}
+
+.loading-text {
+    text-align: center;
+    color: #95a5a6;
+    padding: 20px;
+}
+
+/* Кнопки переключения */
+.toggle-details-btn {
+    background: none;
+    border: 1px solid #3498db;
+    color: #3498db;
+    padding: 10px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.toggle-details-btn:hover {
+    background: #3498db;
+    color: white;
+}
+
+.toggle-icon {
+    transition: transform 0.3s ease;
+    font-size: 12px;
+}
+
+.toggle-details-btn.expanded .toggle-icon {
+    transform: rotate(180deg);
 }
 
 /* Модальное окно */
@@ -317,74 +462,7 @@ main {
     display: none;
 }
 
-/* Секция переключения деталей */
-.toggle-details-section {
-    text-align: center;
-    margin: 20px 0;
-}
-
-.toggle-details-btn {
-    background: none;
-    border: 1px solid #3498db;
-    color: #3498db;
-    padding: 10px 20px;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 14px;
-    transition: all 0.3s ease;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin: 0 auto;
-}
-
-.toggle-details-btn:hover {
-    background: #3498db;
-    color: white;
-}
-
-.toggle-icon {
-    transition: transform 0.3s ease;
-    font-size: 12px;
-}
-
-.toggle-details-btn.expanded .toggle-icon {
-    transform: rotate(180deg);
-}
-
-/* Детализация */
-.finance-details {
-    overflow: hidden;
-    transition: all 0.3s ease-in-out;
-}
-
-.finance-details.hidden {
-    display: none;
-}
-
-.finance-details:not(.hidden) {
-    animation: slideDown 0.3s ease-out;
-}
-
-@keyframes slideDown {
-    from {
-        opacity: 0;
-        transform: translateY(-10px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-/* Кнопка добавления расхода в детализации */
-.add-expense-section {
-    margin-top: 25px;
-    padding-top: 20px;
-    border-top: 1px solid #ecf0f1;
-    text-align: center;
-}
-
+/* Адаптивность */
 @media (max-width: 768px) {
     .stats-container {
         padding: 5px;
@@ -392,7 +470,7 @@ main {
         overflow-x: hidden;
     }
 
-    .finance-centered {
+    .stats {
         max-width: 100%;
     }
 

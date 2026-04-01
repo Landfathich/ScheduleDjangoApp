@@ -1,31 +1,103 @@
-// Переключение детализации
+// Инициализация диаграммы занятости
+function initTeachersChart(loadPercentage) {
+    const ctx = document.getElementById('teachersChart');
+    if (!ctx) return;
+
+    const freePercentage = 100 - loadPercentage;
+
+    new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: ['Занято', 'Свободно'],
+            datasets: [{
+                data: [loadPercentage, freePercentage],
+                backgroundColor: ['#e74c3c', '#2ecc71'],
+                borderWidth: 0,
+                hoverOffset: 4
+            }]
+        },
+        options: {
+            cutout: '70%',
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function (context) {
+                            return `${context.label}: ${context.raw}%`;
+                        }
+                    }
+                }
+            }
+        }
+    });
+}
+
 function toggleFinanceDetails() {
     const details = document.getElementById('financeDetails');
-    const button = document.querySelector('.toggle-details-btn');
-    const icon = button.querySelector('.toggle-icon');
+    const button = document.getElementById('toggleFinanceBtn');
 
     if (details.classList.contains('hidden')) {
-        // Показываем с анимацией
+        details.classList.remove('hidden');
+        button.classList.add('expanded');
+        button.innerHTML = '<span class="toggle-icon">▼</span> Скрыть детализацию';
+    } else {
+        details.classList.add('hidden');
+        button.classList.remove('expanded');
+        button.innerHTML = '<span class="toggle-icon">▼</span> Показать детализацию';
+    }
+}
+
+function toggleTeachersDetails() {
+    const details = document.getElementById('teachersDetails');
+    const button = document.getElementById('toggleTeachersBtn');
+
+    if (details.classList.contains('hidden')) {
         details.classList.remove('hidden');
         button.classList.add('expanded');
         button.innerHTML = '<span class="toggle-icon">▼</span> Скрыть детализацию';
 
-        // Плавное появление
-        setTimeout(() => {
-            details.style.opacity = '1';
-            details.style.transform = 'translateY(0)';
-        }, 10);
+        if (details.querySelector('.loading-text')) {
+            loadTeachersDetails();
+        }
     } else {
-        // Скрываем с анимацией
-        details.style.opacity = '0';
-        details.style.transform = 'translateY(-10px)';
-
-        setTimeout(() => {
-            details.classList.add('hidden');
-            button.classList.remove('expanded');
-            button.innerHTML = '<span class="toggle-icon">▼</span> Показать детализацию';
-        }, 300);
+        details.classList.add('hidden');
+        button.classList.remove('expanded');
+        button.innerHTML = '<span class="toggle-icon">▼</span> Показать детализацию';
     }
+}
+
+function loadTeachersDetails() {
+    fetch('/stats/teachers-load-details/')
+        .then(response => response.json())
+        .then(data => {
+            const container = document.getElementById('teachersDetails');
+            if (data.teachers && data.teachers.length > 0) {
+                let html = '<div class="teachers-list">';
+                data.teachers.forEach(teacher => {
+                    html += `
+                        <div class="teacher-detail-item">
+                            <span class="teacher-detail-name">${teacher.name}</span>
+                            <div class="teacher-detail-bar">
+                                <div class="teacher-detail-fill" style="width: ${teacher.load_percentage}%"></div>
+                            </div>
+                            <span class="teacher-detail-percent">${teacher.load_percentage}%</span>
+                        </div>
+                    `;
+                });
+                html += '</div>';
+                container.innerHTML = html;
+            } else {
+                container.innerHTML = '<p class="loading-text">Нет данных о преподавателях</p>';
+            }
+        })
+        .catch(error => {
+            const container = document.getElementById('teachersDetails');
+            container.innerHTML = '<p class="loading-text">Ошибка загрузки данных</p>';
+        });
 }
 
 // Модальное окно расходов
@@ -136,4 +208,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Вешаем обработчик на window для модального окна
     window.addEventListener('click', handleModalClick);
+
+    if (typeof teachersLoadData !== 'undefined') {
+        initTeachersChart(teachersLoadData);
+    }
 });

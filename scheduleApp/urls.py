@@ -27,6 +27,8 @@ urlpatterns = [
     path('tasks/', include('tasks.urls')),
     # TODO СДЕЛАТЬ ЧТОБЫ ЗДЕСЬ ПОДКЛЮЧАЛОСЬ ПРИЛОЖЕНИЕ CORE, А В КОРЕ УЖЕ КОРОВЫКЕ ССЫЛКИ ТОЛЬКО, И НОРМАЛЬНОЕ ИМЕНОВАНИЕ В ОДНОМ СТИЛЕ
     path('', include('pwa.urls')),
+    path('chat/', include('chat.urls')),
+    path('webpush/', include('webpush.urls')),
 ]
 
 if settings.DEBUG:
