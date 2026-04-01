@@ -1,6 +1,7 @@
 import logging
 
 from django.contrib.admin.views.decorators import staff_member_required
+from django.contrib.auth.models import User
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.utils.decorators import method_decorator
@@ -78,21 +79,29 @@ class StatsDashboardView(TemplateView):
         # Получаем ID исключаемых преподавателей
         excluded_teacher_ids = get_excluded_teacher_ids()
 
-        # Считаем все открытые слоты за прошлую неделю (исключая некоторых преподавателей)
+        # Получаем ID неактивных преподавателей
+        inactive_teacher_ids = User.objects.filter(
+            is_active=False
+        ).values_list('id', flat=True)
+
+        # Объединяем оба списка
+        all_excluded_ids = list(set(list(excluded_teacher_ids) + list(inactive_teacher_ids)))
+
+        # Считаем все открытые слоты (исключая неактивных и указанных преподавателей)
         total_slots = 0
         open_slots_list = OpenSlots.objects.select_related('teacher').filter(
-            ~Q(teacher__user__id__in=excluded_teacher_ids)
+            ~Q(teacher__user__id__in=all_excluded_ids)
         ).all()
 
         for open_slot in open_slots_list:
             for day, times in open_slot.weekly_open_slots.items():
                 total_slots += len(times)
 
-        # Считаем занятые слоты (уроки за прошлую неделю, исключая некоторых преподавателей)
+        # Считаем занятые слоты (исключая неактивных и указанных преподавателей)
         busy_slots = Lesson.objects.filter(
             date__range=[start_of_week, end_of_week]
         ).exclude(
-            teacher__user__id__in=excluded_teacher_ids
+            teacher__user__id__in=all_excluded_ids
         ).count()
 
         free_slots = total_slots - busy_slots
