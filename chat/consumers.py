@@ -3,7 +3,6 @@ import json
 from channels.db import database_sync_to_async
 from channels.generic.websocket import AsyncWebsocketConsumer
 from django.contrib.auth import get_user_model
-from webpush.utils import send_user_notification
 
 from .models import Conversation, Message
 
@@ -163,13 +162,18 @@ class NotificationConsumer(AsyncWebsocketConsumer):
             url=f"/chat/{event['conversation_id']}/"
         )
 
+    # Удалите импорт сверху
+    # from webpush.utils import send_user_notification
+
+    # В методе send_push_notification импортируйте внутри:
     @database_sync_to_async
     def send_push_notification(self, user_id, title, body, url):
+        from webpush.utils import send_notification_to_user
         from django.contrib.auth import get_user_model
         User = get_user_model()
         user = User.objects.get(id=user_id)
         try:
-            send_user_notification(
+            send_notification_to_user(
                 user=user,
                 payload={
                     'title': title,

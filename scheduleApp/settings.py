@@ -73,6 +73,7 @@ INSTALLED_APPS = [
     'core.apps.CoreConfig',
     'materials.apps.MaterialsConfig',
     'django_cleanup.apps.CleanupConfig',
+    'webpush',
     'safedelete',
     'phonenumber_field',
     'pwa',
@@ -80,7 +81,6 @@ INSTALLED_APPS = [
     'finance.apps.FinanceConfig',
     'tasks',
     'chat.apps.ChatConfig',
-    'webpush',
 ]
 
 if DEBUG:
