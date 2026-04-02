@@ -38,14 +38,14 @@
                             {% endif %}
                         </div>
                         <div class="conversation-preview">
-    {% with last_msg=conv.messages.last %}
-        {% if last_msg %}
-            {{ last_msg.sender.first_name }}: {{ last_msg.content|truncatechars:30 }}
-        {% else %}
-            Нет сообщений
-        {% endif %}
-    {% endwith %}
-</div>
+                            {% with last_msg=conv.messages.last %}
+                                {% if last_msg %}
+                                    {{ last_msg.sender.first_name }}: {{ last_msg.content|truncatechars:30 }}
+                                {% else %}
+                                    Нет сообщений
+                                {% endif %}
+                            {% endwith %}
+                        </div>
                     </div>
                 {% empty %}
                     <div class="empty-state" style="padding: 40px; text-align: center; color: var(--text-secondary);">
@@ -86,38 +86,34 @@
 
 {% block scripts %}
     <script>
-    const userId = {{ user_id }};
-    const userName = "{{ user_full_name|escapejs }}";
-    const totalUnread = {{ total_unread }};
-    {% if initial_conversation %}
-        const initialConversationId = {{ initial_conversation.id }};
-        const initialOtherUser = "{% if other_user %}{{ other_user.first_name }} {{ other_user.last_name }}{% endif %}";
-        const initialMessages = [
-            {% for msg in initial_messages %}
-                {
-                    id: {{ msg.id }},
-                    content: "{{ msg.content|escapejs }}",
-                    sender_id: {{ msg.sender.id }},
-                    sender_name: "{{ msg.sender.first_name }} {{ msg.sender.last_name }}".trim() || "{{ msg.sender.username }}",
-                    timestamp: "{{ msg.timestamp|date:'H:i, d.m.y' }}"
-                },
-            {% endfor %}
-        ];
-    {% else %}
-        const initialConversationId = null;
-        const initialOtherUser = null;
-        const initialMessages = [];
-    {% endif %}
-</script>
-<script src="{% static 'chat/js/chat.js' %}"></script>
-<script>
-    initChat(userId, userName, initialConversationId, initialOtherUser, initialMessages, totalUnread);
-</script>
+        const userId = {{ user_id }};
+        const userName = "{{ user_full_name|escapejs }}";
+        const totalUnread = {{ total_unread }};
+        {% if initial_conversation %}
+            const initialConversationId = {{ initial_conversation.id }};
+            const initialOtherUser = "{% if other_user %}{{ other_user.first_name }} {{ other_user.last_name }}{% endif %}";
+            const initialMessages = [
+                {% for msg in initial_messages %}
+                    {
+                        id: {{ msg.id }},
+                        content: "{{ msg.content|escapejs }}",
+                        sender_id: {{ msg.sender.id }},
+                        sender_name: "{{ msg.sender.first_name }} {{ msg.sender.last_name }}".trim() || "{{ msg.sender.username }}",
+                        timestamp: "{{ msg.timestamp|date:'H:i, d.m.y' }}"
+                    },
+                {% endfor %}
+            ];
+        {% else %}
+            const initialConversationId = null;
+            const initialOtherUser = null;
+            const initialMessages = [];
+        {% endif %}
+    </script>
     <script src="{% static 'chat/js/chat.js' %}"></script>
     <script>
-        initChat(userId, userName, initialConversationId, initialOtherUser, initialMessages);
+        initChat(userId, userName, initialConversationId, initialOtherUser, initialMessages, totalUnread);
 
-        // Мобильное меню (общая функция для обеих кнопок)
+        // Мобильное меню
         const chatSidebar = document.getElementById('chat-sidebar');
 
         function setupMobileMenu(btnId) {
@@ -133,14 +129,12 @@
         setupMobileMenu('mobile-menu-btn-placeholder');
         setupMobileMenu('mobile-menu-btn-chat');
 
-        // Закрывать меню при клике на диалог
         document.getElementById('conversations-list')?.addEventListener('click', function () {
             if (window.innerWidth <= 768) {
                 chatSidebar.classList.remove('open');
             }
         });
 
-        // Закрывать меню при клике вне его
         document.addEventListener('click', function (e) {
             if (window.innerWidth <= 768) {
                 if (!chatSidebar.contains(e.target) &&
