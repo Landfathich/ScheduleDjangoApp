@@ -94,8 +94,14 @@
 .conversation-item {
     padding: 12px 16px;
     border-bottom: 1px solid var(--border-color);
+    border-left: 3px solid transparent;
     cursor: pointer;
     transition: background 0.2s;
+}
+
+.conversation-item.active {
+    background: rgba(var(--primary-color-rgb), 0.1);
+    border-left-color: var(--primary-color);
 }
 
 .conversation-item:hover {
@@ -229,6 +235,7 @@
     background: var(--bg);
     color: var(--text-primary);
     outline: none;
+    overflow-y: hidden;
 }
 
 .chat-input:focus {

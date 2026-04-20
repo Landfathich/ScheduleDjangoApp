@@ -268,6 +268,10 @@ function openConversation(conversationId, otherUserName) {
 
     currentConversationId = conversationId;
 
+    // Очищаем поле ввода
+    messageInput.value = '';
+    messageInput.style.height = 'auto';
+
     // Обновляем URL
     const newUrl = `/chat/${conversationId}/`;
     window.history.pushState({conversationId: conversationId}, '', newUrl);
@@ -307,7 +311,6 @@ function openConversation(conversationId, otherUserName) {
         .then(response => response.json())
         .then(data => {
             if (data.marked_count > 0) {
-                // Удаляем бейдж у этого диалога в списке
                 const convItem = document.querySelector(`.conversation-item[data-conversation-id="${conversationId}"]`);
                 if (convItem) {
                     const badge = convItem.querySelector('.unread-badge');
@@ -315,9 +318,10 @@ function openConversation(conversationId, otherUserName) {
                         badge.remove();
                     }
                 }
-                // Обновляем общий счётчик в хедере
                 updateTotalUnreadCount();
             }
+            // Автофокус на поле ввода
+            messageInput.focus();
         })
         .catch(error => {
             console.error('Ошибка загрузки сообщений:', error);
