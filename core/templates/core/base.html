@@ -141,7 +141,7 @@
         }
 
         const VAPID_PUBLIC_KEY = "BDrbhsC6alLRrm1APw93XZUdSPYJWDKj-AmhzVly3MRxrDgBU7_YI45fg3P7byiQDZpKQ0T53lPNcmBfaA02Xco";
-        const applicationServerKey = urlBase64ToUint8Array(vapidPublicKey);
+        const applicationServerKey = urlBase64ToUint8Array(VAPID_PUBLIC_KEY);
 
         try {
             subscription = await registration.pushManager.subscribe({
