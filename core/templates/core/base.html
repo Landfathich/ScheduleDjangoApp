@@ -30,7 +30,10 @@
     <script>
         // Применяем тему ДО загрузки основного JS
         (function () {
-            const savedTheme = localStorage.getItem('schedule-theme');
+            let savedTheme = localStorage.getItem('theme');
+            if (!savedTheme) {
+                savedTheme = 'dark';
+            }
             if (savedTheme === 'dark' || savedTheme === 'light') {
                 document.documentElement.setAttribute('data-theme', savedTheme);
             }

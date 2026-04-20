@@ -180,6 +180,12 @@ export class SettingsManager {
         this.startHourSelect.value = calendarManager.startHour;
         this.endHourSelect.value = calendarManager.endHour;
 
+        // Синхронизируем переключатель темы с текущей темой
+        if (this.themeSwitch) {
+            const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
+            this.themeSwitch.checked = (currentTheme === 'dark');
+        }
+
         this.modal.classList.add('visible');
         this.modal.style.display = 'block';
         this.resetModalScroll();

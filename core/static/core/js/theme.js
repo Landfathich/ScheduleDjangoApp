@@ -19,14 +19,10 @@ class ThemeManager {
     }
 
     applySavedTheme() {
-        // Получаем тему из localStorage
         let theme = localStorage.getItem('theme');
-
-        // Если в localStorage нет, используем light
         if (!theme) {
-            theme = 'light';
+            theme = 'dark';
         }
-
         this.setTheme(theme, false);
     }
 
