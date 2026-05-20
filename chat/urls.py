@@ -1,3 +1,5 @@
+"""
+
 from django.urls import path
 
 from . import views
@@ -16,3 +18,4 @@ urlpatterns = [
     path('api/conversation/<int:conversation_id>/', views.get_conversation_info, name='api_conversation'),
 path('api/mark-read/<int:conversation_id>/', views.mark_messages_read, name='api_mark_read'),
 ]
+"""

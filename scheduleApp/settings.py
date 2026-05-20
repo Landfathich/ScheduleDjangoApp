@@ -63,8 +63,6 @@ CSRF_TRUSTED_ORIGINS = [
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
-    'daphne',
-    'channels',
     'django.contrib.contenttypes',
     'django_admin_inline_paginator',
     'django.contrib.sessions',
@@ -73,14 +71,12 @@ INSTALLED_APPS = [
     'core.apps.CoreConfig',
     'materials.apps.MaterialsConfig',
     'django_cleanup.apps.CleanupConfig',
-    'webpush',
+    'tasks',
     'safedelete',
     'phonenumber_field',
     'pwa',
     'django.contrib.humanize',
     'finance.apps.FinanceConfig',
-    'tasks',
-    'chat.apps.ChatConfig',
 ]
 
 if DEBUG:

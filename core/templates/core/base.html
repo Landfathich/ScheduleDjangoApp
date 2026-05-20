@@ -64,12 +64,12 @@
             {% if user.is_staff %}
                 <a href="{% url 'stats_dashboard' %}">Аналитика</a>
                 <a href="{% url 'tasks:kanban_board' %}">Задачи</a>
-                <a href="{% url 'chat:chat_list' %}" id="chat-nav-link">
+                {% comment %}<a href="{% url 'chat:chat_list' %}" id="chat-nav-link">
                     Чаты
                     {% if total_unread > 0 %}
                         <span class="chat-unread-total" id="chat-unread-total">{{ total_unread }}</span>
                     {% endif %}
-                </a>
+                </a>{% endcomment %}
             {% endif %}
             {% if user.is_authenticated %}
                 <a href="{% url 'materials_hub' %}">Курсы</a>
@@ -88,7 +88,7 @@
 <script>
     window.userIsAuthenticated = {% if user.is_authenticated %}true{% else %}false{% endif %};
 </script>
-<script src="{% static 'core/js/push-notifications.js' %}"></script>
+{% comment %}<script src="{% static 'core/js/push-notifications.js' %}"></script>{% endcomment %}
 <script src="{% static 'core/js/theme.js' %}"></script>
 <!-- Добавить перед закрывающим </body> -->
 
@@ -109,7 +109,7 @@
         return cookieValue;
     }
 
-    // Преобразование VAPID ключа из base64 в Uint8Array
+    {% comment %}// Преобразование VAPID ключа из base64 в Uint8Array
     function urlBase64ToUint8Array(base64String) {
         const padding = '='.repeat((4 - base64String.length % 4) % 4);
         const base64 = (base64String + padding)
@@ -179,7 +179,7 @@
                 }
             }
         });
-    }
+    }{% endcomment %}
 </script>
 </body>
 </html>

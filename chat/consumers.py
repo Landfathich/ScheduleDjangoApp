@@ -1,3 +1,5 @@
+"""
+
 import json
 
 from channels.db import database_sync_to_async
@@ -85,7 +87,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
         }))
 
     async def new_message_notification(self, event):
-        """Отправка уведомления о новом сообщении в личную комнату пользователя"""
         await self.send(text_data=json.dumps({
             'type': 'notification',
             'conversation_id': event['conversation_id'],
@@ -145,7 +146,6 @@ class NotificationConsumer(AsyncWebsocketConsumer):
             )
 
     async def new_message_notification(self, event):
-        """Получение уведомления о новом сообщении"""
         await self.send(text_data=json.dumps({
             'type': 'new_message',
             'conversation_id': event['conversation_id'],
@@ -184,3 +184,4 @@ class NotificationConsumer(AsyncWebsocketConsumer):
             )
         except Exception as e:
             print(f"Push error: {e}")
+"""

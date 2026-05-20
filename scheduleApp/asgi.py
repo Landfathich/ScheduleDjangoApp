@@ -1,3 +1,5 @@
+"""
+версия для чата и веб сокетов
 import os
 from django.core.asgi import get_asgi_application
 
@@ -6,6 +8,7 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'scheduleApp.settings')
 django_asgi_app = get_asgi_application()
 
 # Потом импортируем всё остальное
+
 from channels.auth import AuthMiddlewareStack
 from channels.routing import ProtocolTypeRouter, URLRouter
 import chat.routing
@@ -17,4 +20,12 @@ application = ProtocolTypeRouter({
             chat.routing.websocket_urlpatterns
         )
     ),
-})
+})"""
+
+import os
+
+from django.core.asgi import get_asgi_application
+
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'scheduleApp.settings')
+
+application = get_asgi_application()

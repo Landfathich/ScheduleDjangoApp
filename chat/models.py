@@ -1,3 +1,5 @@
+"""
+
 from django.db import models
 from django.conf import settings
 
@@ -5,7 +7,6 @@ User = settings.AUTH_USER_MODEL
 
 
 class Conversation(models.Model):
-    """Модель диалога (личный или групповой чат)"""
     participants = models.ManyToManyField(User, related_name='conversations')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -24,14 +25,12 @@ class Conversation(models.Model):
         return ', '.join([str(u) for u in users])
 
     def get_other_participant(self, user):
-        """Для личного чата возвращает собеседника"""
         if self.is_group:
             return None
         return self.participants.exclude(id=user.id).first()
 
 
 class Message(models.Model):
-    """Модель сообщения"""
     conversation = models.ForeignKey(Conversation, on_delete=models.CASCADE, related_name='messages')
     sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sent_messages')
     content = models.TextField(verbose_name='Текст сообщения')
@@ -45,3 +44,4 @@ class Message(models.Model):
 
     def __str__(self):
         return f'{self.sender}: {self.content[:50]}'
+    """

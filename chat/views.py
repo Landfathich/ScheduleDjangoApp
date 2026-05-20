@@ -1,3 +1,5 @@
+"""
+
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth import get_user_model
@@ -12,7 +14,6 @@ User = get_user_model()
 @login_required
 @staff_member_required
 def search_users_json(request):
-    """Поиск пользователей и возврат JSON для фронтенда"""
     query = request.GET.get('q', '').strip()
 
     # Базовый запрос: все пользователи кроме текущего
@@ -48,7 +49,6 @@ from django.shortcuts import get_object_or_404
 @require_GET
 @staff_member_required
 def get_messages(request, conversation_id):
-    """Получить сообщения диалога (API)"""
     conversation = get_object_or_404(Conversation, id=conversation_id)
 
     if request.user not in conversation.participants.all():
@@ -73,7 +73,6 @@ def get_messages(request, conversation_id):
 @require_POST
 @staff_member_required
 def start_chat_api(request, user_id):
-    """Начать чат (API)"""
     other_user = get_object_or_404(User, id=user_id)
 
     conversation = Conversation.objects.filter(
@@ -97,7 +96,6 @@ def start_chat_api(request, user_id):
 @require_GET
 @staff_member_required
 def get_conversation_info(request, conversation_id):
-    """Получить информацию о диалоге (API)"""
     conversation = get_object_or_404(Conversation, id=conversation_id)
 
     if request.user not in conversation.participants.all():
@@ -118,7 +116,6 @@ from django.db.models import Count, Q
 @login_required
 @staff_member_required
 def chat_list(request, conversation_id=None):
-    """Главная страница чатов"""
     # Подсчитываем непрочитанные сообщения для каждого диалога
     conversations = Conversation.objects.filter(
         participants=request.user
@@ -156,7 +153,6 @@ def chat_list(request, conversation_id=None):
 @login_required
 @staff_member_required
 def search_users(request):
-    """Поиск пользователей для начала чата"""
     query = request.GET.get('q', '').strip()
     users = []
 
@@ -176,7 +172,6 @@ def search_users(request):
 @login_required
 @staff_member_required
 def start_chat(request, user_id):
-    """Начать или открыть диалог с пользователем"""
     other_user = get_object_or_404(User, id=user_id)
 
     # Проверяем, есть ли уже существующий личный диалог
@@ -199,7 +194,6 @@ def start_chat(request, user_id):
 @login_required
 @staff_member_required
 def conversation_detail(request, conversation_id):
-    """Детальная страница чата"""
     conversation = get_object_or_404(Conversation, id=conversation_id)
 
     if request.user not in conversation.participants.all():
@@ -227,7 +221,6 @@ from django.views.decorators.http import require_POST
 @require_POST
 @staff_member_required
 def mark_messages_read(request, conversation_id):
-    """Отметить все сообщения в диалоге как прочитанные"""
     conversation = get_object_or_404(Conversation, id=conversation_id)
 
     if request.user not in conversation.participants.all():
@@ -241,3 +234,4 @@ def mark_messages_read(request, conversation_id):
     ).update(is_read=True)
 
     return JsonResponse({'marked_count': updated})
+"""
