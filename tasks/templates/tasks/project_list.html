@@ -41,6 +41,7 @@
                         </div>
                         <div class="project-actions">
                             <a href="{% url 'tasks:kanban_board' %}?project={{ project.id }}" class="btn">Открыть</a>
+                            <a href="{% url 'tasks:project_members' project.id %}" class="btn">👥</a>
                             <a href="{% url 'tasks:edit_project' project.id %}" class="btn">✏️</a>
                             <form method="post" action="{% url 'tasks:delete_project' project.id %}"
                                   style="display: inline;">

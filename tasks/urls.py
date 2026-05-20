@@ -22,4 +22,8 @@ urlpatterns = [
     path('move-column/', views.move_column, name='move_column'),
     path('delete-column/', views.delete_column, name='delete_column'),
     path('create-column/', views.create_column, name='create_column'),
+
+    path('projects/<int:project_id>/members/', views.project_members, name='project_members'),
+    path('projects/<int:project_id>/members/add/', views.add_member, name='add_member'),
+    path('projects/<int:project_id>/members/remove/', views.remove_member, name='remove_member'),
 ]

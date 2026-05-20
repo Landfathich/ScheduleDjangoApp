@@ -6,7 +6,13 @@ class Project(models.Model):
     name = models.CharField(max_length=200, verbose_name="Название проекта")
     description = models.TextField(blank=True, verbose_name="Описание")
     color = models.CharField(max_length=7, default="#336699")
-    creator = models.ForeignKey(User, on_delete=models.CASCADE)
+    creator = models.ForeignKey(User, on_delete=models.CASCADE, related_name='created_projects')
+    members = models.ManyToManyField(
+        User,
+        through='ProjectMember',
+        through_fields=('project', 'user'),
+        related_name='projects'
+    )
     created_at = models.DateTimeField(auto_now_add=True)
 
     def save(self, *args, **kwargs):
@@ -102,3 +108,17 @@ class Task(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class ProjectMember(models.Model):
+    ROLE_CHOICES = [
+        ('owner', 'Владелец'),
+        ('editor', 'Редактор'),
+        # ('viewer', 'Наблюдатель'), # закомментирован на будущее
+    ]
+
+    project = models.ForeignKey(Project, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='editor')
+    added_at = models.DateTimeField(auto_now_add=True)
+    added_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='added_members')

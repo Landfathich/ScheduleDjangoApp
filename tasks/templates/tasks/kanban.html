@@ -31,6 +31,12 @@
                             <a href="{% url 'tasks:project_list' %}" class="btn" style="margin-left: 10px;">
                                 Управление проектами
                             </a>
+                            {% if current_project %}
+                                <a href="{% url 'tasks:project_members' current_project.id %}" class="btn"
+                                   style="margin-left: 5px;">
+                                    👥 Участники
+                                </a>
+                            {% endif %}
                         {% endif %}
                     </div>
                 {% endif %}

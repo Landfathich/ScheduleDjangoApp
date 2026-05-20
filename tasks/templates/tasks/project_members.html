@@ -1,0 +1,131 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Участники проекта | Kodama{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'tasks/css/base.css' %}">
+    <!-- Временно подключим Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+    <div class="container mt-4">
+        <h2>Участники проекта: {{ project.name }}</h2>
+
+        <div class="card mb-4">
+            <div class="card-header">Добавить участника</div>
+            <div class="card-body">
+                <form id="add-member-form" class="row g-3">
+                    {% csrf_token %}
+                    <div class="col-md-6">
+                        <select class="form-select" id="user-select" name="user_id">
+                            <option value="">Выберите пользователя...</option>
+                            {% for user in all_users %}
+                                <option value="{{ user.id }}">{{ user.username }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <select class="form-select" name="role">
+                            <option value="editor">Редактор</option>
+                            {% comment %}<option value="viewer">Наблюдатель</option>{% endcomment %}
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-primary w-100">Добавить</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">Текущие участники</div>
+            <ul class="list-group list-group-flush" id="members-list">
+                {% for member in members %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center"
+                        data-member-id="{{ member.id }}">
+                        <div>
+                            <strong>{{ member.user.username }}</strong>
+                            <span class="badge bg-secondary ms-2">{{ member.get_role_display }}</span>
+                            {% if member.user == project.creator %}
+                                <span class="badge bg-info ms-1">Создатель</span>
+                            {% endif %}
+                        </div>
+                        <div>
+                            <small class="text-muted me-3">Добавил: {{ member.added_by.username }}</small>
+                            {% if member.role != 'owner' and member.user != request.user %}
+                                <button class="btn btn-sm btn-outline-danger remove-member"
+                                        data-member-id="{{ member.id }}">
+                                    Удалить
+                                </button>
+                            {% endif %}
+                        </div>
+                    </li>
+                {% empty %}
+                    <li class="list-group-item text-muted">Нет участников</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <a href="{% url 'tasks:kanban_board' %}?project={{ project.id }}" class="btn btn-secondary mt-3">
+            ← Назад к доске
+        </a>
+    </div>
+
+    <script>
+        document.getElementById('add-member-form').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const userId = document.getElementById('user-select').value;
+            const role = this.role.value;
+
+            if (!userId) {
+                alert('Выберите пользователя');
+                return;
+            }
+
+            fetch('{% url "tasks:add_member" project.id %}', {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': this.querySelector('[name=csrfmiddlewaretoken]').value,
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `user_id=${userId}&role=${role}`
+            })
+                .then(r => r.json())
+                .then(data => {
+                    if (data.success) {
+                        location.reload();
+                    } else {
+                        alert(data.error);
+                    }
+                });
+        });
+
+        document.querySelectorAll('.remove-member').forEach(btn => {
+            btn.addEventListener('click', function () {
+                if (!confirm('Удалить участника?')) return;
+
+                const memberId = this.dataset.memberId;
+
+                fetch('{% url "tasks:remove_member" project.id %}', {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: `member_id=${memberId}`
+                })
+                    .then(r => r.json())
+                    .then(data => {
+                        if (data.success) {
+                            location.reload();
+                        } else {
+                            alert(data.error);
+                        }
+                    });
+            });
+        });
+    </script>
+{% endblock %}

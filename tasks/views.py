@@ -8,43 +8,40 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 
 from .forms import TaskForm, ProjectForm
-from .models import Task, Project, ProjectColumn
+from .models import Task, Project, ProjectColumn, ProjectMember
 
 
 @staff_member_required
 def kanban_board(request):
-    # Получаем проект из GET параметра или берем первый
     project_id = request.GET.get('project')
 
     if project_id:
-        current_project = get_object_or_404(Project, id=project_id)
+        current_project = get_object_or_404(
+            Project.objects.filter(members=request.user),
+            id=project_id
+        )
     else:
-        # Берем первый проект админа или None
-        current_project = Project.objects.filter(creator=request.user).first()
+        current_project = Project.objects.filter(members=request.user).first()
 
-    # Получаем колонки для текущего проекта
     tasks_by_status = {}
 
     if current_project:
-        # Берем активные колонки проекта, сортируем по order
         columns = current_project.columns.all().order_by('order')
 
         for column in columns:
-            # Получаем задачи для этой колонки
             tasks = Task.objects.filter(
                 project=current_project,
-                column=column  # Используем новое поле column
+                column=column
             ).select_related('assignee', 'creator').order_by('-created_at')
 
-            tasks_by_status[column.id] = {  # Ключ - ID колонки
+            tasks_by_status[column.id] = {
                 'name': column.name,
                 'color': column.color,
                 'column_id': column.id,
                 'tasks': tasks
             }
 
-    # Все проекты пользователя для селектора
-    user_projects = Project.objects.filter(creator=request.user) if request.user.is_staff else []
+    user_projects = Project.objects.filter(members=request.user)
 
     context = {
         'tasks_by_status': tasks_by_status,
@@ -109,8 +106,9 @@ def edit_task(request, task_id):
     """Редактирование задачи через AJAX"""
     task = get_object_or_404(Task, id=task_id)
 
-    if task.creator != request.user and not request.user.is_superuser:
-        return JsonResponse({'success': False, 'error': 'No permission'})
+    # Проверяем, что пользователь — участник проекта
+    if not task.project.members.filter(id=request.user.id).exists():
+        return JsonResponse({'success': False, 'error': 'Нет доступа к проекту'})
 
     if request.method == 'POST':
         form = TaskForm(request.POST, request.FILES, instance=task)
@@ -127,8 +125,9 @@ def delete_task(request, task_id):
     """Удаление задачи через AJAX"""
     task = get_object_or_404(Task, id=task_id)
 
-    if task.creator != request.user and not request.user.is_staff:
-        return JsonResponse({'success': False, 'error': 'No permission'})
+    # Проверяем, что пользователь — участник проекта
+    if not task.project.members.filter(id=request.user.id).exists():
+        return JsonResponse({'success': False, 'error': 'Нет доступа к проекту'})
 
     if request.method == 'POST':
         task.delete()
@@ -151,20 +150,25 @@ def get_task_data(request, task_id):
 
 @staff_member_required
 def project_list(request):
-    """Список проектов"""
-    projects = Project.objects.filter(creator=request.user)
+    projects = Project.objects.filter(members=request.user)
     return render(request, 'tasks/project_list.html', {'projects': projects})
 
 
 @staff_member_required
 def create_project(request):
-    """Создание проекта"""
     if request.method == 'POST':
         form = ProjectForm(request.POST)
         if form.is_valid():
             project = form.save(commit=False)
             project.creator = request.user
             project.save()
+            # Добавляем создателя как владельца
+            ProjectMember.objects.create(
+                project=project,
+                user=request.user,
+                role='owner',
+                added_by=request.user
+            )
             return redirect('tasks:project_list')
     else:
         form = ProjectForm()
@@ -173,8 +177,10 @@ def create_project(request):
 
 @staff_member_required
 def edit_project(request, project_id):
-    """Редактирование проекта"""
-    project = get_object_or_404(Project, id=project_id, creator=request.user)
+    project = get_object_or_404(
+        Project.objects.filter(members=request.user),
+        id=project_id
+    )
 
     if request.method == 'POST':
         form = ProjectForm(request.POST, instance=project)
@@ -193,8 +199,10 @@ def edit_project(request, project_id):
 
 @staff_member_required
 def delete_project(request, project_id):
-    """Удаление проекта"""
-    project = get_object_or_404(Project, id=project_id, creator=request.user)
+    project = get_object_or_404(
+        Project.objects.filter(members=request.user),
+        id=project_id
+    )
 
     # Проверяем есть ли задачи в проекте
     if project.tasks.exists():
@@ -218,7 +226,7 @@ def update_column(request):
         name = data.get('name')
         color = data.get('color')
 
-        column = get_object_or_404(ProjectColumn, id=column_id, project__creator=request.user)
+        column = get_object_or_404(ProjectColumn, id=column_id, project__members=request.user)
         column.name = name
         column.color = color
         column.save()
@@ -240,7 +248,7 @@ def move_column(request):
         direction = data.get('direction')  # 'left' или 'right'
 
         # Получаем текущую колонку
-        current_column = get_object_or_404(ProjectColumn, id=column_id, project__creator=request.user)
+        current_column = get_object_or_404(ProjectColumn, id=column_id, project__members=request.user)
         project = current_column.project
 
         # Получаем все колонки проекта в текущем порядке
@@ -294,7 +302,7 @@ def delete_column(request):
         data = json.loads(request.body)
 
         column_id = data.get('column_id')
-        column = get_object_or_404(ProjectColumn, id=column_id, project__creator=request.user)
+        column = get_object_or_404(ProjectColumn, id=column_id, project__members=request.user)
 
         # Проверяем, есть ли задачи в колонке
         if column.tasks.exists():
@@ -325,7 +333,7 @@ def create_column(request):
         project_id = data.get('project_id')
 
         # Получаем проект
-        project = get_object_or_404(Project, id=project_id, creator=request.user)
+        project = get_object_or_404(Project, id=project_id, members=request.user)
 
         # Определяем порядок (новая колонка будет последней)
         max_order = project.columns.aggregate(models.Max('order'))['order__max']
@@ -346,3 +354,81 @@ def create_column(request):
 
     except Exception as e:
         return JsonResponse({'success': False, 'error': str(e)})
+
+
+@staff_member_required
+def project_members(request, project_id):
+    """Страница управления участниками проекта"""
+    project = get_object_or_404(
+        Project.objects.filter(members=request.user),
+        id=project_id
+    )
+
+    members = project.projectmember_set.select_related('user', 'added_by').all()
+
+    context = {
+        'project': project,
+        'members': members,
+        'all_users': User.objects.filter(is_active=True),
+    }
+    return render(request, 'tasks/project_members.html', context)
+
+
+@staff_member_required
+@require_http_methods(["POST"])
+def add_member(request, project_id):
+    """Добавить участника в проект"""
+    project = get_object_or_404(
+        Project.objects.filter(members=request.user),
+        id=project_id
+    )
+
+    user_id = request.POST.get('user_id')
+    role = request.POST.get('role', 'editor')
+
+    if not user_id:
+        return JsonResponse({'success': False, 'error': 'Не указан пользователь'})
+
+    user = get_object_or_404(User, id=user_id)
+
+    # Проверяем, не добавлен ли уже
+    if ProjectMember.objects.filter(project=project, user=user).exists():
+        return JsonResponse({'success': False, 'error': 'Пользователь уже в проекте'})
+
+    ProjectMember.objects.create(
+        project=project,
+        user=user,
+        role=role,
+        added_by=request.user
+    )
+
+    return JsonResponse({
+        'success': True,
+        'username': user.username,
+        'role': role,
+        'role_display': dict(ProjectMember.ROLE_CHOICES).get(role),
+    })
+
+
+@staff_member_required
+@require_http_methods(["POST"])
+def remove_member(request, project_id):
+    """Удалить участника из проекта"""
+    project = get_object_or_404(
+        Project.objects.filter(members=request.user),
+        id=project_id
+    )
+
+    member_id = request.POST.get('member_id')
+    member = get_object_or_404(ProjectMember, id=member_id, project=project)
+
+    # Нельзя удалить владельца
+    if member.role == 'owner':
+        return JsonResponse({'success': False, 'error': 'Нельзя удалить владельца проекта'})
+
+    # Нельзя удалить самого себя (кроме как через выход из проекта)
+    if member.user == request.user:
+        return JsonResponse({'success': False, 'error': 'Нельзя удалить самого себя'})
+
+    member.delete()
+    return JsonResponse({'success': True})
