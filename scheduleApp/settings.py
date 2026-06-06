@@ -62,6 +62,7 @@ CSRF_TRUSTED_ORIGINS = [
 
 INSTALLED_APPS = [
     'django.contrib.admin',
+    'rest_framework',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django_admin_inline_paginator',
@@ -77,6 +78,7 @@ INSTALLED_APPS = [
     'pwa',
     'django.contrib.humanize',
     'finance.apps.FinanceConfig',
+    'notifications',
 ]
 
 if DEBUG:
