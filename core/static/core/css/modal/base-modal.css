@@ -101,19 +101,19 @@
 }
 
 .required {
-    color: #f44336;
+    color: var(--danger-color);
     margin-left: 3px;
 }
 
 .error-message {
     display: none;
-    color: #f44336;
+    color: var(--danger-color);
     font-size: 12px;
     margin-top: 5px;
 }
 
 .form-group.error input {
-    border-color: #f44336;
+    border-color: var(--danger-color);
 }
 
 .form-group.error .error-message {
@@ -159,7 +159,7 @@
 .form-group select:focus,
 .form-group textarea:focus {
     border-color: var(--primary-color);
-    box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+    box-shadow: 0 0 0 2px rgba(var(--primary-color-rgb), 0.2);
 }
 
 input[type="text"] {
@@ -216,7 +216,7 @@ input[type="text"]:focus {
 }
 
 .cancel-button {
-    background-color: white;
+    background-color: var(--header-bg);
     border: 1px solid var(--border-color) !important;
 }
 
@@ -230,9 +230,9 @@ input[type="text"]:focus {
 .cancel-button:disabled {
     opacity: 0.6;
     cursor: not-allowed;
-    background-color: #cccccc;
-    color: #666666;
-    border-color: #cccccc;
+    background-color: var(--gray-mix);
+    color: var(--text-secondary);
+    border-color: var(--gray-mix);
 }
 
 .modal-actions {
@@ -271,7 +271,7 @@ input[type="text"]:focus {
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: #ccc;
+    background-color: var(--gray-mix);
     transition: .4s;
     border-radius: 34px;
 }

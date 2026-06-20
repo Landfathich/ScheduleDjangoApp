@@ -4,13 +4,22 @@
     justify-content: center;
     align-items: center;
     height: 100%;
+    color: var(--text-primary);
 }
 
 form {
     width: 90%;
-    padding: 1.5rem;
+    max-width: 400px;
+    padding: 2rem;
+    background: var(--glass-bg);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
 }
 
 h2 {
     font-size: 2rem;
+    color: var(--text-primary);
 }

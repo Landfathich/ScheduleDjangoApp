@@ -2,7 +2,7 @@
     position: fixed;
     bottom: 20px;
     left: 50%;
-    background-color: #323232;
+    background-color: var(--notification-bg);
     color: white;
     padding: 14px 16px;
     border-radius: 4px;
@@ -19,7 +19,6 @@
     font-size: 14px;
     line-height: 1.43;
     transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
-    /* Гарантируем, что контент не обрезается */
     overflow: visible !important;
 }
 
@@ -33,21 +32,20 @@
     transform: translateX(-50%) translateY(20px);
 }
 
-/* Material Design colors for notification types */
 #notification.success {
-    background-color: #4CAF50;
+    background-color: var(--success-color);
 }
 
 #notification.error {
-    background-color: #f44336;
+    background-color: var(--danger-color);
 }
 
 #notification.info {
-    background-color: #2196F3;
+    background-color: var(--info-color);
 }
 
 #notification.warning {
-    background-color: #FF9800;
+    background-color: var(--warning-color);
 }
 
 .notification-content {
@@ -146,16 +144,16 @@
 
 .notification-counter-badge {
     position: absolute;
-    top: -12px; /* Вылазит за верхнюю границу */
-    right: -12px; /* Вылазит за правую границу */
-    background: #f44336;
+    top: -12px;
+    right: -12px;
+    background: var(--danger-color);
     color: white;
-    border-radius: 12px; /* Немного больше радиус для красоты */
-    padding: 6px 10px; /* Увеличиваем паддинг для лучшей читаемости */
+    border-radius: 12px;
+    padding: 6px 10px;
     font-size: 12px;
-    font-weight: 600; /* Более жирный шрифт */
-    min-width: 24px; /* Увеличиваем минимальную ширину */
-    height: 24px; /* Увеличиваем высоту */
+    font-weight: 600;
+    min-width: 24px;
+    height: 24px;
     text-align: center;
     z-index: 10002;
     box-shadow: 0 3px 6px -1px rgba(0, 0, 0, 0.3),
@@ -165,28 +163,25 @@
     align-items: center;
     justify-content: center;
     line-height: 1;
-    border: 2px solid white; /* Белая обводка для контраста */
-
-    /* Material Design animation */
+    border: 2px solid white;
     animation: badge-appear 0.3s cubic-bezier(0.4, 0.0, 0.2, 1) forwards;
     transform-origin: center;
 }
 
-/* Material Design colors for different badge types */
 .notification-counter-badge.success {
-    background: #4CAF50;
+    background: var(--success-color);
 }
 
 .notification-counter-badge.info {
-    background: #2196F3;
+    background: var(--info-color);
 }
 
 .notification-counter-badge.warning {
-    background: #FF9800;
+    background: var(--warning-color);
 }
 
 .notification-counter-badge.error {
-    background: #f44336;
+    background: var(--danger-color);
 }
 
 /* Обновленная анимация появления */

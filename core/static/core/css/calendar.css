@@ -7,6 +7,10 @@
     display: flex;
     flex-direction: column;
     height: 100%;
+    background: var(--glass-bg);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-radius: 12px;
 }
 
 .schedule-area {
@@ -33,7 +37,9 @@
     position: sticky;
     top: 0;
     left: 0;
-    background-color: var(--bg);
+    background-color: var(--glass-bg);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
 }
 
 .time-header,
@@ -51,9 +57,12 @@
     flex-direction: column;
     gap: 2px;
     color: var(--text-primary);
-    background-color: var(--header-bg);
     border-bottom: 2px solid var(--border-color);
     font-weight: 600;
+
+    background-color: var(--glass-bg);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
 }
 
 #schedule {
@@ -76,6 +85,9 @@
     top: 0;
     left: 0;
     z-index: 100;
+    background-color: var(--glass-bg);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
 }
 
 .week-day {
@@ -163,7 +175,7 @@
 }
 
 #confirm-change {
-    background-color: #4CAF50;
+    background-color: var(--success-color);
     color: white;
     padding: 10px 20px;
     border: none;
@@ -173,7 +185,7 @@
 }
 
 #confirm-change:hover {
-    background-color: #45a049;
+    background-color: var(--primary-hover);
 }
 
 #schedule-info-panel {
@@ -272,8 +284,8 @@
 /* Стили для множественных уроков */
 .lesson.multiple {
     position: relative;
-    border-left: 3px solid #ff6b6b;
-    background: rgba(255, 107, 107, 0.1) !important;
+    border-left: 3px solid var(--danger-color);
+    background: rgba(var(--danger-color-rgb), 0.1) !important;
     margin-bottom: 2px;
     cursor: pointer;
     padding: 3px 6px;
@@ -282,7 +294,7 @@
 
 .lesson.multiple:hover {
     z-index: 1000 !important;
-    background: rgba(255, 107, 107, 0.2) !important;
+    background: rgba(var(--danger-color-rgb), 0.2) !important;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
@@ -309,7 +321,7 @@
 }
 
 .lesson-count {
-    background: #ff6b6b;
+    background: var(--danger-color);
     color: white;
     position: absolute;
     left: 50%;
@@ -342,13 +354,13 @@
 }
 
 .hour.has-conflict {
-    background: rgba(255, 107, 107, 0.05) !important;
-    border: 1px dashed #ff6b6b !important;
+    background: rgba(var(--danger-color-rgb), 0.05) !important;
+    border: 1px dashed var(--danger-color) !important;
 }
 
 .hour.has-conflict:hover {
-    background: rgba(255, 107, 107, 0.1) !important;
-    border: 1px solid #ff6b6b !important;
+    background: rgba(var(--danger-color-rgb), 0.1) !important;
+    border: 1px solid var(--danger-color) !important;
 }
 
 .calendar-loading {

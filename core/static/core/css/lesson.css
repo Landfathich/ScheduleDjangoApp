@@ -13,7 +13,9 @@
     flex-direction: column;
     gap: 4px;
     overflow: hidden;
-    background-color: var(--header-bg);
+    background: var(--glass-bg);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
     color: var(--text-primary);
     position: relative;
 }
@@ -25,7 +27,7 @@
 
 .lesson.permanent {
     background-color: var(--permanent-lesson-bg);
-    border-color: #bbdefb;
+    border-color: var(--permanent-lesson-primary);
 }
 
 .lesson.permanent:hover {
@@ -34,7 +36,7 @@
 
 .lesson.one-time {
     background-color: var(--one-time-lesson-bg);
-    border-color: #a5d6a7;
+    border-color: var(--one-time-lesson-primary);
 }
 
 .lesson.one-time:hover {
@@ -80,7 +82,6 @@
 }
 
 .hour .lesson {
-    background: var(--header-bg);
     border: 1px solid var(--border-color);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
     position: relative;
@@ -109,7 +110,7 @@
 .lesson.completed, .lesson.cancelled, .lesson.future {
     opacity: 0.8;
     position: relative;
-    color: #616161;
+    color: var(--text-secondary);
     background-color: var(--header-bg);
     border-left-color: var(--text-secondary);
     filter: grayscale(30%);
@@ -126,11 +127,11 @@
     background: var(--bg);
     padding: 2px 8px;
     border-radius: 12px;
-    border: 1px solid #e0e0e0;
-    white-space: nowrap; /* Запрет переноса строк */
-    overflow: hidden; /* Скрываем выходящий текст */
-    text-overflow: ellipsis; /* ... если не помещается */
-    max-width: calc(100% - 10px); /* Не шире ячейки */
+    border: 1px solid var(--border-color);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: calc(100% - 10px);
 }
 
 .lesson.completed::after {
@@ -153,7 +154,7 @@
 
 .lesson.future::after {
     content: "⏳";
-    color: #e65100;
+    color: var(--future-lesson-primary);
 }
 
 .lesson.future:hover::after {
@@ -172,7 +173,7 @@
     right: 0;
     width: 24px;
     height: 24px;
-    background-color: #45bf1d;
+    background-color: var(--success-color);
     color: white;
     display: flex;
     border-bottom-left-radius: 50%;
@@ -183,6 +184,7 @@
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
     z-index: 1;
 }
+
 
 /* Стили для разных значений баланса */
 .balance-badge[data-balance="0"] {
@@ -219,7 +221,7 @@
     top: 50%;
     right: 10px;
     transform: translateY(-50%);
-    background-color: #ff4757;
+    background-color: var(--danger-color);
     color: white;
     width: 22px;
     height: 22px;
@@ -247,5 +249,5 @@
 
 .lesson.unreliable:hover {
     animation: shake 0.5s ease-in-out;
-    border-color: #ff4757;
+    border-color: var(--danger-color);
 }
