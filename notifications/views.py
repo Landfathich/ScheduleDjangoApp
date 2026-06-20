@@ -1,7 +1,10 @@
-from rest_framework import viewsets, status
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render
+from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+
 from .models import Notification
 from .serializers import NotificationSerializer
 
@@ -32,3 +35,8 @@ class NotificationViewSet(viewsets.ModelViewSet):
     def unread_count(self, request):
         count = self.get_queryset().filter(is_read=False).count()
         return Response({'count': count})
+
+
+@login_required
+def notifications_page(request):
+    return render(request, 'notifications/notifications_list.html')

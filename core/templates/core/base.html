@@ -46,6 +46,12 @@
     <div class="header-content">
         <div class="user-info">
             {% if user.is_authenticated %}
+                <div class="button-wrapper">
+                    <button id="notification-bell" title="Уведомления" class="icon-button icon-float">
+                        <span>🔔</span>
+                    </button>
+                    <span id="notification-badge" class="notification-badge"></span>
+                </div>
                 <p id="teacher-name">{{ user.first_name }} {{ user.last_name }}</p>
                 {% if user.is_staff %}
                     <p id="admin-label">(админ)</p>
@@ -90,7 +96,32 @@
 </script>
 {% comment %}<script src="{% static 'core/js/push-notifications.js' %}"></script>{% endcomment %}
 <script src="{% static 'core/js/theme.js' %}"></script>
-<!-- Добавить перед закрывающим </body> -->
+
+{% if user.is_authenticated %}
+    <script>
+        async function updateNotificationBadge() {
+            try {
+                const response = await fetch('/api/notifications/unread_count/');
+                const data = await response.json();
+                const badge = document.getElementById('notification-badge');
+                if (data.count > 0) {
+                    badge.textContent = data.count;
+                    badge.style.display = 'flex';
+                } else {
+                    badge.style.display = 'none';
+                }
+            } catch (e) {
+            }
+        }
+
+        document.getElementById('notification-bell').addEventListener('click', () => {
+            window.location.href = '/notifications/';
+        });
+
+        updateNotificationBadge();
+        setInterval(updateNotificationBadge, 30000);
+    </script>
+{% endif %}
 
 <script>
     // Получение CSRF токена

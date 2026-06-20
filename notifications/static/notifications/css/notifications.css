@@ -1,0 +1,46 @@
+.notifications-page {
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 20px;
+    color: var(--text-primary);
+}
+
+.notification-item {
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    background: var(--header-bg);
+    border: 1px solid var(--border-color);
+}
+
+.notification-item.unread {
+    border-left: 3px solid #4285f4;
+    background: var(--header-bg);
+}
+
+.notification-item strong {
+    display: block;
+    margin-bottom: 4px;
+    color: var(--text-primary);
+}
+
+.notification-item p {
+    margin: 4px 0;
+    font-size: 0.9em;
+    color: var(--text-secondary);
+}
+
+.notification-item small {
+    color: var(--text-secondary, #999);
+    font-size: 0.8em;
+}
+
+#mark-all-read {
+    margin-bottom: 15px;
+    padding: 8px 16px;
+    background: var(--primary-color, #4285f4);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
