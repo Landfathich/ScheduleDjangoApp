@@ -101,7 +101,7 @@
 }
 
 .styled-button {
-    background: linear-gradient(135deg, var(--primary-color), #818cf8);
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
     color: white;
     padding: 8px 16px;
     border: 1px solid var(--border-color);
@@ -110,6 +110,5 @@
 }
 
 .styled-button:hover {
-    background: linear-gradient(135deg, var(--primary-hover), #4649dc);
     border-color: var(--text-secondary);
 }

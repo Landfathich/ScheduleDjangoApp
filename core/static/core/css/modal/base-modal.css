@@ -205,13 +205,13 @@ input[type="text"]:focus {
 }
 
 .submit-button {
-    background: linear-gradient(135deg, var(--primary-color), #818cf8);
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
     color: white;
     border: none;
 }
 
 .submit-button:hover {
-    background: linear-gradient(135deg, var(--primary-hover), #6366f1);
+    background: linear-gradient(135deg, var(--primary-hover), var(--primary-light));
     transform: translateY(-1px);
 }
 

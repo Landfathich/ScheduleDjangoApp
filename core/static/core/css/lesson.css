@@ -88,22 +88,22 @@
 }
 
 .hour .lesson.permanent {
-    background: linear-gradient(135deg, #a0cff1 0%, #677ee4 100%);
-    border-left: 3px solid var(--primary-color);
-}
-
-[data-theme="dark"] .hour .lesson.permanent {
-    background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(99, 102, 241, 0.1));
+    background: var(--permanent-lesson-bg);
+    border-left: 3px solid var(--permanent-lesson-primary);
 }
 
 .hour .lesson.one-time {
-    background: linear-gradient(135deg, #cff4cf 0%, #c7ec8a 100%);
-    border-left: 3px solid #4caf50;
+    background: var(--one-time-lesson-bg);
+    border-left: 3px solid var(--one-time-lesson-primary);
 }
 
-[data-theme="dark"] .hour .lesson.one-time {
-    background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(16, 185, 129, 0.1));
-    border-left: 3px solid #10b981;
+.hour .lesson.demo {
+    background: var(--demo-lesson-bg);
+    border-left: 3px solid var(--demo-lesson-primary);
+}
+
+.lesson.demo:hover {
+    border-color: var(--demo-lesson-primary);
 }
 
 .lesson.completed, .lesson.cancelled, .lesson.future {
@@ -161,22 +161,9 @@
 }
 
 .lesson.future {
-    border-left: 4px solid #ffd54f;
-    background-color: rgba(255, 248, 225, 0.9);
-    color: #ff8f00;
-}
-
-[data-theme="dark"] .hour .lesson.demo {
-    background: linear-gradient(135deg, rgba(177, 99, 241, 0.2), rgba(184, 99, 241, 0.1));
-}
-
-.hour .lesson.demo {
-    background: linear-gradient(135deg, rgba(177, 99, 241, 0.7), rgba(184, 99, 241, 0.5));
-    border-left: 3px solid #7915cd;
-}
-
-.lesson.demo:hover {
-    border-color: var(--demo-lesson-primary);
+    border-left: 4px solid var(--future-lesson-primary);
+    background-color: var(--future-lesson-bg);
+    color: var(--future-lesson-primary);
 }
 
 .balance-badge {

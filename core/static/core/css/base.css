@@ -1,57 +1,70 @@
 :root {
-    --bg: #e0f2fe;
-    --bg-invert: #000000;
-    --header-bg: #f0f7ff;
-    --border-color: #d4d6ff;
-    --primary-color: #6366f1;
-    --primary-color-rgb: 99, 102, 241;
-    --primary-hover: #3127bd;
-    --success-color: #4CAF50;
-    --danger-color: #dc3545;
-    --gray-mix: #b3b3b3;
-    --danger-hover: #bb2d3b;
-    --text-primary: #2d3748;
-    --text-secondary: #4a5568;
-    --invert-text-primary: #e2e8f0;
-    --open-window-bg: #b7daff;
-    --permanent-lesson-bg: #e0e7ff;
-    --one-time-lesson-bg: #dcfce7;
-    --one-time-lesson-primary: rgb(16, 185, 129);
-    --demo-lesson-bg: #f3dcfc;
-    --demo-lesson-primary: rgb(172, 91, 255);
-    --permanent-lesson-primary: #6366f1;
+    /* ===== ОСНОВНЫЕ ЦВЕТА ===== */
+    --bg: #f0fdf4;
+    --header-bg: rgba(255, 255, 255, 0.7);
+    --border-color: #bbf7d0;
+    --text-primary: #14532d;
+    --text-secondary: #166534;
+
+    /* ===== АКЦЕНТНЫЕ ЦВЕТА ===== */
+    --primary-color: #16a34a;
+    --primary-light: #86efac;
+    --primary-color-rgb: 22, 163, 74;
+    --primary-hover: #15803d;
+
+    /* ===== ЦВЕТА СОСТОЯНИЙ ===== */
+    --success-color: #22c55e;
+    --danger-color: #ef4444;
+    --danger-hover: #dc2626;
+    --gray-mix: #a3a3a3;
+
+    /* ===== ТИПЫ УРОКОВ ===== */
+    --permanent-lesson-bg: #dcfce7;
+    --permanent-lesson-primary: #16a34a;
+    --one-time-lesson-bg: #dbeafe;
+    --one-time-lesson-primary: #2563eb;
+    --demo-lesson-bg: #fef3c7;
+    --demo-lesson-primary: #d97706;
+    --open-window-bg: #d1fae5;
+    --future-lesson-bg: #fff7ed;
+    --future-lesson-primary: #ea580c;
+
+    /* ===== БАЛАНС ===== */
+    --balance-negative: #f3e8ff;
+    --balance-negative-border: #9333ea;
+    --balance-danger: #fee2e2;
+    --balance-danger-border: #ef4444;
+    --balance-warning: #fff7ed;
+    --balance-warning-border: #f97316;
+    --balance-info: #fef9c3;
+    --balance-info-border: #eab308;
+
+    /* ===== СПЕЦИФИЧНЫЕ ===== */
     --scrollbar-size: 8px;
 
-    --balance-negative: #ecccff;
-    --balance-danger: #ffccd4;
-    --balance-warning: #ffe6ce;
-    --balance-info: #fffdd6;
-
-    --balance-negative-border: #aa00ff;
-    --balance-danger-border: #ff2f4d;
-    --balance-warning-border: #d17306;
-    --balance-info-border: #ffde40;
-
-    --app-header: linear-gradient(135deg, #8848ca, #ba4040);
+    /* ===== ПОД ВОПРОСОМ ===== */
+    --bg-invert: #000000;
+    --invert-text-primary: #e2e8f0;
 }
 
 [data-theme="dark"] {
-    --bg: #1a1b1e;
-    --bg-invert: #ffffff;
-    --header-bg: #1a1b1e;
-    --border-color: #3a3b3e;
-    --text-primary: #e2e8f0;
-    --text-secondary: #a0aec0;
-    --invert-text-primary: #0b0e12;
-    --open-window-bg: rgba(47, 47, 48, 0.71);
+    --bg: #0f1a14;
+    --header-bg: rgba(15, 26, 20, 0.85);
+    --border-color: #1e3328;
+    --text-primary: #e4f0e8;
+    --text-secondary: #caecd0;
+    --invert-text-primary: #0a1a10;
+    --open-window-bg: rgba(22, 163, 74, 0.15);
 
+    --permanent-lesson-bg: rgba(22, 163, 74, 0.2);
+    --one-time-lesson-bg: rgba(37, 99, 235, 0.15);
+    --demo-lesson-bg: rgba(217, 119, 6, 0.15);
+    --future-lesson-bg: rgba(234, 88, 12, 0.12);
 
-    --balance-negative: #2d0440;
-    --balance-danger: #270c10;
-    --balance-warning: #25190b;
-    --balance-info: #221d0a;
-
-    --app-header: linear-gradient(135deg, #6a11cb, #fc2525);
+    --balance-negative: rgba(147, 51, 234, 0.15);
+    --balance-danger: rgba(239, 68, 68, 0.15);
+    --balance-warning: rgba(249, 115, 22, 0.15);
+    --balance-info: rgba(234, 179, 8, 0.15);
 }
 
 * {
@@ -68,7 +81,6 @@ body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
     margin: 0;
     padding: 0;
-    background: var(--app-header);
     display: flex;
     min-height: 100vh;
     flex-direction: column;
@@ -76,6 +88,12 @@ body {
     line-height: 1.5;
     height: 100vh;
     justify-content: center;
+    background-attachment: fixed;
+    background: linear-gradient(135deg, #d1fae5 0%, #dbeafe 50%, #fef3c7 100%);
+}
+
+[data-theme="dark"] body {
+    background: linear-gradient(135deg, #0a1a10 0%, #0a1420 50%, #1a1008 100%);
 }
 
 ul, ol {
@@ -110,7 +128,7 @@ textarea::-webkit-scrollbar {
 }
 
 #admin-label {
-    color: var(--invert-text-primary);
+    color: var(--text-secondary);
     font-size: 1em;
     display: block;
 }
@@ -124,6 +142,10 @@ header {
     height: 5vh;
     display: flex;
     justify-content: space-between;
+    color: var(--text-primary);
+    background: var(--header-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
 }
 
 [data-theme="dark"] header {
@@ -147,13 +169,12 @@ header {
 
 .user-info p {
     margin: 0;
-    color: white;
     font-size: 1.2rem;
     font-weight: bold;
 }
 
 nav a {
-    color: white;
+    color: var(--text-primary);
     text-decoration: none;
     margin-left: 20px;
 }

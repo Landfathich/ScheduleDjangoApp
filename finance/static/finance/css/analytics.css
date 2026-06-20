@@ -1,7 +1,6 @@
 main {
     padding: 2rem;
     display: block;
-    background-color: rgba(0, 0, 0, 0.52);
     overflow-y: auto;
 }
 
