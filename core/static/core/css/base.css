@@ -48,23 +48,23 @@
 }
 
 [data-theme="dark"] {
-    --bg: #0f1a14;
-    --header-bg: rgba(15, 26, 20, 0.85);
-    --border-color: #1e3328;
-    --text-primary: #e4f0e8;
-    --text-secondary: #caecd0;
-    --invert-text-primary: #0a1a10;
+    --bg: #1a1b1e;
+    --header-bg: rgba(26, 27, 30, 0.85);
+    --border-color: #2d2e32;
+    --text-primary: #e4e4e8;
+    --text-secondary: #9898a0;
+    --invert-text-primary: #1a1b1e;
     --open-window-bg: rgba(22, 163, 74, 0.15);
 
-    --permanent-lesson-bg: rgba(22, 163, 74, 0.2);
-    --one-time-lesson-bg: rgba(37, 99, 235, 0.15);
-    --demo-lesson-bg: rgba(217, 119, 6, 0.15);
-    --future-lesson-bg: rgba(234, 88, 12, 0.12);
+    --permanent-lesson-bg: rgba(22, 163, 74, 0.15);
+    --one-time-lesson-bg: rgba(37, 99, 235, 0.12);
+    --demo-lesson-bg: rgba(217, 119, 6, 0.12);
+    --future-lesson-bg: rgba(234, 88, 12, 0.1);
 
-    --balance-negative: rgba(147, 51, 234, 0.15);
-    --balance-danger: rgba(239, 68, 68, 0.15);
-    --balance-warning: rgba(249, 115, 22, 0.15);
-    --balance-info: rgba(234, 179, 8, 0.15);
+    --balance-negative: rgba(147, 51, 234, 0.12);
+    --balance-danger: rgba(239, 68, 68, 0.12);
+    --balance-warning: rgba(249, 115, 22, 0.12);
+    --balance-info: rgba(234, 179, 8, 0.12);
 }
 
 * {
@@ -239,48 +239,31 @@ li {
     width: 42px;
     height: 42px;
     border-radius: 12px;
-    background: linear-gradient(135deg, var(--header-bg), var(--bg));
+    background: var(--header-bg);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
     cursor: pointer;
     transition: all 0.2s ease;
     align-items: center;
     justify-content: center;
     font-size: 1.3em;
     color: var(--primary-color);
-    box-shadow: 0 2px 4px rgba(99, 102, 241, 0.1),
-    inset 0 1px 2px rgba(255, 255, 255, 0.5);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06), inset 0 1px 2px rgba(255, 255, 255, 0.5);
     border: 1px solid var(--border-color);
     position: relative;
     overflow: hidden;
     flex-shrink: 0;
 }
 
-.icon-button::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), transparent);
-    opacity: 0;
-    transition: opacity 0.2s ease;
-}
-
 .icon-button:hover {
     transform: translateY(-1px);
-    box-shadow: 0 4px 8px rgba(99, 102, 241, 0.15),
-    inset 0 1px 2px rgba(255, 255, 255, 0.5);
-    border-color: rgba(99, 102, 241, 0.3);
-}
-
-.icon-button:hover::before {
-    opacity: 1;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1), inset 0 1px 2px rgba(255, 255, 255, 0.5);
+    border-color: var(--primary-color);
 }
 
 .icon-button:active {
     transform: translateY(0);
-    box-shadow: 0 1px 2px rgba(99, 102, 241, 0.1),
-    inset 0 1px 2px rgba(255, 255, 255, 0.5);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06), inset 0 1px 2px rgba(255, 255, 255, 0.3);
 }
 
 .icon-rotate:hover {
@@ -324,7 +307,7 @@ li {
     position: absolute;
     top: -5px;
     right: -6px;
-    background-color: #ff4444;
+    background-color: var(--danger-color);
     color: white;
     border-radius: 20px;
     padding: 1px;
@@ -341,7 +324,7 @@ li {
     top: 0px;
     left: -4px;
     right: auto;
-    background-color: #4285f4;
+    background-color: var(--primary-color);
     min-width: 17px;
     height: 17px;
     font-size: 12px;

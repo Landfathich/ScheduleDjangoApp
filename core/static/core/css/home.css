@@ -7,9 +7,9 @@
 
 #custom-context-menu {
     position: fixed;
-    color: var(--invert-text-primary);
+    color: var(--text-primary);
     z-index: 9999;
-    background: var(--bg-invert);
+    background: var(--bg);
     border: 1px solid #ddd;
     border-radius: 4px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
