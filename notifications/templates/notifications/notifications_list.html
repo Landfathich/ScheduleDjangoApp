@@ -1,0 +1,41 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Уведомления{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static "notifications/css/notifications.css" %}">
+{% endblock %}
+
+{% block content %}
+    <div class="notifications-page">
+        <h2>Уведомления</h2>
+        <button id="mark-all-read" class="btn">Отметить все прочитанными</button>
+        <div id="notifications-list"></div>
+    </div>
+
+    <script>
+        async function loadNotifications() {
+            const resp = await fetch('/api/notifications/');
+            const data = await resp.json();
+            const container = document.getElementById('notifications-list');
+            container.innerHTML = data.results.map(n => `
+            <div class="notification-item ${n.is_read ? '' : 'unread'}">
+                <strong>${n.title}</strong>
+                <p>${n.body}</p>
+                <small>${new Date(n.created_at).toLocaleString('ru')}</small>
+            </div>
+        `).join('');
+        }
+
+        document.getElementById('mark-all-read').addEventListener('click', async () => {
+            await fetch('/api/notifications/mark_all_read/', {
+                method: 'POST',
+                headers: {'X-CSRFToken': getCookie('csrftoken')}
+            });
+            loadNotifications();
+        });
+
+        loadNotifications();
+    </script>
+{% endblock %}
