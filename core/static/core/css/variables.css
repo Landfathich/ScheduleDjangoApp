@@ -48,6 +48,8 @@
     /* ===== ПОД ВОПРОСОМ ===== */
     --bg-invert: #000000;
     --invert-text-primary: #e2e8f0;
+
+    --info-color: #2196F3;
 }
 
 [data-theme="dark"] {

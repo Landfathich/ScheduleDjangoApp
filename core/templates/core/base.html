@@ -110,36 +110,30 @@
     <div class="header-content">
         <div class="user-info">
             {% if user.is_authenticated %}
+                <div class="user-avatar" title="{{ user.first_name }} {{ user.last_name }}">
+                    {{ user.first_name.0 }}{{ user.last_name.0 }}
+                </div>
+                <span class="user-name">{{ user.first_name }} {{ user.last_name }}</span>
+            {% else %}
+                <p>Гость</p>
+            {% endif %}
+        </div>
+        <div class="header-actions">
+            {% if user.is_staff %}
+                <a href="{% url 'admin:index' %}" class="admin-btn">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09a1.65 1.65 0 0 0-1.51-1 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                    Админ
+                </a>
+            {% endif %}
+            {% if user.is_authenticated %}
                 <div class="button-wrapper">
                     <button id="notification-bell" title="Уведомления" class="icon-button icon-float">
                         <span>🔔</span>
                     </button>
                     <span id="notification-badge" class="notification-badge"></span>
                 </div>
-                <p id="teacher-name">{{ user.first_name }} {{ user.last_name }}</p>
-                {% if user.is_staff %}
-                    <p id="admin-label">(админ)</p>
-                    <a href="{% url 'admin:index' %}" class="admin-btn">
-                        ⚙️ Админ-панель
-                    </a>
-                {% endif %}
-            {% else %}
-                <p>Гость</p>
             {% endif %}
         </div>
-        <nav>
-            {% if user.is_authenticated %}
-                <a href="{% url 'home' %}">Расписание</a>
-            {% endif %}
-            {% if user.is_staff %}
-                <a href="{% url 'stats_dashboard' %}">Аналитика</a>
-                <a href="{% url 'tasks:kanban_board' %}">Задачи</a>
-            {% endif %}
-            {% if user.is_authenticated %}
-                <a href="{% url 'materials_hub' %}">Курсы</a>
-                <a href="{% url 'profile' %}">Профиль</a>
-            {% endif %}
-        </nav>
     </div>
 </header>
 

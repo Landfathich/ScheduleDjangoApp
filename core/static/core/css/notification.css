@@ -209,7 +209,7 @@
         box-shadow: 0 6px 12px -1px rgba(0, 0, 0, 0.4),
         0 10px 16px 0 rgba(0, 0, 0, 0.32),
         0 3px 20px 0 rgba(0, 0, 0, 0.28);
-        transform: scale(1.05); /* Легкое увеличение при пульсации */
+        transform: scale(1.05);
     }
     100% {
         box-shadow: 0 3px 6px -1px rgba(0, 0, 0, 0.3),
@@ -219,7 +219,6 @@
     }
 }
 
-/* Optional: Add subtle pulse animation for attention */
 .notification-counter-badge.pulse {
     animation: badge-appear 0.3s cubic-bezier(0.4, 0.0, 0.2, 1) forwards,
     badge-pulse 2s ease-in-out infinite;
