@@ -3,14 +3,12 @@
 }
 
 #schedule-container {
-    border: 1px solid var(--border-color);
     display: flex;
     flex-direction: column;
     height: 100%;
     background: var(--glass-bg);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
-    border-radius: 12px;
 }
 
 .schedule-area {

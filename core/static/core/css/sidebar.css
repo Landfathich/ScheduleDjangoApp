@@ -1,3 +1,4 @@
+/* ===== САЙДБАР ===== */
 .sidebar {
     position: fixed;
     top: 0;
@@ -21,10 +22,25 @@
 
 .sidebar-header {
     display: flex;
-    justify-content: flex-end;
+    align-items: center;
+    gap: 12px;
     padding: 12px;
     border-bottom: 1px solid var(--border-color);
     min-height: 5vh;
+}
+
+.sidebar-brand {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    transition: opacity 0.2s;
+}
+
+.sidebar.collapsed .sidebar-brand {
+    opacity: 0;
+    width: 0;
 }
 
 .sidebar-toggle {
@@ -33,20 +49,25 @@
     color: var(--text-primary);
     cursor: pointer;
     font-size: 18px;
-    padding: 4px 8px;
-    border-radius: 6px;
-    transition: background 0.2s;
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: background 0.15s;
+    padding: 0;
 }
 
 .sidebar-toggle:hover {
-    background: var(--header-bg);
+    background: rgba(var(--primary-color-rgb), 0.15);
 }
-
 .sidebar-nav {
     display: flex;
     flex-direction: column;
-    padding: 8px;
-    gap: 4px;
+    padding: 8px 12px;
+    gap: 2px;
     flex: 1;
     overflow-y: auto;
 }
@@ -55,24 +76,32 @@
     display: flex;
     align-items: center;
     gap: 12px;
-    padding: 10px 12px;
+    margin: 5px 0;
     border-radius: 8px;
     text-decoration: none;
-    color: var(--text-primary);
-    transition: background 0.2s;
+    color: var(--text-secondary);
+    transition: background 0.15s, color 0.15s;
     white-space: nowrap;
     overflow: hidden;
 }
 
 .sidebar-item:hover {
-    background: var(--header-bg);
+    background: rgba(var(--primary-color-rgb), 0.1);
+    color: var(--primary-color);
+    text-decoration: none;
 }
 
 .sidebar-icon {
     font-size: 18px;
     flex-shrink: 0;
-    width: 24px;
-    text-align: center;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    background: transparent;
+    transition: background 0.15s;
 }
 
 .sidebar-text {
@@ -82,5 +111,6 @@
 }
 
 .sidebar.collapsed .sidebar-text {
-    display: none;
+    opacity: 0;
+    width: 0;
 }

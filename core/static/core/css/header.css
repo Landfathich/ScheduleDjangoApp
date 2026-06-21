@@ -9,6 +9,8 @@ header {
     -webkit-backdrop-filter: blur(20px);
     position: relative;
     overflow: hidden;
+
+    border-bottom: 1px solid var(--border-color);
 }
 
 .header-content {
