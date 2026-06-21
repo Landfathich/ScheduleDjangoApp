@@ -1,0 +1,76 @@
+:root {
+    /* ===== ОСНОВНЫЕ ЦВЕТА ===== */
+    --bg: #f0fdf4;
+    --header-bg: rgba(255, 255, 255, 0.7);
+    --border-color: #bbf7d0;
+    --text-primary: #14532d;
+    --text-secondary: #166534;
+
+    /* ===== АКЦЕНТНЫЕ ЦВЕТА ===== */
+    --primary-color: #16a34a;
+    --primary-light: #86efac;
+    --primary-color-rgb: 22, 163, 74;
+    --primary-hover: #15803d;
+
+    /* ===== ЦВЕТА СОСТОЯНИЙ ===== */
+    --success-color: #22c55e;
+    --danger-color: #ef4444;
+    --danger-color-rgb: 220, 38, 38;
+    --danger-hover: #dc2626;
+    --gray-mix: #a3a3a3;
+
+    /* ===== ТИПЫ УРОКОВ ===== */
+    --permanent-lesson-bg: #dcfce7;
+    --permanent-lesson-primary: #16a34a;
+    --one-time-lesson-bg: #dbeafe;
+    --one-time-lesson-primary: #2563eb;
+    --demo-lesson-bg: #fef3c7;
+    --demo-lesson-primary: #d97706;
+    --open-window-bg: #d1fae5;
+    --future-lesson-bg: #fff7ed;
+    --future-lesson-primary: #ea580c;
+
+    /* ===== БАЛАНС ===== */
+    --balance-negative: #f3e8ff;
+    --balance-negative-border: #9333ea;
+    --balance-danger: #fee2e2;
+    --balance-danger-border: #ef4444;
+    --balance-warning: #fff7ed;
+    --balance-warning-border: #f97316;
+    --balance-info: #fef9c3;
+    --balance-info-border: #eab308;
+
+    /* ===== СПЕЦИФИЧНЫЕ ===== */
+    --scrollbar-size: 8px;
+    --glass-bg: rgba(255, 255, 255, 0.6);
+
+    /* ===== ПОД ВОПРОСОМ ===== */
+    --bg-invert: #000000;
+    --invert-text-primary: #e2e8f0;
+}
+
+[data-theme="dark"] {
+    --bg: #1a1b1e;
+    --header-bg: rgba(26, 27, 30, 0.85);
+    --border-color: #2d2e32;
+    --text-primary: #e4e4e8;
+    --text-secondary: #dcdce3;
+    --invert-text-primary: #1a1b1e;
+    --open-window-bg: rgb(42, 45, 43);
+
+    --permanent-lesson-bg: rgba(22, 163, 74, 0.15);
+    --one-time-lesson-bg: rgba(37, 99, 235, 0.12);
+    --demo-lesson-bg: rgba(217, 119, 6, 0.12);
+    --future-lesson-bg: rgba(234, 88, 12, 0.1);
+
+    --balance-negative: rgba(147, 51, 234, 0.12);
+    --balance-danger: rgba(239, 68, 68, 0.12);
+    --balance-warning: rgba(249, 115, 22, 0.12);
+    --balance-info: rgba(234, 179, 8, 0.12);
+
+    --glass-bg: rgba(26, 27, 30, 0.6);
+
+    --info-color: #2196F3;
+    --warning-color: #FF9800;
+    --notification-bg: #323232;
+}

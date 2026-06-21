@@ -1,0 +1,93 @@
+.button-wrapper {
+    position: relative;
+    display: inline-block;
+    flex-shrink: 0;
+}
+
+.icon-button {
+    display: flex;
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    background: var(--header-bg);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3em;
+    color: var(--primary-color);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06), inset 0 1px 2px rgba(255, 255, 255, 0.5);
+    border: 1px solid var(--border-color);
+    position: relative;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.icon-button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1), inset 0 1px 2px rgba(255, 255, 255, 0.5);
+    border-color: var(--primary-color);
+}
+
+.icon-button:active {
+    transform: translateY(0);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06), inset 0 1px 2px rgba(255, 255, 255, 0.3);
+}
+
+.icon-rotate:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3),
+    inset 0 1px 2px rgba(255, 255, 255, 0.1);
+}
+
+.icon-rotate:hover span {
+    animation: spin 0.8s ease;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(180deg); }
+}
+
+.icon-float:hover span {
+    animation: float 0.6s ease-in-out infinite;
+}
+
+@keyframes float {
+    0% { transform: translateY(0); }
+    50% { transform: translateY(-4px); }
+    100% { transform: translateY(0); }
+}
+
+.notification-badge {
+    position: absolute;
+    top: -5px;
+    right: -6px;
+    background-color: var(--danger-color);
+    color: white;
+    border-radius: 20px;
+    padding: 1px;
+    min-width: 20px;
+    height: 20px;
+    font-size: 12px;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}
+
+#notification-badge {
+    top: 0px;
+    left: -4px;
+    right: auto;
+    background-color: var(--primary-color);
+    min-width: 17px;
+    height: 17px;
+    font-size: 12px;
+    padding: 0;
+}
+
+.icon-button-float + .notification-badge {
+    border-color: var(--bg);
+}
