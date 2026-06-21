@@ -8,31 +8,31 @@
 
 {% block extra_css %}
     <style>
-        /* ====== Base Layout ====== */
-
         main {
             margin: 0;
             overflow-y: auto;
             padding: 28px;
-            font-family: "Inter", "Segoe UI", sans-serif;
-            color: #e8e8e8;
-            background: #1b1d1b;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            color: var(--text-primary);
+            background: transparent;
         }
 
         h1 {
             margin-bottom: 8px;
-            color: #c6e2b5;
+            color: var(--text-primary);
             font-weight: 600;
         }
 
         form {
             max-width: 560px;
             margin-bottom: 24px;
-            background: #262826;
-            border-radius: 10px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 12px;
             padding: 18px 22px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
-            border: 1px solid #2f332f;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            border: 1px solid var(--border-color);
         }
 
         input, select, textarea {
@@ -40,33 +40,33 @@
             padding: 8px;
             box-sizing: border-box;
             margin-top: 6px;
-            border: 1px solid #444;
-            border-radius: 6px;
-            background: #2f322f;
-            color: #e8e8e8;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background: var(--bg);
+            color: var(--text-primary);
             transition: border-color 0.2s, background 0.2s;
         }
 
         input:focus, select:focus, textarea:focus {
-            border-color: #8dd48d;
-            background: #353835;
+            border-color: var(--primary-color);
+            background: var(--header-bg);
             outline: none;
         }
 
-        button {
+        form button {
             margin-top: 12px;
             padding: 9px 16px;
             cursor: pointer;
             border: none;
-            border-radius: 6px;
-            background: #4caf50;
+            border-radius: 8px;
+            background: var(--primary-color);
             color: #fff;
             font-weight: 600;
             transition: background 0.2s, transform 0.1s;
         }
 
-        button:hover {
-            background: #3e8e41;
+        form button:hover {
+            background: var(--primary-hover);
             transform: translateY(-1px);
         }
 
@@ -82,39 +82,45 @@
         }
 
         .snapshot-card, .event-card {
-            border-radius: 10px;
-            box-shadow: 0 1px 6px rgba(0, 0, 0, 0.4);
+            border-radius: 12px;
+            box-shadow: 0 1px 6px rgba(0, 0, 0, 0.08);
             padding: 14px 18px;
-            color: #e2e2e2;
+            color: var(--text-primary);
         }
 
         .snapshot-card {
-            background: #2b2f2b;
-            border-left: 5px solid #6bbf59;
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid var(--border-color);
+            border-left: 5px solid var(--primary-color);
             transition: transform 0.1s ease-in-out;
         }
 
         .snapshot-card:hover {
             transform: translateY(-2px);
-            background: #303530;
+            background: var(--header-bg);
         }
 
         .snapshot-current {
-            border-left-color: #9aff9a;
-            background: #354235;
+            border-left-color: var(--success-color);
+            background: var(--header-bg);
         }
 
         .event-card {
             flex: 0 0 300px;
             margin-left: 16px;
             font-size: 14px;
-            background: #2a2d2a;
-            border-left: 5px solid #62797a;
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid var(--border-color);
+            border-left: 5px solid var(--text-secondary);
         }
 
         .snapshot-arrow {
             font-size: 24px;
-            color: #777;
+            color: var(--text-secondary);
             margin: 0 10px;
         }
 
@@ -127,50 +133,49 @@
 
         .val {
             min-width: 160px;
-            background: #242724;
+            background: var(--bg);
             padding: 8px;
-            border-radius: 6px;
-            border: 1px solid #3a3d3a;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
         }
 
         .val .label {
             font-size: 12px;
-            color: #a0a0a0;
+            color: var(--text-secondary);
         }
 
         .val .num {
             font-size: 16px;
             font-weight: 600;
-            color: #d8f3d8;
+            color: var(--primary-color);
             margin-top: 4px;
         }
 
         .small {
             font-size: 12px;
-            color: #a5a5a5;
+            color: var(--text-secondary);
         }
 
         .id-box {
             display: inline-block;
             padding: 4px 8px;
-            background: #3a453a;
-            color: #d6f5d6;
+            background: var(--glass-bg);
+            color: var(--primary-color);
             border-radius: 6px;
             font-weight: 600;
             margin-right: 8px;
         }
 
         .event-card strong {
-            color: #d3e6ff;
+            color: var(--text-primary);
         }
 
         .event-card .small {
-            color: #999;
+            color: var(--text-secondary);
         }
 
-        /* ====== 📱 Mobile Responsive Styles ====== */
+        /* ====== Mobile ====== */
         @media (max-width: 768px) {
-
             main {
                 padding: 18px;
             }
@@ -185,7 +190,6 @@
                 text-align: center;
             }
 
-            /* Снапшоты теперь в колонку */
             .snapshot-wrapper {
                 flex-direction: column;
                 align-items: stretch;
@@ -197,12 +201,10 @@
                 padding: 12px 14px;
             }
 
-            /* Убираем горизонтальную стрелку — заменяем на вертикальный акцент */
             .snapshot-arrow {
                 display: none;
             }
 
-            /* Event-карта под снапшотом */
             .event-card {
                 margin-left: 0;
                 margin-top: 10px;
@@ -243,16 +245,14 @@
             }
         }
 
-
         ::-webkit-scrollbar-track {
             background: transparent;
         }
 
         ::-webkit-scrollbar-thumb {
-            background-color: rgba(187, 188, 246, 0.17);
+            background-color: rgba(var(--primary-color-rgb), 0.17);
         }
     </style>
-
 {% endblock %}
 
 {% block content %}
@@ -288,7 +288,7 @@
                                 </div>
                             </div>
 
-                            <div class="snapshot-values" style="margin-top:10px;">
+                            <div class="snapshot-values">
                                 <div class="val">
                                     <div class="label">Общий баланс</div>
                                     <div class="num">{{ snap.total_balance|floatformat:0|intcomma }} RUB</div>
