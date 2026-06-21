@@ -17,13 +17,13 @@ main {
 .course-title {
     font-size: 2.5rem;
     font-weight: 600;
-    color: #ffffff;
+    color: var(--text-primary);
     margin-bottom: 1rem;
 }
 
 .course-description {
     font-size: 1.1rem;
-    color: rgba(255, 255, 255, 0.8);
+    color: var(--text-secondary);
     max-width: 700px;
     margin: 0 auto;
     line-height: 1.6;
@@ -40,12 +40,12 @@ main {
 }
 
 .level-card {
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--glass-bg);
     border-radius: 12px;
     padding: 1.5rem;
     transition: all 0.3s ease;
     text-decoration: none;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--border-color);
     backdrop-filter: blur(10px);
     width: 300px;
     height: 140px;
@@ -56,9 +56,9 @@ main {
 
 .level-card:hover {
     transform: translateY(-5px);
-    background: rgba(255, 255, 255, 0.15);
+    background: var(--header-bg);
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-    border-color: rgba(255, 255, 255, 0.2);
+    border-color: var(--primary-color);
 }
 
 .level-content {
@@ -66,7 +66,7 @@ main {
 }
 
 .level-title {
-    color: white;
+    color: var(--text-primary);
     font-size: 1.7rem;
     font-weight: 500;
     margin: 0;
@@ -76,7 +76,7 @@ main {
     width: 100%;
     text-align: center;
     padding: 3rem;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--text-secondary);
 }
 
 .empty-message i {

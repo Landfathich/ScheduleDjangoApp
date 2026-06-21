@@ -1,11 +1,14 @@
 main {
     padding: 2rem;
     display: block;
-    color: black;
+    overflow-y: auto;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    position: relative;
 }
 
 .header-text {
-    color: white;
+    color: var(--text-primary);
     margin: auto;
 }
 
@@ -42,7 +45,7 @@ main {
 
 /* Кнопка добавления курса */
 .add-course-btn {
-    background: #0d6efd;
+    background: var(--primary-color);
     color: white;
     padding: 0.5rem 1rem;
     border-radius: 0.25rem;
@@ -54,7 +57,7 @@ main {
 }
 
 .add-course-btn:hover {
-    background: #0b5ed7;
+    background: var(--primary-hover);
 }
 
 /* Сетка курсов */
@@ -70,16 +73,17 @@ main {
 }
 
 .empty-card {
-    background: white;
+    background: var(--header-bg);
     border-radius: 0.25rem;
     box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
     padding: 2rem;
     text-align: center;
+    color: var(--text-primary);
 }
 
 .empty-card i {
     font-size: 3rem;
-    color: #6c757d;
+    color: var(--text-secondary);
     margin-bottom: 1rem;
 }
 
@@ -89,7 +93,7 @@ main {
 }
 
 .empty-card p {
-    color: #6c757d;
+    color: var(--text-secondary);
 }
 
 /* Стили для карточек с размытым фоном */
@@ -97,7 +101,7 @@ main {
     width: 250px;
     height: 200px;
     margin: auto;
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--glass-bg);
     border-radius: 8px;
     overflow: hidden;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
@@ -105,7 +109,7 @@ main {
     position: relative;
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--border-color);
 }
 
 .course-card:hover {
@@ -161,11 +165,11 @@ main {
     padding: 12px 15px;
     font-size: 1.1rem;
     text-align: center;
-    color: rgba(255, 255, 255, 0.96);
+    color: white;
+    background: rgba(0, 0, 0, 0.3);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    background: rgba(0, 0, 0, 0.3);
     backdrop-filter: blur(5px);
     font-weight: 600;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
@@ -182,9 +186,14 @@ main {
     background-size: 120%;
     background-position: center;
     background-repeat: no-repeat;
-    filter: blur(25px) brightness(0.6) saturate(1.2);
+    filter: blur(25px) brightness(1.2) saturate(1.2);
     z-index: -1;
     transform: scale(1.2);
+}
+
+
+[data-theme="dark"] .course-card::before {
+    filter: blur(25px) brightness(0.6) saturate(1.2);
 }
 
 .course-card::after {
@@ -213,5 +222,5 @@ main {
 }
 
 ::-webkit-scrollbar-thumb {
-    background-color: rgba(187, 188, 246, 0.17);
+    background-color: rgba(var(--primary-color-rgb), 0.17);
 }

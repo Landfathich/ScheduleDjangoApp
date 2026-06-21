@@ -1,4 +1,4 @@
-@import "https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap"; /* Защитные стили */
+@import "https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap";
 
 * {
     box-sizing: border-box;
@@ -7,10 +7,50 @@
 body {
     display: flex;
     flex-direction: column;
-    margin: 0;
+    margin: auto;
     padding: 0;
     font-family: 'Arial', sans-serif;
-    background-color: #f5f5f5;
+    background: linear-gradient(135deg, #f9f3ff 0%, #f0e5ff 50%, #e8d8ff 100%) !important;
+    background-attachment: fixed;
+    background-image: url('data:image/svg+xml;utf8,<svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><path d="M30 30L70 70M70 30L30 70" stroke="rgba(156, 39, 176, 0.03)" stroke-width="1"/></svg>');
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
+
+img {
+    pointer-events: none;
+    max-width: 100%;
+    object-fit: contain !important;
+}
+
+span:has(img) {
+    max-width: 100%;
+}
+
+.officetitle, .MsoTitle {
+    display: none !important;
+}
+
+a {
+    user-select: text;
+    -webkit-user-select: text;
+    -moz-user-select: text;
+    -ms-user-select: text;
+}
+
+.protected-text {
+    color: #333;
+    font-family: Arial, sans-serif;
+    line-height: 1.5;
+}
+
+.doc-content {
+    width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    max-width: 100% !important;
 }
 
 .guide-container {
@@ -21,85 +61,44 @@ body {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
-/* Запрещаем выделение текста и копирование */
-body {
-    user-select: none;
-    -webkit-user-select: none;
-}
-
-img {
-    pointer-events: none;
-    max-width: 100%;
-}
-
-/* Скрываем исходные элементы Word */
-.officetitle, .MsoTitle {
-    display: none !important;
-}
-
-
-/* Разрешение выделения текста для ссылок */
-a {
-    user-select: text;
-    -webkit-user-select: text;
-    -moz-user-select: text;
-    -ms-user-select: text;
-}
-
-/* Дополнительные стили для защиты */
-.protected-text {
-    color: #333;
-    font-family: Arial, sans-serif;
-    line-height: 1.5;
-}
-
-body {
-    margin: auto;
-    background-color: #f9f3ff !important;
-    user-select: none;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-}
-
-.doc-content {
-    width: 100% !important;
-    padding: 0 !important;
-    margin: 0 !important;
-    max-width: 100% !important;
-}
-
 .guide-content {
     display: block !important;
     padding: 50px !important;
-    background-color: white !important;
-    box-shadow: 2px 0px 10px gray;
     margin: 40px auto;
     padding-top: 70px !important;
     position: relative;
     width: 65% !important;
+    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.1) !important;
+    border-radius: 8px !important;
+    overflow: hidden;
+    border: 1px solid #e1bee7;
+    background-color: white !important;
 }
 
-img {
-    object-fit: contain !important;
-}
-
-span:has(img) {
-    max-width: 100%;
+.guide-content::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 5px;
+    background: linear-gradient(to right, #9c27b0, #673ab7);
 }
 
 .kodama-label {
     padding: 0px 20px;
-    background: #ffdad0;
+    background: linear-gradient(to right, #ff7043, #ffab40) !important;
     display: inline-block;
     position: absolute;
     top: 0;
     right: 0;
     border-bottom-left-radius: 20px;
-    color: #0b0e12;
+    color: white !important;
+    font-weight: bold;
+    box-shadow: -2px 2px 5px rgba(0, 0, 0, 0.1);
+    z-index: 10;
 }
 
-/* Новые стили для боковых панелей */
 .page-wrapper {
     display: flex;
     min-height: 100vh;
@@ -109,69 +108,10 @@ span:has(img) {
 .sidebar {
     width: 220px;
     padding: 20px 0;
-    background-color: #f8f9fa;
-    border-right: 1px solid #eaeaea;
     position: sticky;
     top: 0;
     height: 100vh;
     overflow-y: auto;
-}
-
-.right-sidebar {
-    border-right: none;
-    border-left: 1px solid #eaeaea;
-}
-
-.sidebar-inner {
-    padding: 0 15px;
-}
-
-.guide-main {
-    flex: 1;
-    padding: 20px;
-    overflow: hidden;
-}
-
-.guide-nav, .guide-toc {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    margin-top: 15px;
-}
-
-.nav-link, .toc-link {
-    color: #495057;
-    text-decoration: none;
-    padding: 6px 10px;
-    border-radius: 4px;
-    transition: all 0.2s;
-}
-
-.nav-link:hover, .toc-link:hover {
-    background-color: #e9ecef;
-    color: #212529;
-}
-
-.sidebar h3 {
-    font-size: 1.1rem;
-    color: #343a40;
-    margin-bottom: 10px;
-    padding-bottom: 8px;
-    border-bottom: 1px solid #dee2e6;
-}
-
-
-/* Основные улучшения (добавляем к вашему текущему CSS) */
-
-/* Фон с градиентом и текстурой */
-body {
-    background: linear-gradient(135deg, #f9f3ff 0%, #f0e5ff 50%, #e8d8ff 100%) !important;
-    background-attachment: fixed;
-    background-image: url('data:image/svg+xml;utf8,<svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><path d="M30 30L70 70M70 30L30 70" stroke="rgba(156, 39, 176, 0.03)" stroke-width="1"/></svg>');
-}
-
-/* Боковые панели - стилизация */
-.sidebar {
     background: rgba(255, 255, 255, 0.9) !important;
     backdrop-filter: blur(5px);
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.05);
@@ -179,11 +119,16 @@ body {
     transition: all 0.3s ease;
 }
 
+.sidebar:hover {
+    box-shadow: 0 0 25px rgba(0, 0, 0, 0.1);
+}
+
 .right-sidebar {
     border-left: none !important;
 }
 
 .sidebar-inner {
+    padding: 0 15px;
     position: relative;
 }
 
@@ -202,81 +147,28 @@ body {
     right: 0;
 }
 
-/* Заголовки боковых панелей */
 .sidebar h3 {
+    font-size: 1.1rem;
+    margin-bottom: 10px;
+    padding-bottom: 8px;
+    padding-left: 15px;
     color: #6a1b9a !important;
     border-bottom: 1px solid #e1bee7 !important;
     font-weight: 600;
     position: relative;
-    padding-left: 15px;
 }
 
 .sidebar h3::before {
-    content: '»';
+    content: '\00BB';
     position: absolute;
     left: 0;
     color: #9c27b0;
 }
 
-/* Ссылки в панелях */
-.nav-link, .toc-link {
-    position: relative;
-    padding-left: 20px !important;
-    transition: all 0.3s ease;
-    color: #5e35b1 !important;
-}
-
-.nav-link::before, .toc-link::before {
-    content: '•';
-    position: absolute;
-    left: 5px;
-    color: #ab47bc;
-    transition: all 0.1s ease;
-}
-
-.nav-link:hover, .toc-link:hover {
-    background-color: #f3e5f5 !important;
-}
-
-.nav-link:hover::before, .toc-link:hover::before {
-    color: #7b1fa2;
-}
-
-/* Основной контент - улучшаем тень и добавляем детали */
-.guide-content {
-    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.1) !important;
-    border-radius: 8px !important;
-    position: relative;
-    overflow: hidden;
-    border: 1px solid #e1bee7;
-}
-
-.guide-content::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 5px;
-    background: linear-gradient(to right, #9c27b0, #673ab7);
-}
-
-/* Метка (label) - улучшаем */
-.kodama-label {
-    background: linear-gradient(to right, #ff7043, #ffab40) !important;
-    color: white !important;
-    font-weight: bold;
-    box-shadow: -2px 2px 5px rgba(0, 0, 0, 0.1);
-    z-index: 10;
-}
-
-/* Анимации при наведении */
-.sidebar:hover {
-    box-shadow: 0 0 25px rgba(0, 0, 0, 0.1);
-}
-
-/* Декоративные элементы */
 .guide-main {
+    flex: 1;
+    padding: 20px;
+    overflow: hidden;
     position: relative;
 }
 
@@ -301,13 +193,47 @@ body {
     right: -50px;
 }
 
+.guide-nav, .guide-toc {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 15px;
+}
 
-/* Плавная прокрутка */
+.nav-link, .toc-link {
+    color: #5e35b1 !important;
+    text-decoration: none;
+    padding: 6px 10px 6px 20px !important;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.nav-link::before, .toc-link::before {
+    content: '\2022';
+    position: absolute;
+    left: 5px;
+    color: #ab47bc;
+    transition: all 0.1s ease;
+}
+
+.nav-link:hover, .toc-link:hover {
+    background-color: #f3e5f5 !important;
+}
+
+.nav-link:hover::before, .toc-link:hover::before {
+    color: #7b1fa2;
+}
+
+.toc-link.active {
+    background-color: #673ab7;
+    color: white;
+}
+
 html {
     scroll-behavior: smooth;
 }
 
-/* Подсветка активного раздела */
 :target {
     animation: highlight 1.5s ease;
 }
@@ -341,7 +267,6 @@ html {
     border: 2px solid rgba(103, 58, 183, 0.2);
 }
 
-/* Плюсик (всегда остаётся плюсом) */
 .img-magnifier::before,
 .img-magnifier::after {
     content: '';
@@ -357,16 +282,13 @@ html {
 .img-magnifier::before {
     width: 20px;
     height: 2px;
-    /* Горизонтальная палочка */
 }
 
 .img-magnifier::after {
     width: 2px;
     height: 20px;
-    /* Вертикальная палочка */
 }
 
-/* Эффекты при наведении - просто увеличиваем и делаем ярче */
 .img-container:hover .img-magnifier {
     opacity: 0.4;
     transform: translate(-50%, -50%) scale(1);
@@ -374,7 +296,6 @@ html {
     background: rgba(255, 255, 255, 0.98);
 }
 
-/* Анимация палочек - легкое "дыхание" */
 .img-container:hover .img-magnifier::before {
     width: 28px;
     height: 5px;
@@ -385,7 +306,6 @@ html {
     width: 5px;
 }
 
-/* Эффект при клике - легкое сжатие */
 .img-container:active .img-magnifier {
     transform: translate(-50%, -50%) scale(0.92);
 }
@@ -395,7 +315,6 @@ html {
     background: #5e35b1;
 }
 
-/* Стили модального окна */
 .modal {
     position: fixed;
     top: 0;
@@ -434,32 +353,20 @@ html {
     cursor: zoom-out;
 }
 
-/* Анимация появления */
 @keyframes fadeIn {
-    from {
-        opacity: 0;
-    }
-    to {
-        opacity: 1;
-    }
+    from { opacity: 0; }
+    to { opacity: 1; }
 }
 
-/* Анимация закрытия */
 @keyframes fadeOut {
-    from {
-        opacity: 1;
-    }
-    to {
-        opacity: 0;
-    }
+    from { opacity: 1; }
+    to { opacity: 0; }
 }
 
 .modal.closing {
     animation: fadeOut 0.2s ease forwards;
 }
 
-/* Стили оглавления */
-/* Оглавление в правом сайдбаре */
 .guide-toc {
     max-height: calc(100vh - 150px);
     overflow-y: auto;
@@ -488,167 +395,36 @@ html {
     font-size: 0.9em;
 }
 
-.toc-link {
-    color: #5e35b1;
-    text-decoration: none;
-    display: block;
-    padding: 4px 8px;
-    border-radius: 4px;
-    transition: all 0.2s;
-}
-
-.toc-link:hover {
-    background-color: #f3e5f5;
-}
-
-.toc-link.active {
-    background-color: #673ab7;
-    color: white;
-}
-
-/* Адаптация для мобильных устройств */
-@media (max-width: 992px) {
-    .sidebar {
-        display: none;
-    }
-
-    .guide-main {
-        padding: 15px;
-        margin: 30px auto;
-    }
-
-    body {
-        width: 100% !important;
-        max-width: 100% !important;
-    }
-
-    html {
-
-        width: 100% !important;
-        max-width: 100% !important;
-    }
-
-    .guide-content {
-        width: 95% !important;
-        margin: 20px auto !important;
-        padding: 30px !important;
-    }
-
-    .kodama-label {
-        font-size: 0.8rem;
-        padding: 0 15px !important;
-    }
-}
-
 .code-container {
     position: relative;
     overflow: auto;
 }
 
 .code-block {
-    padding: 16px;
-    background: #f8f9fa;
-    border-radius: 4px;
-    font-family: monospace;
-    overflow-x: auto;
-}
-
-.copy-btn {
-    position: absolute;
-    right: 8px;
-    top: 18px;
-    width: 30px;
-    height: 30px;
-    background: #495057 url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>') no-repeat center;
-    background-size: 50%;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    opacity: 0;
-    transition: all 0.2s ease;
-    z-index: 1;
-}
-
-.code-container:hover .copy-btn {
-    opacity: 0.7;
-}
-
-.copy-btn:hover {
-    opacity: 1 !important;
-    background-color: #5a6268;
-}
-
-/* Для мобильных устройств */
-@media (hover: none) {
-    .copy-btn {
-        opacity: 0.7;
-        transform: translateY(0);
-    }
-
-    .copy-btn:active {
-        opacity: 1;
-    }
-}
-
-/* Анимация подтверждения копирования */
-.copy-btn.copied {
-    background-color: #28a745;
-    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>');
-}
-
-/* Эффект пульсации после копирования */
-@keyframes pulse {
-    0% {
-        box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.7);
-    }
-    70% {
-        box-shadow: 0 0 0 10px rgba(40, 167, 69, 0);
-    }
-    100% {
-        box-shadow: 0 0 0 0 rgba(40, 167, 69, 0);
-    }
-}
-
-.copy-btn.copied::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    border-radius: 4px;
-    animation: pulse 1s;
-}
-
-
-.code-block .line:hover {
-    background-color: #e9ecef;
-}
-
-/* Блок кода с относительным позиционированием */
-.code-block {
     position: relative;
     margin: 12px 0;
+    padding: 8px 0;
     background: #f8f9fa;
     border: 1px solid #dee2e6;
     border-radius: 6px;
     font-size: 14px;
     line-height: 1.5;
     counter-reset: line;
-    padding: 8px 0;
     overflow-x: auto;
     user-select: auto;
     -webkit-user-select: text;
 }
 
-/* Каждая строка */
 .code-block .line {
     display: flex;
     padding: 0 16px;
     position: relative;
 }
 
-/* Нумерация слева */
+.code-block .line:hover {
+    background-color: #e9ecef;
+}
+
 .code-block .line::before {
     counter-increment: line;
     content: counter(line);
@@ -677,4 +453,94 @@ html {
 
 .hljs {
     background-color: transparent !important;
+}
+
+.copy-btn {
+    position: absolute;
+    right: 8px;
+    top: 18px;
+    width: 30px;
+    height: 30px;
+    background: #495057 url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>') no-repeat center;
+    background-size: 50%;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    opacity: 0;
+    transition: all 0.2s ease;
+    z-index: 1;
+}
+
+.code-container:hover .copy-btn {
+    opacity: 0.7;
+}
+
+.copy-btn:hover {
+    opacity: 1 !important;
+    background-color: #5a6268;
+}
+
+.copy-btn.copied {
+    background-color: #28a745;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>');
+}
+
+.copy-btn.copied::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 4px;
+    animation: pulse 1s;
+}
+
+@keyframes pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.7);
+    }
+    70% {
+        box-shadow: 0 0 0 10px rgba(40, 167, 69, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(40, 167, 69, 0);
+    }
+}
+
+@media (hover: none) {
+    .copy-btn {
+        opacity: 0.7;
+        transform: translateY(0);
+    }
+    .copy-btn:active {
+        opacity: 1;
+    }
+}
+
+@media (max-width: 992px) {
+    .sidebar {
+        display: none;
+    }
+    .guide-main {
+        padding: 15px;
+        margin: 30px auto;
+    }
+    body {
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+    html {
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+    .guide-content {
+        width: 95% !important;
+        margin: 20px auto !important;
+        padding: 30px !important;
+    }
+    .kodama-label {
+        font-size: 0.8rem;
+        padding: 0 15px !important;
+    }
 }
