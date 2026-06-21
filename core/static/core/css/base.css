@@ -23,7 +23,12 @@ body {
     line-height: 1.5;
     height: 100vh;
     justify-content: center;
-    background: linear-gradient(135deg, #d1fae5 0%, #dbeafe 50%, #fef3c7 100%) fixed;
+    background-color: #e8fdf0;
+    background-image:
+        radial-gradient(ellipse at 20% 30%, #86efac 0%, transparent 55%),
+        radial-gradient(ellipse at 80% 70%, #bfdbfe 0%, transparent 55%),
+        radial-gradient(ellipse at 50% 50%, #d1fae5 0%, transparent 60%);
+    background-attachment: fixed;
     transition: padding-left 0.3s ease;
 }
 
@@ -32,7 +37,12 @@ body.has-sidebar {
 }
 
 [data-theme="dark"] body {
-    background: linear-gradient(135deg, #0a1a10 0%, #0a1420 50%, #1a1008 100%);
+    background-color: #1a1f1c;
+    background-image: radial-gradient(ellipse at 15% 40%, rgba(22, 163, 74, 0.25) 0%, transparent 50%),
+    radial-gradient(ellipse at 85% 30%, rgba(37, 99, 235, 0.15) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 85%, rgba(22, 163, 74, 0.2) 0%, transparent 50%),
+    radial-gradient(ellipse at 70% 60%, rgba(139, 92, 246, 0.08) 0%, transparent 40%);
+    background-attachment: fixed;
 }
 
 ul, ol {

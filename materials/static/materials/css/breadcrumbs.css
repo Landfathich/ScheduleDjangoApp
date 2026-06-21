@@ -3,7 +3,7 @@
 }
 
 .breadcrumbs a {
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--text-secondary);
     text-decoration: none;
     font-size: 1.3rem;
     display: inline-block;
@@ -11,11 +11,11 @@
 }
 
 .breadcrumbs a:hover {
-    color: white;
+    color: var(--text-primary);
 }
 
 .breadcrumbs h1 {
-    color: white;
+    color: var(--text-primary);
     font-size: 2rem;
     margin: 0;
 }
@@ -25,5 +25,5 @@
 }
 
 ::-webkit-scrollbar-thumb {
-    background-color: rgba(187, 188, 246, 0.17);
+    background-color: rgba(var(--primary-color-rgb), 0.17);
 }

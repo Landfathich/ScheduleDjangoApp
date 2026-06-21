@@ -43,6 +43,7 @@
     /* ===== СПЕЦИФИЧНЫЕ ===== */
     --scrollbar-size: 8px;
     --glass-bg: rgba(255, 255, 255, 0.6);
+    --liquid-glass: rgba(255, 255, 255, 0.25);
 
     /* ===== ПОД ВОПРОСОМ ===== */
     --bg-invert: #000000;
@@ -50,12 +51,12 @@
 }
 
 [data-theme="dark"] {
-    --bg: #1a1b1e;
-    --header-bg: rgba(26, 27, 30, 0.85);
-    --border-color: #2d2e32;
-    --text-primary: #e4e4e8;
-    --text-secondary: #dcdce3;
-    --invert-text-primary: #1a1b1e;
+    --bg: #161b18;
+    --header-bg: rgba(22, 27, 24, 0.85);
+    --border-color: #2a332e;
+    --text-primary: #e4ebe6;
+    --text-secondary: #dff3e5;
+    --invert-text-primary: #161b18;
     --open-window-bg: rgb(42, 45, 43);
 
     --permanent-lesson-bg: rgba(22, 163, 74, 0.15);
@@ -68,9 +69,10 @@
     --balance-warning: rgba(249, 115, 22, 0.12);
     --balance-info: rgba(234, 179, 8, 0.12);
 
-    --glass-bg: rgba(26, 27, 30, 0.6);
+    --glass-bg: rgba(22, 27, 24, 0.6);
+    --liquid-glass: rgba(22, 27, 24, 0.25);
 
     --info-color: #2196F3;
     --warning-color: #FF9800;
-    --notification-bg: #323232;
+    --notification-bg: #2a302c;
 }

@@ -6,7 +6,7 @@
 }
 
 .kanban-column {
-    background: var(--header-bg);
+    background: var(--glass-bg);
     border: 1px solid var(--border-color);
     border-radius: 12px;
     display: flex;
@@ -58,7 +58,7 @@
 }
 
 .task-card {
-    background: var(--bg);
+    background: var(--liquid-glass);
     border: 1px solid var(--border-color);
     border-radius: 8px;
     padding: 10px;
