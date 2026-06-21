@@ -24,8 +24,11 @@ body {
     height: 100vh;
     justify-content: center;
     background: linear-gradient(135deg, #d1fae5 0%, #dbeafe 50%, #fef3c7 100%) fixed;
-    padding-left: 240px;
     transition: padding-left 0.3s ease;
+}
+
+body.has-sidebar {
+    padding-left: 240px;
 }
 
 [data-theme="dark"] body {

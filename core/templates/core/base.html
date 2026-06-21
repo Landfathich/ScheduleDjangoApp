@@ -36,43 +36,46 @@
         window.userIsAuthenticated = {% if user.is_authenticated %}true{% else %}false{% endif %};
     </script>
 </head>
-<body>
 
-<aside class="sidebar" id="left-sidebar">
-    <div class="sidebar-header">
-        <button class="sidebar-toggle" id="sidebar-toggle" title="Свернуть меню">
-            <span class="sidebar-toggle-icon">☰</span>
-        </button>
-    </div>
-    <nav class="sidebar-nav">
-        {% if user.is_authenticated %}
-            <a href="{% url 'home' %}" class="sidebar-item">
-                <span class="sidebar-icon">📅</span>
-                <span class="sidebar-text">Расписание</span>
-            </a>
-        {% endif %}
-        {% if user.is_staff %}
-            <a href="{% url 'stats_dashboard' %}" class="sidebar-item">
-                <span class="sidebar-icon">📊</span>
-                <span class="sidebar-text">Аналитика</span>
-            </a>
-            <a href="{% url 'tasks:kanban_board' %}" class="sidebar-item">
-                <span class="sidebar-icon">📋</span>
-                <span class="sidebar-text">Задачи</span>
-            </a>
-        {% endif %}
-        {% if user.is_authenticated %}
-            <a href="{% url 'materials_hub' %}" class="sidebar-item">
-                <span class="sidebar-icon">📚</span>
-                <span class="sidebar-text">Курсы</span>
-            </a>
-            <a href="{% url 'profile' %}" class="sidebar-item">
-                <span class="sidebar-icon">👤</span>
-                <span class="sidebar-text">Профиль</span>
-            </a>
-        {% endif %}
-    </nav>
-</aside>
+<body class="{% if user.is_authenticated %}has-sidebar{% endif %}">
+
+{% if user.is_authenticated %}
+    <aside class="sidebar" id="left-sidebar">
+        <div class="sidebar-header">
+            <button class="sidebar-toggle" id="sidebar-toggle" title="Свернуть меню">
+                <span class="sidebar-toggle-icon">☰</span>
+            </button>
+        </div>
+        <nav class="sidebar-nav">
+            {% if user.is_authenticated %}
+                <a href="{% url 'home' %}" class="sidebar-item">
+                    <span class="sidebar-icon">📅</span>
+                    <span class="sidebar-text">Расписание</span>
+                </a>
+            {% endif %}
+            {% if user.is_staff %}
+                <a href="{% url 'stats_dashboard' %}" class="sidebar-item">
+                    <span class="sidebar-icon">📊</span>
+                    <span class="sidebar-text">Аналитика</span>
+                </a>
+                <a href="{% url 'tasks:kanban_board' %}" class="sidebar-item">
+                    <span class="sidebar-icon">📋</span>
+                    <span class="sidebar-text">Задачи</span>
+                </a>
+            {% endif %}
+            {% if user.is_authenticated %}
+                <a href="{% url 'materials_hub' %}" class="sidebar-item">
+                    <span class="sidebar-icon">📚</span>
+                    <span class="sidebar-text">Курсы</span>
+                </a>
+                <a href="{% url 'profile' %}" class="sidebar-item">
+                    <span class="sidebar-icon">👤</span>
+                    <span class="sidebar-text">Профиль</span>
+                </a>
+            {% endif %}
+        </nav>
+    </aside>
+{% endif %}
 
 <header>
     <div class="header-content">
