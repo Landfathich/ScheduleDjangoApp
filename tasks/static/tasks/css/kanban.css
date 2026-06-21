@@ -1,94 +1,113 @@
 .kanban-board {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
-    gap: 8px;
+    gap: 10px;
     max-height: 700px;
 }
 
 .kanban-column {
-    background: #ece9d8;
-    border: 2px outset #d4d0c8;
-    border-radius: 0;
+    background: var(--header-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
     display: flex;
     max-height: 700px;
     flex-direction: column;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+[data-theme="dark"] .kanban-column {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border-color);
+}
+
+[data-theme="dark"] .task-card {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid var(--border-color);
+}
+
+[data-theme="dark"] .task-card:hover {
+    background: rgba(255, 255, 255, 0.1);
 }
 
 .column-header {
     color: white;
-    padding: 6px 8px;
-    font-weight: bold;
-    font-size: 12px;
-    border-bottom: 1px solid #003366;
-    text-shadow: 1px 1px 1px #000;
+    padding: 10px 12px;
+    font-weight: 600;
+    font-size: 13px;
+    border-bottom: 2px solid var(--primary-hover);
+    background: var(--primary-color);
 }
 
 .column-count {
-    background: #ffcc00;
-    color: black;
-    padding: 1px 4px;
-    border-radius: 0;
-    font-size: 10px;
-    font-weight: bold;
+    background: white;
+    color: var(--primary-color);
+    padding: 2px 6px;
+    border-radius: 10px;
+    font-size: 11px;
+    font-weight: 600;
     float: right;
-    border: 1px solid #cc9900;
 }
 
 .task-list {
     min-height: 300px;
     flex: 1;
-    padding: 4px;
-    scrollbar-width: thin;
+    padding: 8px;
     overflow-y: auto;
-    background: #ece9d8;
-    border: 1px inset #d4d0c8;
+    background: transparent;
 }
 
 .task-card {
-    background: #ffffcc;
-    border: 1px outset #cccc99;
-    padding: 6px;
-    margin-bottom: 4px;
+    background: var(--bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 10px;
+    margin-bottom: 8px;
     cursor: move;
-    font-size: 11px;
-    font-family: Tahoma, Arial, sans-serif;
+    font-size: 12px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    transition: all 0.2s ease;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
 }
 
 .task-card:hover {
-    background: #ffff99;
-    border: 1px inset #cccc99;
+    background: var(--header-bg);
+    border-color: var(--primary-color);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
 }
 
 .task-card.dragging {
     opacity: 0.9;
-    border: 2px dashed #003366;
-    background: #ffff99;
+    border: 2px dashed var(--primary-color);
+    background: var(--glass-bg);
 }
 
 .task-title {
-    font-weight: bold;
-    margin-bottom: 3px;
-    color: #000;
-    font-size: 11px;
+    font-weight: 600;
+    margin-bottom: 4px;
+    color: var(--text-primary);
+    font-size: 12px;
 }
 
 .task-description {
-    color: #666;
-    margin-bottom: 4px;
-    line-height: 1.2;
-    font-size: 10px;
+    color: var(--text-secondary);
+    margin-bottom: 6px;
+    line-height: 1.3;
+    font-size: 11px;
 }
 
 .task-footer {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    color: #666;
+    color: var(--text-secondary);
     font-size: 10px;
-    margin-top: 4px;
+    margin-top: 6px;
+    opacity: 0.7;
 }
 
-/* Селектор проектов в канбане */
+/* Селектор проектов */
 .project-selector {
     display: flex;
     align-items: center;
@@ -97,16 +116,19 @@
 }
 
 .project-selector select {
-    background: white;
-    border: 2px inset #d4d0c8;
-    padding: 4px 8px;
-    font-size: 11px;
-    font-family: Tahoma, Arial, sans-serif;
+    background: var(--bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 13px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     min-width: 180px;
+    color: var(--text-primary);
 }
 
 .project-selector select:focus {
-    outline: 1px solid #3a7bd5;
+    outline: none;
+    border-color: var(--primary-color);
 }
 
 /* Стили для модального окна колонки */
@@ -137,30 +159,29 @@
 
     .kanban-column {
         min-height: auto;
-        max-height: 60vh; /* Ограничиваем максимальную высоту колонки */
+        max-height: 60vh;
     }
 
     .task-list {
         min-height: 150px;
-        max-height: 50vh; /* Ограничиваем высоту списка задач */
-        overflow-y: auto; /* Скролл внутри списка задач */
-        -webkit-overflow-scrolling: touch; /* Плавный скролл на iOS */
+        max-height: 50vh;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
     }
 
     .task-card {
-        padding: 8px;
-        font-size: 12px;
+        padding: 10px;
+        font-size: 13px;
     }
 
     .task-title {
-        font-size: 12px;
+        font-size: 13px;
     }
 
     .task-description {
-        font-size: 11px;
+        font-size: 12px;
     }
 
-    /* Хедер на мобильных */
     .kanban-header {
         flex-direction: column;
         gap: 10px;
@@ -193,7 +214,7 @@
     }
 }
 
-/* Стили для touch-интерфейса в стиле Windows XP */
+/* Touch-интерфейс */
 @media (max-width: 768px) {
     .task-card {
         cursor: pointer;
@@ -206,7 +227,6 @@
         transform: scale(0.98);
     }
 
-    /* Модальное окно перемещения в стиле Windows XP */
     .move-modal {
         position: fixed;
         top: 0;
@@ -222,93 +242,86 @@
     }
 
     .move-modal-content {
-        background: linear-gradient(to bottom, #ece9d8 0%, #e0dfd7 100%);
-        padding: 2px;
-        border: 2px solid #003c74;
-        border-radius: 0;
+        background: var(--header-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
         width: 100%;
         max-width: 280px;
-        box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-        font-family: "Tahoma", sans-serif;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        overflow: hidden;
     }
 
     .move-modal-content > div {
-        background: white;
+        background: var(--header-bg);
         padding: 16px;
-        border: 1px solid #7f9db9;
     }
 
     .move-modal-content h4 {
         margin: 0 0 12px 0;
         text-align: center;
-        color: #003c74;
+        color: var(--text-primary);
         font-size: 14px;
-        font-weight: bold;
-        background: linear-gradient(to bottom, #0a246a 0%, #a6caf0 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        text-shadow: 1px 1px 1px rgba(255, 255, 255, 0.5);
+        font-weight: 600;
     }
 
     .status-option {
         display: block;
         width: 100%;
-        padding: 6px 12px;
+        padding: 8px 12px;
         margin: 4px 0;
-        border: 1px solid #7f9db9;
-        background: linear-gradient(to bottom, #f0f0f0 0%, #e5e5e5 100%);
-        border-radius: 3px;
+        border: 1px solid var(--border-color);
+        background: var(--glass-bg);
+        border-radius: 8px;
         cursor: pointer;
-        font-size: 12px;
-        font-family: "Tahoma", sans-serif;
-        color: #000;
+        font-size: 13px;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        color: var(--text-primary);
         text-align: center;
-        box-shadow: inset 1px 1px 0px white, 1px 1px 1px rgba(0, 0, 0, 0.1);
+        transition: all 0.2s;
+    }
+
+    .status-option:hover {
+        background: var(--header-bg);
     }
 
     .status-option:active {
-        background: linear-gradient(to bottom, #d4d4d4 0%, #c9c9c9 100%);
-        box-shadow: inset 1px 1px 2px rgba(0, 0, 0, 0.2);
+        background: var(--permanent-lesson-bg);
         transform: translateY(1px);
     }
 
-    /* Стиль для текущего статуса */
     .status-option.current-status {
-        background: linear-gradient(to bottom, #d6e8ff 0%, #b8d4f0 100%);
-        border-color: #3a6ea5;
-        color: #003c74;
-        font-weight: bold;
-    }
-
-    .status-option.current-status:active {
-        background: linear-gradient(to bottom, #d6e8ff 0%, #b8d4f0 100%);
-        transform: none;
-        box-shadow: inset 1px 1px 0px white, 1px 1px 1px rgba(0, 0, 0, 0.1);
+        background: rgba(var(--primary-color-rgb), 0.15);
+        border-color: var(--primary-color);
+        color: var(--primary-color);
+        font-weight: 600;
     }
 
     .cancel-move {
         display: block;
         width: 100%;
-        padding: 6px 12px;
+        padding: 8px 12px;
         margin-top: 12px;
-        background: linear-gradient(to bottom, #f0f0f0 0%, #e5e5e5 100%);
-        border: 1px solid #7f9db9;
-        color: #000;
-        border-radius: 3px;
+        background: var(--glass-bg);
+        border: 1px solid var(--border-color);
+        color: var(--text-secondary);
+        border-radius: 8px;
         cursor: pointer;
-        font-size: 12px;
-        font-family: "Tahoma", sans-serif;
-        box-shadow: inset 1px 1px 0px white, 1px 1px 1px rgba(0, 0, 0, 0.1);
+        font-size: 13px;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    .cancel-move:hover {
+        background: var(--header-bg);
     }
 
     .cancel-move:active {
-        background: linear-gradient(to bottom, #d4d4d4 0%, #c9c9c9 100%);
-        box-shadow: inset 1px 1px 2px rgba(0, 0, 0, 0.2);
+        background: var(--permanent-lesson-bg);
         transform: translateY(1px);
     }
 
     .mobile-hint {
         display: block !important;
-        font-family: "Tahoma", sans-serif;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     }
 }
