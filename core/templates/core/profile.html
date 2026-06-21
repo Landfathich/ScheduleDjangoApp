@@ -37,13 +37,13 @@
         <div class="profile-tabs">
             <nav class="tabs-navigation">
                 <button type="button" class="tab-btn active" data-tab="main">Основное</button>
-                {% if request.user.role == 'teacher' or request.user.is_staff %}
+               {% comment %} {% if request.user.role == 'teacher' or request.user.is_staff %}
                     <button type="button" class="tab-btn" data-tab="teaching">Преподавание</button>
                     <button type="button" class="tab-btn" data-tab="finance">Финансы и статистика</button>
                 {% endif %}
                 {% if request.user.is_staff %}
                     <button type="button" class="tab-btn" data-tab="activity">Активность</button>
-                {% endif %}
+                {% endif %}{% endcomment %}
             </nav>
 
             <div class="tabs-content">
@@ -122,7 +122,7 @@
                         </div>
                     </form>
                 </div>
-
+{% comment %}
                 <!-- Вкладка Преподавание -->
                 <div class="tab-pane" id="teaching-tab">
                     <div class="teaching-content">
@@ -145,7 +145,7 @@
                         <!-- Блок будет заполняться через AJAX/JavaScript -->
                         <div class="loading-state">Пока здесь пусто.</div>
                     </div>
-                </div>
+                </div>{% endcomment %}
             </div>
         </div>
     </div>
