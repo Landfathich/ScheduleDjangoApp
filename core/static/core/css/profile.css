@@ -2,13 +2,12 @@ header {
     box-shadow: 0 5px 10px rgba(0, 0, 0, 0.09);
 }
 
-
 ::-webkit-scrollbar-track {
     background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-    background-color: rgba(187, 188, 246, 0.17);
+    background-color: rgba(var(--primary-color-rgb), 0.17);
 }
 
 main {
@@ -19,15 +18,16 @@ main {
     max-width: 1200px;
     margin: 0 auto;
     padding: 20px;
-    color: #ffffff;
+    color: var(--text-primary);
 }
 
 .profile-header {
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--glass-bg);
     border-radius: 12px;
     padding: 30px;
     margin-bottom: 20px;
     backdrop-filter: blur(10px);
+    border: 1px solid var(--border-color);
 }
 
 .avatar-section {
@@ -40,7 +40,7 @@ main {
     width: 80px;
     height: 80px;
     border-radius: 50%;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
     display: flex;
     align-items: center;
     justify-content: center;
@@ -62,7 +62,7 @@ main {
 }
 
 .user-role {
-    color: #aaa;
+    color: var(--text-secondary);
     font-size: 14px;
 }
 
@@ -76,26 +76,27 @@ main {
 }
 
 .status-badge.active {
-    background: #28a745;
+    background: var(--success-color);
     color: white;
 }
 
 .status-badge.inactive {
-    background: #dc3545;
+    background: var(--danger-color);
     color: white;
 }
 
 /* Навигация табами */
 .profile-tabs {
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--glass-bg);
     border-radius: 12px;
     overflow: hidden;
+    border: 1px solid var(--border-color);
 }
 
 .tabs-navigation {
     display: flex;
-    background: rgba(255, 255, 255, 0.05);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(0, 0, 0, 0.05);
+    border-bottom: 1px solid var(--border-color);
 }
 
 .tab-btn {
@@ -104,7 +105,7 @@ main {
     background: none;
     border: none;
     border-bottom: 2px solid transparent;
-    color: #c6c5c5;
+    color: var(--text-secondary);
     cursor: pointer;
     transition: all 0.3s ease;
     font-size: 14px;
@@ -112,14 +113,14 @@ main {
 }
 
 .tab-btn:hover {
-    background: rgba(255, 255, 255, 0.05);
-    color: white;
+    background: var(--glass-bg);
+    color: var(--text-primary);
 }
 
 .tab-btn.active {
-    background: rgba(255, 255, 255, 0.1);
-    color: white;
-    border-bottom: 2px solid #007bff;
+    background: var(--glass-bg);
+    color: var(--text-primary);
+    border-bottom: 2px solid var(--primary-color);
 }
 
 .tabs-content {
@@ -147,9 +148,10 @@ main {
 }
 
 .form-section {
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--glass-bg);
     padding: 20px;
     border-radius: 8px;
+    border: 1px solid var(--border-color);
 }
 
 .form-section h3 {
@@ -165,7 +167,7 @@ main {
     display: block;
     margin-bottom: 5px;
     font-weight: 500;
-    color: #ddd;
+    color: var(--text-secondary);
 }
 
 .form-group input,
@@ -174,10 +176,10 @@ main {
 .link-field input {
     width: 100%;
     padding: 10px 12px;
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    border: 1px solid var(--border-color);
     border-radius: 6px;
-    background: rgba(255, 255, 255, 0.1);
-    color: white;
+    background: var(--bg);
+    color: var(--text-primary);
     font-size: 14px;
     transition: border-color 0.3s ease;
 }
@@ -185,7 +187,7 @@ main {
 .form-group input::placeholder,
 .form-group textarea::placeholder,
 .link-field input::placeholder {
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--text-secondary);
     font-size: 14px;
     opacity: 1;
 }
@@ -195,7 +197,7 @@ main {
 .form-group select:focus,
 .link-field input:focus {
     outline: none;
-    border-color: #007bff;
+    border-color: var(--primary-color);
 }
 
 .form-group textarea {
@@ -217,7 +219,7 @@ main {
     align-items: center;
     margin-bottom: 8px;
     font-weight: 500;
-    color: #ddd;
+    color: var(--text-secondary);
 }
 
 .platform-icon {
@@ -246,42 +248,42 @@ main {
 }
 
 .btn-primary {
-    background: #007bff;
+    background: var(--primary-color);
     color: white;
     border: none;
     cursor: pointer;
 }
 
 .btn-primary:hover {
-    background: #0056b3;
+    background: var(--primary-hover);
 }
 
 .btn-secondary {
-    background: rgba(255, 255, 255, 0.1);
-    color: white;
-    border: 1px solid rgba(255, 255, 255, 0.3);
+    background: var(--glass-bg);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
 }
 
 .btn-secondary:hover {
-    background: rgba(255, 255, 255, 0.2);
+    background: var(--header-bg);
 }
 
 .btn-logout {
-    color: #ff6b6b;
+    color: var(--danger-color);
     text-decoration: none;
     font-size: 14px;
     margin-left: auto;
 }
 
 .btn-logout:hover {
-    color: #ff5252;
+    color: var(--danger-hover);
 }
 
 /* Состояние загрузки */
 .loading-state {
     text-align: center;
     padding: 40px;
-    color: #aaa;
+    color: var(--text-secondary);
     font-style: italic;
 }
 

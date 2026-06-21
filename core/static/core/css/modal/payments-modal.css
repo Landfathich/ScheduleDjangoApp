@@ -1,9 +1,4 @@
 .payments-init-content {
-    text-align: center;
-    padding: 40px 0;
-}
-
-.payments-init-content {
     display: flex;
     gap: 15px;
     justify-content: center;
@@ -16,7 +11,7 @@
 }
 
 .generate-payments-btn {
-    background-color: #4CAF50;
+    background-color: var(--success-color);
     color: white;
     padding: 10px 20px;
     border: none;
@@ -28,11 +23,11 @@
 }
 
 .generate-payments-btn:hover {
-    background-color: #3e8e41;
+    background-color: var(--primary-hover);
 }
 
 .generate-payments-btn:disabled {
-    background-color: #cccccc;
+    background-color: var(--gray-mix);
     cursor: not-allowed;
 }
 
@@ -63,7 +58,7 @@
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    color: var(--primary);
+    color: var(--text-primary);
     font-weight: 500;
     padding: 4px 8px;
     border-radius: 4px;
@@ -86,7 +81,6 @@
     box-shadow: none;
 }
 
-/* Добавляем иконку "календаря" для наглядности */
 .teacher-link::after {
     content: "";
     display: inline-block;
@@ -97,7 +91,6 @@
     opacity: 0.7;
 }
 
-/* Убрать подчеркивание у последней строки */
 .payment-item .payment-row:last-child {
     border-bottom: none;
     padding-bottom: 0;
@@ -116,17 +109,16 @@
 }
 
 .payment-status.paid {
-    background-color: #c0fac4;
-    color: #2e7d32;
+    background-color: rgba(var(--success-color-rgb, 34, 197, 94), 0.2);
+    color: var(--success-color);
 }
 
 .payment-status.unpaid {
-    background-color: #ffccd3;
-    color: #c62828;
+    background-color: rgba(var(--danger-color-rgb), 0.2);
+    color: var(--danger-color);
 }
 
 .pay-btn {
-    /* Основные стили */
     padding: 8px 16px;
     border-radius: 6px;
     border: none;
@@ -134,49 +126,31 @@
     font-weight: 500;
     cursor: pointer;
     transition: all 0.2s ease;
-
-    /* Цветовая схема */
-    background-color: var(--primary-color); /* #6366f1 */
+    background-color: var(--primary-color);
     color: white;
+}
 
-    /* Эффекты при взаимодействии */
+.pay-btn:hover:not([disabled]):not(.paid) {
+    background-color: var(--primary-hover);
+    transform: translateY(-1px);
+}
 
-    &:hover {
-        background-color: color-mix(in srgb, var(--primary-color) 90%, black);
-        transform: translateY(-1px);
-    }
+.pay-btn:active:not([disabled]):not(.paid) {
+    transform: translateY(0);
+}
 
-    &:active {
-        transform: translateY(0);
-        background-color: color-mix(in srgb, var(--primary-color) 80%, black);
-    }
+.pay-btn.paid,
+.pay-btn[disabled] {
+    background-color: rgba(var(--success-color-rgb, 34, 197, 94), 0.2);
+    color: var(--success-color);
+    cursor: default;
+    opacity: 0.8;
+}
 
-    /* Состояние "Оплачено" */
-
-    &.paid {
-        background-color: #e8f5e9;
-        color: #2e7d32;
-        cursor: default;
-
-        &:hover {
-            background-color: #e8f5e9;
-            transform: none;
-        }
-    }
-
-    /* Стиль для disabled состояния */
-
-    &[disabled] {
-        background-color: #e8f5e9;
-        color: #2e7d32;
-        cursor: not-allowed;
-        opacity: 0.8;
-    }
-
-    &:not([disabled]):hover {
-        background-color: color-mix(in srgb, var(--primary-color) 90%, black);
-        transform: translateY(-1px);
-    }
+.pay-btn.paid:hover,
+.pay-btn[disabled]:hover {
+    background-color: rgba(var(--success-color-rgb, 34, 197, 94), 0.2);
+    transform: none;
 }
 
 .spinner {
@@ -197,6 +171,6 @@
 
 .payment-divider {
     border: none;
-    border-top: 1px dashed #ddd;
+    border-top: 1px dashed var(--border-color);
     margin: 15px 0;
 }

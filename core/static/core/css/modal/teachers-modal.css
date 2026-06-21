@@ -10,9 +10,8 @@
 .teacher-item {
     display: flex;
     justify-content: space-between;
-    flex-direction: row;
     align-items: center;
-    padding: 12px;
+    padding: 15px;
     border-radius: 8px;
     background-color: var(--header-bg);
     border: 1px solid var(--border-color);
@@ -51,7 +50,7 @@
 }
 
 .teachers-error p {
-    color: #d32f2f;
+    color: var(--danger-color);
     margin-bottom: 15px;
 }
 
@@ -63,29 +62,18 @@
 }
 
 .teacher-course {
-    background: rgba(76, 175, 80, 0.2);
-    color: #4CAF50;
+    background: rgba(var(--success-color-rgb, 34, 197, 94), 0.2);
+    color: var(--success-color);
     padding: 4px 8px;
     border-radius: 12px;
     font-size: 12px;
-    border: 1px solid rgba(76, 175, 80, 0.3);
+    border: 1px solid rgba(var(--success-color-rgb, 34, 197, 94), 0.3);
 }
 
 .teacher-course.none {
-    background: rgba(255, 255, 255, 0.1);
-    color: rgba(255, 255, 255, 0.6);
-    border-color: rgba(255, 255, 255, 0.2);
-}
-
-.teacher-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px;
-    background: rgba(255, 255, 255, 0.08);
-    border-radius: 8px;
-    margin-bottom: 10px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--glass-bg);
+    color: var(--text-secondary);
+    border-color: var(--border-color);
 }
 
 .teacher-courses-grid {
@@ -99,15 +87,15 @@
     display: flex;
     align-items: center;
     gap: 6px;
-    background: rgba(76, 175, 80, 0.15);
-    border: 1px solid rgba(76, 175, 80, 0.3);
+    background: rgba(var(--success-color-rgb, 34, 197, 94), 0.15);
+    border: 1px solid rgba(var(--success-color-rgb, 34, 197, 94), 0.3);
     border-radius: 16px;
     padding: 6px 10px;
     transition: all 0.2s ease;
 }
 
 .teacher-course-with-icon:hover {
-    background: rgba(76, 175, 80, 0.25);
+    background: rgba(var(--success-color-rgb, 34, 197, 94), 0.25);
     transform: translateY(-1px);
 }
 
@@ -120,7 +108,7 @@
     width: 20px;
     height: 20px;
     border-radius: 50%;
-    background: linear-gradient(135deg, #4CAF50, #45a049);
+    background: linear-gradient(135deg, var(--success-color), var(--primary-hover));
     display: flex;
     align-items: center;
     justify-content: center;
@@ -131,7 +119,7 @@
 
 .course-title {
     font-size: 12px;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--text-primary);
     white-space: nowrap;
     max-width: 100px;
     overflow: hidden;

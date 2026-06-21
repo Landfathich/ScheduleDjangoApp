@@ -7,12 +7,13 @@ form {
     max-width: 400px;
     margin: 15px auto;
     padding: 40px;
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--glass-bg);
     border-radius: 10px;
+    border: 1px solid var(--border-color);
 }
 
 a {
-    color: white;
+    color: var(--primary-color);
 }
 
 form p {
@@ -23,8 +24,8 @@ form label {
     display: block;
     margin-bottom: 5px;
     font-weight: bold;
+    color: var(--text-primary);
 }
-
 
 form input[type="text"],
 form input[type="email"],
@@ -32,14 +33,14 @@ form input[type="password"] {
     width: 100%;
     padding: 10px;
     margin-bottom: 10px;
-    border: none;
+    border: 1px solid var(--border-color);
     border-radius: 5px;
-    background: rgba(255, 255, 255, 0.2);
-    color: white !important;
+    background: var(--bg);
+    color: var(--text-primary);
 }
 
 form button {
-    background: #007bff;
+    background: var(--primary-color);
     color: white;
     border: none;
     padding: 10px 20px;
@@ -48,64 +49,63 @@ form button {
 }
 
 form button:hover {
-    background: #0056b3;
+    background: var(--primary-hover);
 }
 
 /* Стили для формы логина */
 .form-control {
     width: 100%;
     padding: 0.75rem 1rem;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: var(--bg);
+    border: 1px solid var(--border-color);
     border-radius: 8px;
-    color: white;
+    color: var(--text-primary);
     font-size: 1rem;
     transition: all 0.3s ease;
 }
 
 /* Цвет placeholder */
 .form-control::placeholder {
-    color: rgba(255, 255, 255, 0.5) !important;
-    opacity: 1 !important;
-    color: white;
+    color: var(--text-secondary);
+    opacity: 1;
 }
 
 /* Для разных браузеров */
-.form-control::-webkit-input-placeholder { /* Chrome/Opera/Safari */
-    color: rgba(255, 255, 255, 0.5) !important;
+.form-control::-webkit-input-placeholder {
+    color: var(--text-secondary);
 }
 
-.form-control::-moz-placeholder { /* Firefox 19+ */
-    color: rgba(255, 255, 255, 0.5) !important;
-    opacity: 1 !important;
+.form-control::-moz-placeholder {
+    color: var(--text-secondary);
+    opacity: 1;
 }
 
-.form-control:-ms-input-placeholder { /* IE 10+ */
-    color: rgba(255, 255, 255, 0.5) !important;
+.form-control:-ms-input-placeholder {
+    color: var(--text-secondary);
 }
 
-.form-control:-moz-placeholder { /* Firefox 18- */
-    color: rgba(255, 255, 255, 0.5) !important;
-    opacity: 1 !important;
+.form-control:-moz-placeholder {
+    color: var(--text-secondary);
+    opacity: 1;
 }
 
 /* Убираем обводку при фокусе */
 .form-control:focus {
-    outline: none !important;
-    border-color: rgba(255, 255, 255, 0.3) !important;
-    box-shadow: none !important;
-    background: rgba(255, 255, 255, 0.15);
-    color: white;
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: none;
+    background: var(--bg);
+    color: var(--text-primary);
 }
 
 /* Для браузеров, которые игнорируют outline: none */
 .form-control:-webkit-autofill,
 .form-control:-webkit-autofill:hover,
 .form-control:-webkit-autofill:focus {
-    -webkit-text-fill-color: white !important;
-    -webkit-box-shadow: 0 0 0px 1000px rgba(255, 255, 255, 0.1) inset !important;
+    -webkit-text-fill-color: var(--text-primary);
+    -webkit-box-shadow: 0 0 0px 1000px var(--bg) inset;
     transition: background-color 5000s ease-in-out 0s;
-    color: white;
+    color: var(--text-primary);
 }
 
 /* Дополнительно: стили для всей формы */
@@ -113,9 +113,9 @@ form button:hover {
     max-width: 400px;
     margin: 0 auto;
     padding: 2rem;
-    background: rgba(255, 255, 255, 0.08);
+    background: var(--glass-bg);
     border-radius: 16px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--border-color);
 }
 
 .form-group {
@@ -124,7 +124,7 @@ form button:hover {
 
 .form-label {
     display: block;
-    color: white;
+    color: var(--text-primary);
     font-weight: 500;
     margin-bottom: 0.5rem;
 }
@@ -132,9 +132,9 @@ form button:hover {
 .btn-primary {
     width: 100%;
     padding: 0.75rem;
-    background: rgba(76, 175, 80, 0.2);
-    color: #4CAF50;
-    border: 1px solid rgba(76, 175, 80, 0.3);
+    background: var(--primary-color);
+    color: white;
+    border: 1px solid var(--primary-color);
     border-radius: 8px;
     font-weight: 600;
     cursor: pointer;
@@ -142,12 +142,12 @@ form button:hover {
 }
 
 .btn-primary:hover {
-    background: rgba(76, 175, 80, 0.3);
+    background: var(--primary-hover);
 }
 
 input {
-    color: white;
-    caret-color: white;
+    color: var(--text-primary);
+    caret-color: var(--text-primary);
 }
 
 input,
@@ -155,16 +155,16 @@ input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus,
 input:not(:-webkit-autofill) {
-    -webkit-text-fill-color: white !important;
-    color: white !important;
-    background-color: rgba(255, 255, 255, 0.1) !important;
-    -webkit-box-shadow: 0 0 0px 1000px rgba(255, 255, 255, 0.1) inset !important;
-    caret-color: white !important;
+    -webkit-text-fill-color: var(--text-primary);
+    color: var(--text-primary);
+    background-color: var(--bg);
+    -webkit-box-shadow: 0 0 0px 1000px var(--bg) inset;
+    caret-color: var(--text-primary);
     transition: background-color 0s, color 0s;
 }
 
 input::placeholder {
-    color: rgba(255, 255, 255, 0.5) !important;
-    -webkit-text-fill-color: rgba(255, 255, 255, 0.5) !important;
-    opacity: 1 !important; /* чтобы не было приглушения в Firefox */
+    color: var(--text-secondary);
+    -webkit-text-fill-color: var(--text-secondary);
+    opacity: 1;
 }
