@@ -4,91 +4,87 @@ class ThemeManager {
     }
 
     init() {
-        // Применяем сохранённую тему при загрузке
-        this.applySavedTheme();
+        this.headerSwitch = document.getElementById('theme-switch-header');
+        if (this.headerSwitch) {
+            const theme = document.documentElement.getAttribute('data-theme') || 'dark';
+            this.headerSwitch.checked = (theme === 'dark');
+            this.headerSwitch.addEventListener('change', () => this.handleHeaderToggle());
+        }
 
-        // Находим переключатель темы на странице (если есть)
         this.themeSwitch = document.getElementById('theme-switch');
         if (this.themeSwitch) {
             this.syncSwitchWithTheme();
-            this.themeSwitch.addEventListener('change', () => this.handleThemeChange());
+            this.themeSwitch.addEventListener('change', () => this.handleModalToggle());
         }
 
-        // Слушаем изменения темы из других источников (например, SettingsManager)
+        requestAnimationFrame(() => {
+            document.documentElement.classList.remove('theme-no-transition');
+        });
+
         this.observeThemeChanges();
-    }
-
-    applySavedTheme() {
-        let theme = localStorage.getItem('theme');
-        if (!theme) {
-            theme = 'dark';
-        }
-        this.setTheme(theme, false);
     }
 
     setTheme(theme, saveToStorage = true) {
         document.documentElement.setAttribute('data-theme', theme);
+        if (saveToStorage) localStorage.setItem('theme', theme);
+        this.syncAllSwitches(theme);
+    }
 
-        if (saveToStorage) {
-            localStorage.setItem('theme', theme);
-        }
-
-        // Синхронизируем переключатель, если он есть
-        if (this.themeSwitch) {
-            this.themeSwitch.checked = (theme === 'dark');
-        }
+    syncAllSwitches(theme) {
+        const isDark = theme === 'dark';
+        if (this.themeSwitch) this.themeSwitch.checked = isDark;
+        if (this.headerSwitch) this.headerSwitch.checked = isDark;
+        const icon = document.getElementById('theme-slider-icon');
     }
 
     syncSwitchWithTheme() {
-        const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
-        this.themeSwitch.checked = (currentTheme === 'dark');
+        const theme = document.documentElement.getAttribute('data-theme') || 'dark';
+        this.themeSwitch.checked = (theme === 'dark');
     }
 
-    handleThemeChange() {
-        const newTheme = this.themeSwitch.checked ? 'dark' : 'light';
-        this.setTheme(newTheme, true);
+    handleModalToggle() {
+        const theme = this.themeSwitch.checked ? 'dark' : 'light';
+        this.setTheme(theme, true);
+        this.saveThemeToServer(theme);
+    }
 
-        // Отправляем на сервер
-        this.saveThemeToServer(newTheme);
+    handleHeaderToggle() {
+        const theme = this.headerSwitch.checked ? 'dark' : 'light';
+        this.setTheme(theme, true);
+        this.saveThemeToServer(theme);
     }
 
     saveThemeToServer(theme) {
         const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value;
         if (!csrfToken) return;
-
         fetch('/update-user-settings/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
                 'X-CSRFToken': csrfToken,
             },
-            body: new URLSearchParams({theme: theme}).toString(),
-        }).catch(error => {
-            console.error('Ошибка при сохранении темы:', error);
-        });
+            body: new URLSearchParams({theme}).toString(),
+        }).catch(e => console.error('Ошибка сохранения темы:', e));
     }
 
     observeThemeChanges() {
-        // Наблюдаем за изменениями data-theme (например, из SettingsManager)
         const observer = new MutationObserver((mutations) => {
             mutations.forEach((mutation) => {
                 if (mutation.attributeName === 'data-theme') {
-                    const newTheme = document.documentElement.getAttribute('data-theme');
-                    if (newTheme) {
-                        localStorage.setItem('theme', newTheme);
-                        if (this.themeSwitch) {
-                            this.themeSwitch.checked = (newTheme === 'dark');
-                        }
+                    const theme = document.documentElement.getAttribute('data-theme');
+                    if (theme) {
+                        localStorage.setItem('theme', theme);
+                        // Не вызываем syncAllSwitches — observer срабатывает и при загрузке
+                        if (this.themeSwitch) this.themeSwitch.checked = (theme === 'dark');
+                        if (this.headerSwitch) this.headerSwitch.checked = (theme === 'dark');
                     }
                 }
             });
         });
-
         observer.observe(document.documentElement, {attributes: true});
     }
 }
 
-// Инициализация при загрузке страницы
 document.addEventListener('DOMContentLoaded', () => {
     window.themeManager = new ThemeManager();
 });
