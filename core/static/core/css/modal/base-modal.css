@@ -46,7 +46,7 @@
     height: 30px;
     background-color: var(--bg-invert);
     cursor: pointer;
-    color: var(--bg);
+    color: var(--gray-mix);
     opacity: 0.7;
 }
 
@@ -218,6 +218,7 @@ input[type="text"]:focus {
 .cancel-button {
     background-color: var(--header-bg);
     border: 1px solid var(--border-color) !important;
+    color: var(--text-secondary);
 }
 
 .cancel-button:hover {
