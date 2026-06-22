@@ -120,9 +120,11 @@
 }
 
 .time {
+    background: var(--bg);
     position: sticky;
-    top: 0;
+    top: 50px;
     left: 0;
+    max-height: 100px;
     z-index: 100;
 }
 
@@ -274,7 +276,6 @@
 .time-column .current-time-slot {
     color: #ffffff;
     background-color: rgba(var(--primary-color-rgb), 0.8);
-    position: relative;
 }
 
 /* Стили для множественных уроков */
