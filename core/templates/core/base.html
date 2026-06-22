@@ -52,7 +52,8 @@
         </div>
         <nav class="sidebar-nav">
             {% if user.is_authenticated %}
-                <a href="{% url 'home' %}" class="sidebar-item">
+                <a href="{% url 'home' %}"
+                   class="sidebar-item {% if request.resolver_match.url_name == 'home' %}active{% endif %}">
             <span class="sidebar-icon">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                      stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"
@@ -64,7 +65,8 @@
                 </a>
             {% endif %}
             {% if user.is_staff %}
-                <a href="{% url 'stats_dashboard' %}" class="sidebar-item">
+                <a href="{% url 'stats_dashboard' %}"
+                   class="sidebar-item {% if request.resolver_match.url_name == 'stats_dashboard' %}active{% endif %}">
             <span class="sidebar-icon">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                      stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12"
@@ -75,7 +77,8 @@
             </span>
                     <span class="sidebar-text">Аналитика</span>
                 </a>
-                <a href="{% url 'tasks:kanban_board' %}" class="sidebar-item">
+                <a href="{% url 'tasks:kanban_board' %}"
+                   class="sidebar-item {% if request.resolver_match.view_name == 'tasks:kanban_board' %}active{% endif %}">
             <span class="sidebar-icon">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                      stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14"
@@ -88,7 +91,8 @@
                 </a>
             {% endif %}
             {% if user.is_authenticated %}
-                <a href="{% url 'materials_hub' %}" class="sidebar-item">
+                <a href="{% url 'materials_hub' %}"
+                   class="sidebar-item {% if request.resolver_match.url_name == 'materials_hub' %}active{% endif %}">
             <span class="sidebar-icon">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                      stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path
@@ -96,12 +100,13 @@
             </span>
                     <span class="sidebar-text">Курсы</span>
                 </a>
-                <a href="{% url 'profile' %}" class="sidebar-item">
-    <span class="sidebar-icon">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-             stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle
-                cx="12" cy="7" r="4"/></svg>
-    </span>
+                <a href="{% url 'profile' %}"
+                   class="sidebar-item {% if request.resolver_match.url_name == 'profile' %}active{% endif %}">
+            <span class="sidebar-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                     stroke-linecap="round" stroke-linejoin="round"><path
+                        d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            </span>
                     <span class="sidebar-text">Профиль</span>
                 </a>
             {% endif %}

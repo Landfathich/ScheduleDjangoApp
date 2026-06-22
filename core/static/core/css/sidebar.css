@@ -116,3 +116,9 @@ html:not(.theme-no-transition) .sidebar {
     opacity: 0;
     width: 0;
 }
+
+.sidebar-item.active {
+    background: rgba(var(--primary-color-rgb), 0.15);
+    color: var(--primary-color);
+    font-weight: 600;
+}
