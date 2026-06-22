@@ -68,6 +68,7 @@
     flex: 1;
     width: 100%;
     position: relative;
+    background: var(--bg);
 }
 
 .time-column {
@@ -111,12 +112,16 @@
 .hour {
     height: 100px;
     padding: 5px 8px;
-    background: var(--liquid-glass);
     border-bottom: 1px solid var(--border-color);
     display: flex;
     flex: 0 0 auto;
     color: var(--text-primary);
     position: relative;
+}
+
+.hour {
+    background: var(--cell-bg);
+    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.02);
 }
 
 .time {
