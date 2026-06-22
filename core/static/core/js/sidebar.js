@@ -15,4 +15,16 @@ if (!sidebar || !toggleBtn) {
         document.body.style.paddingLeft = collapsed ? '60px' : '240px';
         localStorage.setItem('sidebarCollapsed', collapsed);
     });
+
+    // Отключаем анимацию при клике на ссылки, чтобы не мелькал
+    document.querySelectorAll('.sidebar-item').forEach(link => {
+        link.addEventListener('click', () => {
+            sidebar.style.transition = 'none';
+        });
+    });
+
+    // Восстанавливаем transition при возврате на страницу
+    window.addEventListener('pageshow', () => {
+        sidebar.style.transition = '';
+    });
 }
