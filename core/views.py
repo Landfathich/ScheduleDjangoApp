@@ -524,33 +524,32 @@ def update_open_slots(request, teacher_id):
 @login_required
 def get_user_settings(request):
     settings, created = UserSettings.objects.get_or_create(user=request.user)
-    return JsonResponse({
+    data = {
         'theme': settings.theme,
-        'workingHours': {
+        'accentColor': settings.accent_color,
+    }
+    if hasattr(request.user, 'teacher'):
+        data['workingHours'] = {
             'start': settings.working_hours_start,
             'end': settings.working_hours_end,
         }
-    })
+    return JsonResponse(data)
 
 
 @login_required
 def update_user_settings(request):
     if request.method == 'POST':
         settings, created = UserSettings.objects.get_or_create(user=request.user)
-
-        # Обновляем тему, если она передана
         if 'theme' in request.POST:
             settings.theme = request.POST['theme']
-
-        # Обновляем рабочие часы, если они переданы
+        if 'accent_color' in request.POST:
+            settings.accent_color = request.POST['accent_color']
         if 'working_hours_start' in request.POST:
             settings.working_hours_start = int(request.POST['working_hours_start'])
         if 'working_hours_end' in request.POST:
             settings.working_hours_end = int(request.POST['working_hours_end'])
-
         settings.save()
         return JsonResponse({'status': 'success'})
-
     return JsonResponse({'status': 'error', 'message': 'Недопустимый метод запроса'}, status=400)
 
 

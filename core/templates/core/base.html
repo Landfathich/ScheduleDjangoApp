@@ -25,12 +25,17 @@
 
     <script>
         (function () {
-            const theme = localStorage.getItem('theme') || 'dark';
+            {% if user.is_authenticated %}
+                const theme = '{{ user_theme }}';
+                const accentColor = '{{ user_accent_color }}';
+                localStorage.setItem('theme', theme);
+                localStorage.setItem('accentColor', accentColor);
+            {% else %}
+                const theme = localStorage.getItem('theme') || 'dark';
+                const accentColor = localStorage.getItem('accentColor') || 'green';
+            {% endif %}
             document.documentElement.setAttribute('data-theme', theme);
-            // Сразу ставим правильную иконку до отрисовки
-            const icon = document.getElementById('theme-slider-icon');
-            if (icon) icon.textContent = theme === 'dark' ? '🌙' : '☀️';
-            window.userIsAuthenticated = {% if user.is_authenticated %}true{% else %}false{% endif %};
+            document.documentElement.setAttribute('data-accent', accentColor);
         })();
     </script>
 </head>

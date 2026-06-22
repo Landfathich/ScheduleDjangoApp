@@ -37,7 +37,8 @@
         <div class="profile-tabs">
             <nav class="tabs-navigation">
                 <button type="button" class="tab-btn active" data-tab="main">Основное</button>
-               {% comment %} {% if request.user.role == 'teacher' or request.user.is_staff %}
+                <button type="button" class="tab-btn" data-tab="appearance">Оформление</button>
+                {% comment %} {% if request.user.role == 'teacher' or request.user.is_staff %}
                     <button type="button" class="tab-btn" data-tab="teaching">Преподавание</button>
                     <button type="button" class="tab-btn" data-tab="finance">Финансы и статистика</button>
                 {% endif %}
@@ -122,7 +123,49 @@
                         </div>
                     </form>
                 </div>
-{% comment %}
+                <div class="tab-pane" id="appearance-tab">
+                    <div class="form-section">
+                        <h3>Тема</h3>
+                        <div class="theme-options">
+                            <label class="theme-option" id="theme-light-option">
+                                <input type="radio" name="appearance_theme" value="light">
+                                <span class="theme-option-icon">☀️</span>
+                                <span>Светлая</span>
+                            </label>
+                            <label class="theme-option" id="theme-dark-option">
+                                <input type="radio" name="appearance_theme" value="dark">
+                                <span class="theme-option-icon">🌙</span>
+                                <span>Тёмная</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-section">
+                        <h3>Акцентный цвет</h3>
+                        <div class="accent-options">
+                            <label class="accent-option">
+                                <input type="radio" name="accent_color" value="green" checked>
+                                <span class="color-dot" style="background: #16a34a"></span>
+                            </label>
+                            <label class="accent-option">
+                                <input type="radio" name="accent_color" value="blue">
+                                <span class="color-dot" style="background: #2563eb"></span>
+                            </label>
+                            <label class="accent-option">
+                                <input type="radio" name="accent_color" value="purple">
+                                <span class="color-dot" style="background: #7c3aed"></span>
+                            </label>
+                            <label class="accent-option">
+                                <input type="radio" name="accent_color" value="orange">
+                                <span class="color-dot" style="background: #ea580c"></span>
+                            </label>
+                            <label class="accent-option">
+                                <input type="radio" name="accent_color" value="gray">
+                                <span class="color-dot" style="background: #6b7280"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                {% comment %}
                 <!-- Вкладка Преподавание -->
                 <div class="tab-pane" id="teaching-tab">
                     <div class="teaching-content">

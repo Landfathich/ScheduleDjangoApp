@@ -7,8 +7,6 @@
     flex-direction: column;
     height: 100%;
     background: var(--glass-bg);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
 }
 
 .schedule-area {
@@ -113,7 +111,7 @@
 .hour {
     height: 100px;
     padding: 5px 8px;
-    background: var(--header-bg);
+    background: var(--liquid-glass);
     border-bottom: 1px solid var(--border-color);
     display: flex;
     flex: 0 0 auto;

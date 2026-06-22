@@ -287,6 +287,73 @@ main {
     font-style: italic;
 }
 
+/* Оформление */
+.theme-options {
+    display: flex;
+    gap: 12px;
+    margin-top: 10px;
+}
+
+.theme-option {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    cursor: pointer;
+    background: var(--glass-bg);
+    color: var(--text-primary);
+    transition: all 0.2s;
+}
+
+.theme-option:hover {
+    border-color: var(--primary-color);
+}
+
+.theme-option input {
+    display: none;
+}
+
+.theme-option:has(input:checked) {
+    border-color: var(--primary-color);
+    background: rgba(var(--primary-color-rgb), 0.1);
+}
+
+.theme-option-icon {
+    font-size: 18px;
+}
+
+.accent-options {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.accent-option {
+    cursor: pointer;
+}
+
+.accent-option input {
+    display: none;
+}
+
+.color-dot {
+    display: block;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    transition: all 0.2s;
+}
+
+.accent-option input:checked + .color-dot {
+    border-color: var(--text-primary);
+    box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px currentColor;
+    transform: scale(1.15);
+}
+
 /* Адаптивность */
 @media (max-width: 768px) {
     .form-grid {

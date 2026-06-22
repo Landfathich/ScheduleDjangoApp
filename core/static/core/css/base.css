@@ -14,7 +14,7 @@ html {
 }
 
 body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     margin: 0;
     display: flex;
     min-height: 100vh;
@@ -23,26 +23,26 @@ body {
     line-height: 1.5;
     height: 100vh;
     justify-content: center;
-    background-color: #e8fdf0;
+    background-color: var(--bg);
     background-image:
-        radial-gradient(ellipse at 20% 30%, #86efac 0%, transparent 55%),
-        radial-gradient(ellipse at 80% 70%, #bfdbfe 0%, transparent 55%),
-        radial-gradient(ellipse at 50% 50%, #d1fae5 0%, transparent 60%);
+        radial-gradient(ellipse at 20% 30%, var(--bg-gradient-1) 0%, transparent 55%),
+        radial-gradient(ellipse at 80% 70%, var(--bg-gradient-2) 0%, transparent 55%),
+        radial-gradient(ellipse at 50% 50%, var(--bg-gradient-3) 0%, transparent 60%);
     background-attachment: fixed;
     transition: padding-left 0.3s ease;
 }
 
-body.has-sidebar {
-    padding-left: 240px;
+[data-theme="dark"] body {
+    background-image:
+        radial-gradient(ellipse at 15% 40%, var(--bg-gradient-1) 0%, transparent 50%),
+        radial-gradient(ellipse at 85% 30%, var(--bg-gradient-2) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 85%, var(--bg-gradient-3) 0%, transparent 50%),
+        radial-gradient(ellipse at 70% 60%, rgba(139, 92, 246, 0.08) 0%, transparent 40%);
+    background-attachment: fixed;
 }
 
-[data-theme="dark"] body {
-    background-color: #1a1f1c;
-    background-image: radial-gradient(ellipse at 15% 40%, rgba(22, 163, 74, 0.25) 0%, transparent 50%),
-    radial-gradient(ellipse at 85% 30%, rgba(37, 99, 235, 0.15) 0%, transparent 50%),
-    radial-gradient(ellipse at 50% 85%, rgba(22, 163, 74, 0.2) 0%, transparent 50%),
-    radial-gradient(ellipse at 70% 60%, rgba(139, 92, 246, 0.08) 0%, transparent 40%);
-    background-attachment: fixed;
+body.has-sidebar {
+    padding-left: 240px;
 }
 
 ul, ol {

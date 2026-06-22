@@ -56,6 +56,51 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
+    // Синхронизация темы и акцентного цвета
+    const themeRadios = document.querySelectorAll('input[name="appearance_theme"]');
+    const accentRadios = document.querySelectorAll('input[name="accent_color"]');
+
+// Установить текущие значения
+    const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
+    const currentAccent = document.documentElement.getAttribute('data-accent') || 'green';
+
+    themeRadios.forEach(r => r.checked = r.value === currentTheme);
+    accentRadios.forEach(r => r.checked = r.value === currentAccent);
+
+// Обработчики
+    themeRadios.forEach(r => {
+        r.addEventListener('change', () => {
+            const theme = r.value;
+            document.documentElement.setAttribute('data-theme', theme);
+            localStorage.setItem('theme', theme);
+            saveAppearanceSetting('theme', theme);
+        });
+    });
+
+    accentRadios.forEach(r => {
+        r.addEventListener('change', () => {
+            const color = r.value;
+            document.documentElement.setAttribute('data-accent', color);
+            localStorage.setItem('accentColor', color);
+            saveAppearanceSetting('accent_color', color);
+        });
+    });
+
+    function saveAppearanceSetting(key, value) {
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value;
+        if (!csrfToken) return;
+        const body = new URLSearchParams();
+        body.append(key, value);
+        fetch('/update-user-settings/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'X-CSRFToken': csrfToken,
+            },
+            body: body.toString(),
+        }).catch(e => console.error('Ошибка сохранения:', e));
+    }
+
     function loadTeachingData() {
         // Заглушка для загрузки данных преподавания
         setTimeout(() => {
