@@ -36,6 +36,10 @@
             {% endif %}
             document.documentElement.setAttribute('data-theme', theme);
             document.documentElement.setAttribute('data-accent', accentColor);
+
+            if (localStorage.getItem('sidebarCollapsed') === 'true') {
+                document.documentElement.classList.add('sidebar-collapsed');
+            }
         })();
     </script>
 </head>

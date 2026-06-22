@@ -1,3 +1,15 @@
+html.sidebar-collapsed .sidebar {
+    width: 60px;
+}
+html.sidebar-collapsed .sidebar .sidebar-text,
+html.sidebar-collapsed .sidebar .sidebar-brand {
+    opacity: 0;
+    width: 0;
+}
+html.sidebar-collapsed body.has-sidebar {
+    padding-left: 60px;
+}
+
 .sidebar {
     position: fixed;
     top: 0;
