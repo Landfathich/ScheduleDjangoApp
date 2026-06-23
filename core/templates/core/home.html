@@ -45,10 +45,6 @@
                         </button>
                         <span id="balance-alert-counter" class="notification-badge">0</span>
                     </div>
-                    {% comment %}
-                        <button id="add-student-button" title="Добавить расписание ученика"
-                                class="icon-button icon-button-float"
-                                style="display: inline-block;"><span>➕</span></button>{% endcomment %}
                 {% endif %}
                 <div id="open-windows-controls" style="display: none;">
                     <span>Отметьте открытые окна</span>
@@ -144,21 +140,14 @@
                     <div class="form-group">
                         <label for="start-hour">Показывать часы с</label>
                         <select id="start-hour">
-                            <!-- Опции будут добавлены через JavaScript -->
+                            <!-- Опции будут добавляться динамически -->
                         </select>
                     </div>
                     <div class="form-group">
                         <label for="end-hour">До</label>
                         <select id="end-hour">
-                            <!-- Опции будут добавлены через JavaScript -->
+                            <!-- Опции будут добавляться динамически -->
                         </select>
-                    </div>
-                    <div class="form-group theme-toggle">
-                        <label for="theme-switch">Темная тема</label>
-                        <label class="switch">
-                            <input name="theme-switcher" type="checkbox" id="theme-switch">
-                            <span class="slider"></span>
-                        </label>
                     </div>
                     <div class="form-group" style="display: flex; align-items: center;">
                         <button id="set-open-windows" class="icon-button">🔄</button>

@@ -1,6 +1,6 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="ru" class="theme-no-transition">
+<html lang="ru">
 {% load pwa %}
 <head>
     <meta charset="UTF-8">
@@ -161,7 +161,6 @@
 {% block scripts %}{% endblock %}
 
 <script src="{% static 'core/js/sidebar.js' %}"></script>
-<script src="{% static 'core/js/theme.js' %}"></script>
 
 {% if user.is_authenticated %}
     <script src="{% static 'core/js/notification-badge.js' %}"></script>

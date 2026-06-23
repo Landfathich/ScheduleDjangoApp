@@ -52,7 +52,6 @@ export class SettingsManager {
         this.closeButton = this.modal?.querySelector('.close');
         this.cancelButton = this.modal?.querySelector('.cancel-button');
         this.submitButton = this.modal?.querySelector('.submit-button');
-        this.themeSwitch = document.getElementById('theme-switch');
         this.openWindowsButton = document.getElementById('set-open-windows');
         this.openWindowsControls = document.getElementById('open-windows-controls');
 
@@ -95,11 +94,6 @@ export class SettingsManager {
             const response = await fetch('/get-user-settings/');
             const data = await response.json();
             logger.log('📥 Данные настроек получены:', data);
-
-            // Синхронизация темы (только синхронизация переключателя, без применения)
-            if (data.theme && this.themeSwitch) {
-                this.themeSwitch.checked = data.theme === 'dark';
-            }
 
             // Синхронизация рабочих часов
             if (data.workingHours) {
@@ -180,12 +174,6 @@ export class SettingsManager {
         this.startHourSelect.value = calendarManager.startHour;
         this.endHourSelect.value = calendarManager.endHour;
 
-        // Синхронизируем переключатель темы с текущей темой
-        if (this.themeSwitch) {
-            const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
-            this.themeSwitch.checked = (currentTheme === 'dark');
-        }
-
         this.modal.classList.add('visible');
         this.modal.style.display = 'block';
         this.resetModalScroll();
@@ -252,8 +240,6 @@ export class SettingsManager {
         });
 
         this.submitButton.onclick = (e) => this.handleSubmit(e);
-
-        // Обработчик темы удалён — теперь управляется из theme.js
 
         this.openWindowsButton.onclick = (e) => {
             e.preventDefault();
