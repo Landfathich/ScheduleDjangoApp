@@ -100,25 +100,25 @@
     --cell-bg: #faf7fd;
 }
 
-/* ===== ОРАНЖЕВЫЙ ===== */
+/* ===== ОРАНЖЕВЫЙ (ближе к жёлтому) ===== */
 [data-accent="orange"] {
-    --primary-color: #e67e22;
-    --primary-light: #fdcb88;
-    --primary-color-rgb: 230, 126, 34;
-    --primary-hover: #c96a1c;
+    --primary-color: #c8a840;
+    --primary-light: #e0cc70;
+    --primary-color-rgb: 200, 168, 64;
+    --primary-hover: #a89030;
 
-    --bg: #faf5ea;
-    --border-color: #e8dcc4;
+    --bg: #faf8f0;
+    --border-color: #e8e2c8;
     --header-bg: rgba(255, 255, 255, 0.85);
-    --glass-bg: rgba(252, 250, 244, 0.8);
-    --liquid-glass: rgba(250, 245, 235, 0.5);
+    --glass-bg: rgba(252, 251, 245, 0.8);
+    --liquid-glass: rgba(250, 248, 238, 0.5);
 
-    --bg-gradient-1: #e8d4a8;
-    --bg-gradient-2: #ecddb8;
-    --bg-gradient-3: #f0e4c4;
+    --bg-gradient-1: #e8dca8;
+    --bg-gradient-2: #ece4b8;
+    --bg-gradient-3: #f0eac8;
 
-    --open-window-bg: rgba(230, 126, 34, 0.1);
-    --cell-bg: #fcfaf5;
+    --open-window-bg: rgba(200, 168, 64, 0.1);
+    --cell-bg: #fcfbf5;
 }
 
 /* ===== СЕРЫЙ ===== */
@@ -222,23 +222,23 @@
 }
 
 [data-theme="dark"][data-accent="orange"] {
-    --primary-color: #d88030;
-    --primary-light: #e89a50;
-    --primary-color-rgb: 216, 128, 48;
-    --primary-hover: #c07028;
+    --primary-color: #c4a030;
+    --primary-light: #dcc060;
+    --primary-color-rgb: 196, 160, 48;
+    --primary-hover: #a88820;
 
-    --bg: #231d16;
-    --border-color: #332c22;
-    --header-bg: rgba(35, 29, 22, 0.92);
-    --glass-bg: rgba(40, 33, 25, 0.7);
-    --liquid-glass: rgba(35, 29, 22, 0.5);
-    --cell-bg: rgba(42, 35, 27, 0.45);
+    --bg: #1f1c12;
+    --border-color: #312e20;
+    --header-bg: rgba(31, 28, 18, 0.92);
+    --glass-bg: rgba(36, 32, 21, 0.7);
+    --liquid-glass: rgba(31, 28, 18, 0.5);
+    --cell-bg: rgba(40, 36, 24, 0.45);
 
-    --bg-gradient-1: rgba(216, 128, 48, 0.12);
-    --bg-gradient-2: rgba(253, 203, 136, 0.06);
-    --bg-gradient-3: rgba(216, 128, 48, 0.1);
+    --bg-gradient-1: rgba(196, 160, 48, 0.1);
+    --bg-gradient-2: rgba(220, 192, 96, 0.05);
+    --bg-gradient-3: rgba(196, 160, 48, 0.08);
 
-    --open-window-bg: rgba(216, 128, 48, 0.12);
+    --open-window-bg: rgba(196, 160, 48, 0.1);
 }
 
 [data-theme="dark"][data-accent="gray"] {
