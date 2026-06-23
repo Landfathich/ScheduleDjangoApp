@@ -120,6 +120,11 @@
 
 <header>
     <div class="header-content">
+        {% if user.is_authenticated %}
+            <button class="mobile-menu-btn" id="mobile-menu-btn" title="Меню">
+                <span>☰</span>
+            </button>
+        {% endif %}
         <div class="user-info">
             {% if user.is_authenticated %}
                 <div class="user-avatar" title="{{ user.first_name }} {{ user.last_name }}">
@@ -157,6 +162,8 @@
         {% block content %}{% endblock %}
     </div>
 </main>
+
+<div class="sidebar-overlay" id="sidebar-overlay"></div>
 
 {% block scripts %}{% endblock %}
 

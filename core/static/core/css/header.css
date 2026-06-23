@@ -74,3 +74,63 @@ header {
 nav {
     display: none;
 }
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0 16px;
+    width: 100%;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.mobile-menu-btn {
+    display: none;
+    background: none;
+    border: none;
+    color: var(--text-primary);
+    font-size: 20px;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 6px;
+}
+
+.mobile-menu-btn:hover {
+    background: var(--header-bg);
+}
+
+@media (max-width: 768px) {
+    .mobile-menu-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        order: -1;
+    }
+
+    .header-content {
+        margin: 0;
+    }
+
+    body.has-sidebar {
+        padding-left: 0 !important;
+    }
+
+    header {
+        margin-left: 0 !important;
+    }
+
+    main {
+        margin-left: 0 !important;
+    }
+}
