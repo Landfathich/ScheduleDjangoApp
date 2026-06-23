@@ -145,7 +145,7 @@
                     Админ
                 </a>
             {% endif %}
-            {% if user.is_authenticated %}
+            {% if user.is_staff %}
                 <div class="button-wrapper">
                     <button id="notification-bell" title="Уведомления" class="icon-button icon-float">
                         <span>🔔</span>
@@ -169,7 +169,7 @@
 
 <script src="{% static 'core/js/sidebar.js' %}"></script>
 
-{% if user.is_authenticated %}
+{% if user.is_staff %}
     <script src="{% static 'core/js/notification-badge.js' %}"></script>
 {% endif %}
 

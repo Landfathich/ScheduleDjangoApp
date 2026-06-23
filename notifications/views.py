@@ -1,8 +1,8 @@
-from django.contrib.auth.decorators import login_required
+from django.contrib.admin.views.decorators import staff_member_required
 from django.shortcuts import render
 from rest_framework import viewsets
 from rest_framework.decorators import action
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.response import Response
 
 from .models import Notification
@@ -11,13 +11,10 @@ from .serializers import NotificationSerializer
 
 class NotificationViewSet(viewsets.ModelViewSet):
     serializer_class = NotificationSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsAdminUser]
 
     def get_queryset(self):
         return Notification.objects.filter(user=self.request.user)
-
-    def get_serializer_context(self):
-        return {'request': self.request}
 
     @action(detail=False, methods=['post'])
     def mark_all_read(self, request):
@@ -37,6 +34,6 @@ class NotificationViewSet(viewsets.ModelViewSet):
         return Response({'count': count})
 
 
-@login_required
+@staff_member_required
 def notifications_page(request):
     return render(request, 'notifications/notifications_list.html')
