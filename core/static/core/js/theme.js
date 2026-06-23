@@ -4,11 +4,6 @@ class ThemeManager {
     }
 
     init() {
-        this.headerSwitch = document.getElementById('theme-switch-header');
-        if (this.headerSwitch) {
-            this.headerSwitch.addEventListener('change', () => this.toggleTheme());
-        }
-
         this.themeSwitch = document.getElementById('theme-switch');
         if (this.themeSwitch) {
             this.themeSwitch.checked = (document.documentElement.getAttribute('data-theme') === 'dark');
@@ -32,7 +27,6 @@ class ThemeManager {
     syncSwitches(theme) {
         const isDark = theme === 'dark';
         if (this.themeSwitch) this.themeSwitch.checked = isDark;
-        if (this.headerSwitch) this.headerSwitch.checked = isDark;
     }
 
     saveThemeToServer(theme) {
