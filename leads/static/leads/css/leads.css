@@ -115,3 +115,100 @@
 .empty-state-text {
     font-size: 15px;
 }
+
+.convert-btn {
+    padding: 6px 14px;
+    background: var(--primary-color);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.15s;
+}
+
+.convert-btn:hover {
+    background: var(--primary-hover);
+}
+
+.convert-form-wrapper {
+    background: var(--header-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 30px;
+    max-width: 520px;
+}
+
+.convert-form-wrapper .form-group {
+    margin-bottom: 20px;
+}
+
+.convert-form-wrapper .form-group label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-secondary);
+}
+
+.convert-form-wrapper .form-group input {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background: var(--bg);
+    color: var(--text-primary);
+    font-size: 14px;
+    box-sizing: border-box;
+}
+
+.convert-form-wrapper .form-group input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+}
+
+.convert-form-wrapper .form-group input:disabled {
+    opacity: 0.6;
+    background: var(--glass-bg);
+}
+
+.form-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    margin-top: 28px;
+}
+
+.cancel-btn {
+    padding: 10px 20px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background: transparent;
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+
+.cancel-btn:hover {
+    background: var(--glass-bg);
+}
+
+.submit-btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    background: var(--primary-color);
+    color: #fff;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+
+.submit-btn:hover {
+    background: var(--primary-hover);
+}
