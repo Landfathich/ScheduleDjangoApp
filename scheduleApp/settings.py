@@ -79,6 +79,7 @@ INSTALLED_APPS = [
     'django.contrib.humanize',
     'finance.apps.FinanceConfig',
     'notifications',
+    'leads.apps.LeadsConfig',
 ]
 
 if DEBUG:

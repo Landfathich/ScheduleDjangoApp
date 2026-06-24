@@ -1,0 +1,18 @@
+<table border="1" cellpadding="8">
+    <tr>
+        <th>Дата</th>
+        <th>Имя</th>
+        <th>Телефон</th>
+        <th>Email</th>
+        <th>Курс</th>
+    </tr>
+    {% for lead in leads %}
+        <tr>
+            <td>{{ lead.created_at|date:"d.m H:i" }}</td>
+            <td>{{ lead.name }}</td>
+            <td>{{ lead.phone }}</td>
+            <td>{{ lead.email }}</td>
+            <td>{{ lead.course }}</td>
+        </tr>
+    {% endfor %}
+</table>
