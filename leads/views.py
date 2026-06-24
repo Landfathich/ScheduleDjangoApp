@@ -1,18 +1,24 @@
-from django.shortcuts import render
-
-from .models import Lead
-
-
-def lead_list(request):
-    leads = Lead.objects.all().order_by('-created_at')
-    return render(request, 'leads/lead_list.html', {'leads': leads})
-
-
-from django.shortcuts import render, get_object_or_404, redirect
+from django.shortcuts import render, get_object_or_404
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from core.models import Client, PhoneNumber
 from .models import Lead
+
+
+def lead_list(request):
+    status_filter = request.GET.get('status', '')
+    leads = Lead.objects.all().order_by('-created_at')
+
+    if status_filter:
+        leads = leads.filter(status=status_filter)
+
+    statuses = Lead.STATUS_CHOICES
+
+    return render(request, 'leads/lead_list.html', {
+        'leads': leads,
+        'statuses': statuses,
+        'current_status': status_filter
+    })
 
 
 def lead_to_client_form(request, lead_id):
@@ -42,5 +48,35 @@ def convert_lead(request, lead_id):
             note=note
         )
 
-    lead.delete()
+    lead.status = 'client'
+    lead.save()
+
+    return JsonResponse({'status': 'ok'})
+
+
+@csrf_exempt
+def update_lead_status(request, lead_id):
+    if request.method != 'POST':
+        return JsonResponse({'error': 'Method not allowed'}, status=405)
+
+    lead = get_object_or_404(Lead, pk=lead_id)
+    new_status = request.POST.get('status')
+
+    if new_status in dict(Lead.STATUS_CHOICES):
+        lead.status = new_status
+        lead.save()
+        return JsonResponse({'status': 'ok'})
+
+    return JsonResponse({'error': 'Invalid status'}, status=400)
+
+
+@csrf_exempt
+def update_lead_notes(request, lead_id):
+    if request.method != 'POST':
+        return JsonResponse({'error': 'Method not allowed'}, status=405)
+
+    lead = get_object_or_404(Lead, pk=lead_id)
+    lead.notes = request.POST.get('notes', '')
+    lead.save()
+
     return JsonResponse({'status': 'ok'})

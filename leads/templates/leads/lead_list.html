@@ -6,71 +6,142 @@
 {% endblock %}
 
 {% block content %}
-    <div class="leads-container">
-        <div class="leads-header">
-            <h1>Лиды</h1>
-            <span class="leads-count">{{ leads|length }} заявок</span>
-        </div>
+<div class="leads-container">
+    <div class="leads-header">
+        <h1>Лиды</h1>
+        <span class="leads-count">{{ leads|length }} заявок</span>
+    </div>
 
-        <div class="leads-table-wrapper">
-            <table class="leads-table">
-                <thead>
+    <!-- Фильтр по статусам -->
+    <div class="status-filters">
+        <a href="{% url 'lead-list' %}" class="filter-chip {% if not current_status %}active{% endif %}">Все</a>
+        {% for value, label in statuses %}
+            <a href="?status={{ value }}" class="filter-chip {% if current_status == value %}active{% endif %}" data-status="{{ value }}">
+                {{ label }}
+            </a>
+        {% endfor %}
+    </div>
+
+    <!-- Таблица -->
+    <div class="leads-table-wrapper">
+        <table class="leads-table">
+            <thead>
                 <tr>
                     <th>Дата</th>
                     <th>Имя</th>
                     <th>Телефон</th>
                     <th>Email</th>
                     <th>Курс</th>
-                    <th>Источник</th>
+                    <th>Статус</th>
+                    <th>Заметки</th>
                     <th></th>
                 </tr>
-                </thead>
-                <tbody>
+            </thead>
+            <tbody>
                 {% for lead in leads %}
-                    <tr>
-                        <td>{{ lead.created_at|date:"d.m.y H:i" }}</td>
-                        <td class="lead-name">{{ lead.name }}</td>
-                        <td class="lead-phone">{{ lead.phone }}</td>
-                        <td>{{ lead.email }}</td>
-                        <td><span class="lead-course">{{ lead.course }}</span></td>
-                        <td class="lead-source">{{ lead.source }}</td>
-                        <td>
-                            <button class="convert-btn" onclick="location.href='{% url 'convert-lead-form' lead.id %}'">
-                                Создать клиента
-                            </button>
-                        </td>
-                    </tr>
+                <tr>
+                    <td>{{ lead.created_at|date:"d.m H:i" }}</td>
+                    <td class="lead-name">{{ lead.name }}</td>
+                    <td class="lead-phone">{{ lead.phone }}</td>
+                    <td>{{ lead.email }}</td>
+                    <td><span class="lead-course">{{ lead.course }}</span></td>
+                    <td>
+                        <select class="status-select" data-lead-id="{{ lead.id }}" data-current="{{ lead.status }}">
+                            {% for value, label in statuses %}
+                                <option value="{{ value }}" {% if lead.status == value %}selected{% endif %}>{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                    </td>
+                    <td>
+                        <div class="notes-cell" data-lead-id="{{ lead.id }}">
+                            <span class="notes-preview" title="{{ lead.notes|default:'' }}">{{ lead.notes|default:'—'|truncatechars:40 }}</span>
+                            <button class="notes-edit-btn" onclick="openNotes({{ lead.id }})">✏️</button>
+                        </div>
+                    </td>
+                    <td>
+                        <button class="convert-btn" onclick="location.href='{% url 'convert-lead-form' lead.id %}'">
+                            Создать клиента
+                        </button>
+                    </td>
+                </tr>
                 {% empty %}
-                    <tr>
-                        <td colspan="7" class="empty-state">
-                            <div class="empty-state-icon">📭</div>
-                            <div class="empty-state-text">Пока нет заявок</div>
-                        </td>
-                    </tr>
+                <tr>
+                    <td colspan="8" class="empty-state">
+                        <div class="empty-state-icon">📭</div>
+                        <div class="empty-state-text">Нет заявок</div>
+                    </td>
+                </tr>
                 {% endfor %}
-                </tbody>
-            </table>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Модалка для заметок -->
+<div class="notes-modal" id="notesModal" style="display:none;">
+    <div class="notes-modal-overlay" onclick="closeNotes()"></div>
+    <div class="notes-modal-content">
+        <div class="notes-modal-header">
+            <h3>Заметки по лиду</h3>
+            <button class="notes-modal-close" onclick="closeNotes()">&times;</button>
+        </div>
+        <textarea id="notesTextarea" rows="8" placeholder="История общения, договорённости, детали..."></textarea>
+        <div class="notes-modal-actions">
+            <button class="cancel-btn" onclick="closeNotes()">Отмена</button>
+            <button class="submit-btn" onclick="saveNotes()">Сохранить</button>
         </div>
     </div>
+</div>
 
-    <script>
-        function convertLead(leadId) {
-            if (!confirm('Создать клиента из этого лида?')) return;
+<script>
+let currentLeadId = null;
 
-            fetch('/leads/convert/' + leadId + '/', {
-                method: 'POST',
-                headers: {
-                    'X-CSRFToken': getCookie('csrftoken')
-                }
-            })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.status === 'ok') {
-                        location.reload();
-                    } else {
-                        alert('Ошибка: ' + data.error);
-                    }
-                });
+// Смена статуса
+document.querySelectorAll('.status-select').forEach(select => {
+    select.addEventListener('change', function() {
+        const leadId = this.dataset.leadId;
+        const formData = new FormData();
+        formData.append('status', this.value);
+
+        fetch('/leads/' + leadId + '/status/', {
+            method: 'POST',
+            body: formData,
+            headers: { 'X-CSRFToken': getCookie('csrftoken') }
+        }).then(r => r.json()).then(data => {
+            if (data.status !== 'ok') {
+                this.value = this.dataset.current;
+            }
+        });
+    });
+});
+
+// Заметки
+function openNotes(leadId) {
+    currentLeadId = leadId;
+    const preview = document.querySelector('.notes-preview[data-lead-id="' + leadId + '"');
+    document.getElementById('notesTextarea').value = preview ? (preview.getAttribute('title') || '') : '';
+    document.getElementById('notesModal').style.display = 'block';
+}
+
+function closeNotes() {
+    document.getElementById('notesModal').style.display = 'none';
+    currentLeadId = null;
+}
+
+function saveNotes() {
+    const notes = document.getElementById('notesTextarea').value;
+    const formData = new FormData();
+    formData.append('notes', notes);
+
+    fetch('/leads/' + currentLeadId + '/notes/', {
+        method: 'POST',
+        body: formData,
+        headers: { 'X-CSRFToken': getCookie('csrftoken') }
+    }).then(r => r.json()).then(data => {
+        if (data.status === 'ok') {
+            location.reload();
         }
-    </script>
+    });
+}
+</script>
 {% endblock %}
