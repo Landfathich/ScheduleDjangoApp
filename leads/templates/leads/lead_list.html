@@ -1,18 +1,49 @@
-<table border="1" cellpadding="8">
-    <tr>
-        <th>Дата</th>
-        <th>Имя</th>
-        <th>Телефон</th>
-        <th>Email</th>
-        <th>Курс</th>
-    </tr>
-    {% for lead in leads %}
-        <tr>
-            <td>{{ lead.created_at|date:"d.m H:i" }}</td>
-            <td>{{ lead.name }}</td>
-            <td>{{ lead.phone }}</td>
-            <td>{{ lead.email }}</td>
-            <td>{{ lead.course }}</td>
-        </tr>
-    {% endfor %}
-</table>
+{% extends "core/base.html" %}
+{% load static %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'leads/css/leads.css' %}">
+{% endblock %}
+
+{% block content %}
+    <div class="leads-container">
+        <div class="leads-header">
+            <h1>Лиды</h1>
+            <span class="leads-count">{{ leads|length }} заявок</span>
+        </div>
+
+        <div class="leads-table-wrapper">
+            <table class="leads-table">
+                <thead>
+                <tr>
+                    <th>Дата</th>
+                    <th>Имя</th>
+                    <th>Телефон</th>
+                    <th>Email</th>
+                    <th>Курс</th>
+                    <th>Источник</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for lead in leads %}
+                    <tr>
+                        <td>{{ lead.created_at|date:"d.m.y H:i" }}</td>
+                        <td class="lead-name">{{ lead.name }}</td>
+                        <td class="lead-phone">{{ lead.phone }}</td>
+                        <td>{{ lead.email }}</td>
+                        <td><span class="lead-course">{{ lead.course }}</span></td>
+                        <td class="lead-source">{{ lead.source }}</td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="6" class="empty-state">
+                            <div class="empty-state-icon">📭</div>
+                            <div class="empty-state-text">Пока нет заявок</div>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}
