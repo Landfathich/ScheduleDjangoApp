@@ -1,7 +1,7 @@
 import {createLogger} from "./logger.js";
 
 const logger = createLogger('[Notifications]');
-logger.enable()
+logger.disable()
 
 let notificationQueue = [];
 let isNotificationShowing = false;
