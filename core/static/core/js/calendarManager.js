@@ -200,7 +200,9 @@ export class CalendarManager {
 
             logger.log(`loadSchedule() - получено уроков: ${lessons.length}, сгенерировано fakeLessons: ${fakeLessons.length}`);
 
-            // Вместо полного refreshCalendar() - только обновляем данные
+            // Вместо полного refreshCalendar() - только очищаем старые данные и добавляем новые
+            this.clearAllLessonCells();
+
             this.renderDataOnly();
 
         } catch (error) {
@@ -210,6 +212,13 @@ export class CalendarManager {
         }
 
         logger.log(`loadSchedule() - завершил выполнение`);
+    }
+
+    clearAllLessonCells() {
+        document.querySelectorAll('.week-day .hour').forEach(hour => {
+            hour.className = 'hour';
+            hour.innerHTML = '';
+        });
     }
 
     renderDataOnly() {
@@ -237,8 +246,6 @@ export class CalendarManager {
     renderSchedule() {
         logger.log(`renderSchedule() - начал выполнение`);
 
-        this.clearSchedule();
-        this.lessonManager.clearAllLessons();
         this.renderOpenSlots();
         this.renderLessons();
 
@@ -499,15 +506,6 @@ export class CalendarManager {
         }
 
         logger.log(`showScheduleConflicts() - завершил выполнение, найдено конфликтов: ${conflicts.length}`);
-    }
-
-    clearSchedule() {
-        document.querySelectorAll('.week-day .hour').forEach(hour => {
-            if (!hour.querySelector('.lesson')) {
-                hour.className = 'hour';
-                hour.innerHTML = '';
-            }
-        });
     }
 
     updateOpenWindowsOnly() {

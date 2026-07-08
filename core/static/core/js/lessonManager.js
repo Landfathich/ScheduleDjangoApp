@@ -1,7 +1,6 @@
 export class LessonManager {
     constructor() {
         this.lessons = [];
-        this.displayedLessons = new Set();
     }
 
     generateFutureLessons(lesson, endDate) {
@@ -125,18 +124,5 @@ export class LessonManager {
             `}
         </div>
     `;
-    }
-
-    clearAllLessons() {
-        this.displayedLessons.clear();
-        document.querySelectorAll('.week-day .hour').forEach(hourElement => {
-            hourElement.innerHTML = '';
-            hourElement.classList.remove('has-lesson');
-        });
-    }
-
-    getLessonsForDay(dayDate) {
-        const dateStr = dayDate.toISOString().split('T')[0];
-        return this.lessons.filter(lesson => lesson.date === dateStr);
     }
 }
