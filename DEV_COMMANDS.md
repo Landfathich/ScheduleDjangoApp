@@ -1,31 +1,14 @@
-# Django Project Tools
+# Команды разработки
 
 Список полезных команд для разработки.
 
-## 🥱 Основные команды
-
-### Запуск сервера
+## Запуск локального сервера
 
 ```bash
 python manage.py runserver
 ```
 
-## 🚀 Пуш
-
-### Пуш на тестовй сервер
-
-```bash
-git push dokku-test develop  
-```
-
-### Пуш на продакт сервер
-
-git push dokku master
-
-* Вводить вручную
-* Не забудьте после пуша применить миграции на сервере
-
-## 🛠 Команды для работы с миграциями
+## Команды для работы с миграциями
 
 ### Создать миграции
 
@@ -39,7 +22,7 @@ python manage.py makemigrations
 python manage.py migrate
 ```
 
-### 📊 Генерация ERD-диаграмм
+## Генерация ERD-диаграмм
 
 #### Для работы команд требуется:
 
@@ -58,7 +41,7 @@ python manage.py graph_models --pydot -a --group-models --disable-fields -o erd.
 python manage.py graph_models --pydot -a --group-models -o erd_detailed.png
 ```
 
-### Установка зависимостей
+## Установка зависимостей
 
 ```bash
 pip install -r requirements.txt
