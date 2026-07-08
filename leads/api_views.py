@@ -19,6 +19,7 @@ class LeadCreateAPIView(APIView):
             phone=request.data.get("phone"),
             email=request.data.get("email", ""),
             course=request.data.get("course", ""),
-            source=request.data.get("source", "landing")
+            source=request.data.get("source", "landing"),
+            source_url=request.data.get("source_url", "")
         )
         return Response({"status": "ok"}, status=201)

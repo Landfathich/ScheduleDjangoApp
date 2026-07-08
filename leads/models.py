@@ -1,3 +1,5 @@
+import urllib
+
 from django.db import models
 
 
@@ -13,6 +15,7 @@ class Lead(models.Model):
     ]
 
     name = models.CharField(max_length=100)
+    source_url = models.CharField(max_length=500, blank=True, verbose_name='URL источник')
     phone = models.CharField(max_length=20)
     email = models.EmailField(blank=True)
     course = models.CharField(max_length=200, blank=True)
@@ -26,3 +29,19 @@ class Lead(models.Model):
 
     def __str__(self):
         return f"{self.name} - {self.phone}"
+
+    @property
+    def utm_params(self):
+        if not self.source_url or '?' not in self.source_url:
+            return {}
+
+        query = self.source_url.split('?', 1)[1]
+        params = urllib.parse.parse_qs(query)
+
+        # Оставляем только utm-метки и ad_id
+        utm = {}
+        for key, values in params.items():
+            if key.startswith('utm_') or key == 'ad_id':
+                utm[key] = values[0]
+
+        return utm

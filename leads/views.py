@@ -1,10 +1,12 @@
-from django.shortcuts import render, get_object_or_404
+from django.contrib.admin.views.decorators import staff_member_required
 from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
+from django.shortcuts import render, get_object_or_404
+
 from core.models import Client, PhoneNumber
 from .models import Lead
 
 
+@staff_member_required
 def lead_list(request):
     status_filter = request.GET.get('status', '')
     leads = Lead.objects.all().order_by('-created_at')
@@ -21,12 +23,13 @@ def lead_list(request):
     })
 
 
+@staff_member_required
 def lead_to_client_form(request, lead_id):
     lead = get_object_or_404(Lead, pk=lead_id)
     return render(request, 'leads/convert_form.html', {'lead': lead})
 
 
-@csrf_exempt
+@staff_member_required
 def convert_lead(request, lead_id):
     if request.method != 'POST':
         return JsonResponse({'error': 'Method not allowed'}, status=405)
@@ -54,7 +57,7 @@ def convert_lead(request, lead_id):
     return JsonResponse({'status': 'ok'})
 
 
-@csrf_exempt
+@staff_member_required
 def update_lead_status(request, lead_id):
     if request.method != 'POST':
         return JsonResponse({'error': 'Method not allowed'}, status=405)
@@ -70,7 +73,7 @@ def update_lead_status(request, lead_id):
     return JsonResponse({'error': 'Invalid status'}, status=400)
 
 
-@csrf_exempt
+@staff_member_required
 def update_lead_notes(request, lead_id):
     if request.method != 'POST':
         return JsonResponse({'error': 'Method not allowed'}, status=405)
