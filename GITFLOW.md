@@ -46,11 +46,6 @@ git checkout -b bugfix/название-бага
 
 После исправления ветка вливается обратно в develop.
 
-```bash
-А `hotfix` оставить именно для продакшена.
-У тебя тогда будет логичная схема:
-```
-
 ---
 
 ## Hotfix (срочное исправление бага)
@@ -59,7 +54,7 @@ git checkout -b bugfix/название-бага
 
 ```bash
 git checkout master
-git checkout -b hotfix/vX.Y.Z-fN
+git checkout -b hotfix/название-бага
 ```
 
 После исправления:
@@ -73,18 +68,16 @@ git commit -m "hotfix: описание"
 
 ```bash
 git checkout master
-git merge hotfix/vX.Y.Z-fN
-git tag -a vX.Y.Z-fN -m "vX.Y.Z-fN: описание"
+git merge hotfix/название-бага
 git push dokku-prod master
 git push github master
-git push github --tags
 ```
 
 После хотфикса синхронизировать develop:
 
 ```bash
 git checkout develop
-git merge hotfix/vX.Y.Z-fN
+git merge hotfix/название-бага
 ```
 
 ---
