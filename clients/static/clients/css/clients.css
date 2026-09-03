@@ -1,0 +1,122 @@
+.clients-container {
+    width: 100%;
+    padding: 30px 20px;
+    box-sizing: border-box;
+}
+
+.clients-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.clients-header h1 {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0;
+}
+
+.clients-count {
+    font-size: 14px;
+    color: var(--text-secondary);
+    background: var(--glass-bg);
+    padding: 6px 14px;
+    border-radius: 20px;
+    border: 1px solid var(--border-color);
+}
+
+.clients-table-wrapper {
+    background: var(--header-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    overflow-x: auto;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    -webkit-overflow-scrolling: touch;
+}
+
+.clients-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+.clients-table thead {
+    background: var(--glass-bg);
+}
+
+.clients-table th {
+    text-align: left;
+    padding: 16px 20px;
+    color: var(--text-secondary);
+    font-weight: 600;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+}
+
+.clients-table td {
+    padding: 14px 20px;
+    color: var(--text-primary);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.clients-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.clients-table tbody tr {
+    transition: background 0.15s;
+}
+
+.clients-table tbody tr:hover {
+    background: rgba(var(--primary-color-rgb), 0.04);
+}
+
+.lead-phone {
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: 13px;
+    letter-spacing: 0.3px;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 60px 20px !important;
+    color: var(--text-secondary);
+}
+
+.empty-state-icon {
+    font-size: 40px;
+    margin-bottom: 12px;
+    opacity: 0.6;
+}
+
+.empty-state-text {
+    font-size: 15px;
+}
+
+.status-select {
+    padding: 4px 8px;
+    border-radius: 6px;
+    border: 1px solid var(--border-color);
+    background: var(--bg);
+    color: var(--text-primary);
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.status-select:focus {
+    outline: none;
+    border-color: var(--primary-color);
+}
+
+.client-link {
+    color: #2066b0;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.client-link:hover {
+    text-decoration: underline;
+}

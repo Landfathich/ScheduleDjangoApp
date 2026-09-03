@@ -15,7 +15,7 @@ urlpatterns = [
     path('', include('pwa.urls')),
     # path('chat/', include('chat.urls')),
     # path('webpush/', include('webpush.urls')),
-    path('', include('leads.urls')),
+    path('clients/', include('clients.urls')),
 ]
 
 if settings.DEBUG:
