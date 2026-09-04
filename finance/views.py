@@ -66,9 +66,104 @@ class StatsDashboardView(TemplateView):
         context['finance_stats'] = finance_stats
 
         from datetime import datetime, timedelta
-        from django.db.models import Q
+        from django.db.models import Q, Sum
+        from core.models import TeacherPayment
 
-        # В методе get_context_data добавить:
+        # Определяем выбранный месяц
+        month_param = self.request.GET.get('month')
+        if month_param:
+            try:
+                year, month = map(int, month_param.split('-'))
+                selected_date = datetime(year, month, 1).date()
+            except (ValueError, TypeError):
+                selected_date = datetime.now().date().replace(day=1)
+        else:
+            selected_date = datetime.now().date().replace(day=1)
+
+        # Начало и конец выбранного месяца
+        if selected_date.month == 12:
+            next_month = selected_date.replace(year=selected_date.year + 1, month=1)
+        else:
+            next_month = selected_date.replace(month=selected_date.month + 1)
+
+        month_start = selected_date
+        month_end = next_month - timedelta(days=1)
+
+        # Доходы за выбранный месяц
+        month_income = FinanceEvent.objects.filter(
+            event_type=FinanceEvent.EVENT_INCOME,
+            created_at__date__gte=month_start,
+            created_at__date__lte=month_end
+        ).aggregate(total=Sum('amount'))['total'] or 0
+
+        # Расходы за выбранный месяц (SchoolExpense)
+        month_expenses = SchoolExpense.objects.filter(
+            expense_date__gte=month_start,
+            expense_date__lte=month_end
+        )
+
+        expenses_by_category = {}
+        total_expenses = 0
+        for expense in month_expenses:
+            category = expense.get_category_display()
+            expenses_by_category[category] = expenses_by_category.get(category, 0) + float(expense.amount)
+            total_expenses += float(expense.amount)
+
+        # Зарплаты преподавателям за выбранный месяц (оплаченные)
+        teacher_payments = TeacherPayment.objects.filter(
+            is_paid=True,
+            payment_date__gte=month_start,
+            payment_date__lte=month_end
+        )
+
+        teacher_payments_total = teacher_payments.aggregate(total=Sum('amount'))['total'] or 0
+        teacher_payments_total = float(teacher_payments_total)
+
+        if teacher_payments_total > 0:
+            expenses_by_category['Зарплата преподавателям'] = teacher_payments_total
+            total_expenses += teacher_payments_total
+
+        # Чистый кэш флоу
+        net_cash_flow = float(month_income) - total_expenses
+
+        # Название месяца на русском
+        months_ru = {
+            1: 'Январь', 2: 'Февраль', 3: 'Март', 4: 'Апрель',
+            5: 'Май', 6: 'Июнь', 7: 'Июль', 8: 'Август',
+            9: 'Сентябрь', 10: 'Октябрь', 11: 'Ноябрь', 12: 'Декабрь'
+        }
+        month_name = months_ru[selected_date.month]
+
+        # Ссылки на предыдущий и следующий месяц
+        prev_month = selected_date - timedelta(days=1)
+        prev_month = prev_month.replace(day=1)
+        next_month_start = next_month
+
+        # Проценты по категориям
+        expenses_by_category_with_percent = {}
+        if total_expenses > 0:
+            for category, amount in expenses_by_category.items():
+                percent = round((amount / total_expenses) * 100, 1)
+                expenses_by_category_with_percent[category] = {
+                    'amount': amount,
+                    'percent': percent
+                }
+        else:
+            for category, amount in expenses_by_category.items():
+                expenses_by_category_with_percent[category] = {
+                    'amount': amount,
+                    'percent': 0
+                }
+
+        context['monthly_report'] = {
+            'month': f'{month_name} {selected_date.year}',
+            'income': float(month_income),
+            'total_expenses': total_expenses,
+            'expenses_by_category': expenses_by_category_with_percent,
+            'net_cash_flow': net_cash_flow,
+            'prev_month': f'{prev_month.year}-{prev_month.month:02d}',
+            'next_month': f'{next_month_start.year}-{next_month_start.month:02d}',
+        }
 
         # Определяем даты прошлой недели (понедельник - воскресенье)
         today = datetime.now().date()
@@ -112,7 +207,6 @@ class StatsDashboardView(TemplateView):
             'load_percentage': round((busy_slots / total_slots * 100)) if total_slots > 0 else 0,
         }
         return context
-
 
 from django.http import JsonResponse
 from datetime import datetime, timedelta

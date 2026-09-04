@@ -20,6 +20,64 @@ main::before {
     z-index: -1;
 }
 
+.stat-card.monthly-report {
+    border-top: 4px solid #27ae60;
+}
+
+.monthly-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.monthly-row.net {
+    border-bottom: none;
+    margin-top: 10px;
+    padding-top: 15px;
+    border-top: 2px solid var(--border-color);
+}
+
+.monthly-label {
+    color: var(--text-secondary);
+    font-size: 0.95em;
+}
+
+.monthly-value {
+    font-weight: 600;
+    font-size: 1.1em;
+}
+
+.monthly-value.income {
+    color: #27ae60;
+}
+
+.monthly-value.expense {
+    color: var(--danger-color);
+}
+
+.monthly-categories {
+    padding: 10px 0;
+}
+
+.monthly-category-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px 0;
+    font-size: 0.9em;
+}
+
+.monthly-category-label {
+    color: var(--text-secondary);
+}
+
+.monthly-category-value {
+    color: var(--text-primary);
+    font-weight: 500;
+}
+
 ::-webkit-scrollbar-track {
     background: transparent;
 }
@@ -53,6 +111,38 @@ main::before {
     align-items: flex-start;
 }
 
+.month-switcher {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.month-arrow {
+    text-decoration: none;
+    color: var(--primary-color);
+    font-size: 20px;
+    font-weight: bold;
+    padding: 5px 10px;
+    border: 1px solid var(--primary-color);
+    border-radius: 5px;
+    transition: all 0.3s ease;
+}
+
+.month-arrow:hover {
+    background: var(--primary-color);
+    color: white;
+}
+
+.month-current {
+    font-size: 1.1em;
+    font-weight: 600;
+    color: var(--text-primary);
+    min-width: 120px;
+    text-align: center;
+}
+
 /* Общие стили карточек */
 .stat-card {
     border-radius: 10px;
@@ -61,7 +151,7 @@ main::before {
     max-width: 400px;
     display: flex;
     flex-direction: column;
-    min-height: 415px;
+    min-height: 455px;
     background: var(--header-bg);
     border: 1px solid var(--border-color);
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
