@@ -6,76 +6,73 @@
 {% endblock %}
 
 {% block content %}
-<div class="clients-container">
-    <div class="clients-header">
-        <h1>Клиенты</h1>
-        <span class="clients-count">Всего клиентов: {{ clients|length }}</span>
-    </div>
-
-    <div class="clients-table-wrapper">
-        <table class="clients-table">
-            <thead>
+    <div class="clients-container">
+        <div class="clients-header">
+            <h1>Клиенты</h1>
+        </div>
+        <form method="get" class="clients-filters">
+            <div class="clients-search">
+                <input type="text" name="search" value="{{ search }}" placeholder="Поиск клиента...">
+            </div>
+            <div class="clients-status-filter">
+                <select name="status">
+                    <option value="">Все статусы</option>
+                    {% for value, label in status_choices %}
+                        <option value="{{ value }}"
+                                {% if selected_status == value %}selected{% endif %}>{{ label }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <button type="submit" class="clients-filter-button">Найти</button>
+            {% if search or selected_status %}
+                <button type="button" class="clients-reset-button"
+                        onclick="window.location.href='{% url 'client-list' %}'">Сбросить
+                </button>
+            {% endif %}
+        </form>
+        <div class="clients-table-wrapper">
+            <table class="clients-table">
+                <thead>
                 <tr>
-                    <th>Дата</th>
-                    <th>Имя</th>
-                    <th>Телефон</th>
-                    <th>Email</th>
+                    <th>ID</th>
+                    <th>Клиент</th>
+                    <th>Ученики</th>
                     <th>Статус</th>
-                    <th>Источник</th>
                 </tr>
-            </thead>
-            <tbody>
+                </thead>
+                <tbody>
                 {% for client in clients %}
-                <tr>
-                    <td>{{ client.created_at|date:"d.m.y" }}</td>
-                    <td>
-                        <a href="{% url 'admin:core_client_change' client.id %}" class="client-link" target="_blank">
-                            {{ client.name }}
-                        </a>
-                    </td>
-                    <td class="lead-phone">{{ client.primary_phone.number|default:'—' }}</td>
-                    <td>{{ client.email }}</td>
-                    <td>
-                        <select class="status-select" data-client-id="{{ client.id }}" data-current="{{ client.lifecycle_status }}">
-                            {% for value, label in status_choices %}
-                                <option value="{{ value }}" {% if client.lifecycle_status == value %}selected{% endif %}>
-                                    {{ label }}
-                                </option>
+                    <tr>
+                        <td class="client-id">#{{ client.id }}</td>
+                        <td>
+                            <a href="{% url 'client-detail' client.id %}" class="client-link">{{ client.name }}</a>
+                        </td>
+                        <td class="client-students">
+                            {% for student in client.students.all %}
+                                <div class="client-student">
+                                    <span class="client-student-name">{{ student.name }}</span>
+                                    {% if student.teacher %}
+                                        <span class="client-student-teacher">— {{ student.teacher }}</span>
+                                    {% endif %}
+                                </div>
+                            {% empty %}
+                                <span class="client-empty-value">Нет учеников</span>
                             {% endfor %}
-                        </select>
-                    </td>
-                    <td>{{ client.get_source_display|default:'—' }}</td>
-                </tr>
+                        </td>
+                        <td>
+                            <span class="client-status client-status-{{ client.lifecycle_status }}">{{ client.get_lifecycle_status_display }}</span>
+                        </td>
+                    </tr>
                 {% empty %}
-                <tr>
-                    <td colspan="6" class="empty-state">
-                        <div class="empty-state-icon">📭</div>
-                        <div class="empty-state-text">Нет клиентов</div>
-                    </td>
-                </tr>
+                    <tr>
+                        <td colspan="4" class="empty-state">
+                            <div class="empty-state-icon">📭</div>
+                            <div class="empty-state-text">Клиенты не найдены</div>
+                        </td>
+                    </tr>
                 {% endfor %}
-            </tbody>
-        </table>
+                </tbody>
+            </table>
+        </div>
     </div>
-</div>
-
-<script>
-document.querySelectorAll('.status-select').forEach(select => {
-    select.addEventListener('change', function() {
-        const clientId = this.dataset.clientId;
-        const formData = new FormData();
-        formData.append('status', this.value);
-
-        fetch('/clients/' + clientId + '/status/', {
-            method: 'POST',
-            body: formData,
-            headers: { 'X-CSRFToken': getCookie('csrftoken') }
-        }).then(r => r.json()).then(data => {
-            if (data.status !== 'ok') {
-                this.value = this.dataset.current;
-            }
-        });
-    });
-});
-</script>
 {% endblock %}
