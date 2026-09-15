@@ -625,8 +625,11 @@ def mark_payment_as_paid(request, payment_id):
 
 
 def get_filtered_low_balance_clients_queryset():
-    """Возвращает клиентов с балансом <= 2, у которых есть дети у преподавателей школы."""
-    return Client.objects.filter(balance__lte=2).annotate(
+    """Возвращает активных клиентов с балансом <= 2, у которых есть дети у преподавателей школы."""
+    return Client.objects.filter(
+        balance__lte=2,
+        lifecycle_status='active'
+    ).annotate(
         has_valid_student=Exists(
             Student.objects.filter(
                 client_id=OuterRef('id'),
