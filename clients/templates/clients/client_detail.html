@@ -84,15 +84,54 @@
             <aside class="client-detail-history">
                 <h2>История</h2>
                 <div class="client-timeline">
+                    {% for history in status_history %}
+                        <div class="client-timeline-item">
+                            <div class="client-timeline-point"></div>
+                            <div class="client-timeline-content">
+                                <div class="client-timeline-title">
+                                    Статус изменён: {{ history.old_status_label }} → {{ history.new_status_label }}
+                                </div>
+
+                                {% if history.reason %}
+                                    <div class="client-timeline-reason">
+                                        Причина: {{ history.reason_label }}
+                                    </div>
+                                {% endif %}
+
+                                <div class="client-timeline-date">
+                                    {{ history.changed_at|date:"d.m.Y H:i" }}
+                                    {% if history.changed_by %}
+                                        · {{ history.changed_by.get_full_name|default:history.changed_by.username }}
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+
                     <div class="client-timeline-item">
                         <div class="client-timeline-point"></div>
                         <div class="client-timeline-content">
                             <div class="client-timeline-title">Клиент добавлен</div>
-                            <div class="client-timeline-date">{{ client.created_at|date:"d.m.Y" }}</div>
+                            <div class="client-timeline-date">{{ client.created_at|date:"d.m.Y H:i" }}</div>
                         </div>
                     </div>
                 </div>
             </aside>
+        </div>
+    </div>
+
+    <div id="statusReasonModal" class="status-reason-modal hidden">
+        <div class="status-reason-modal-content">
+            <h3 id="statusReasonTitle">Причина изменения статуса</h3>
+
+            <select id="statusReasonSelect">
+                <option value="">Выберите причину</option>
+            </select>
+
+            <div class="status-reason-actions">
+                <button type="button" id="statusReasonCancel">Отмена</button>
+                <button type="button" id="statusReasonConfirm">Подтвердить</button>
+            </div>
         </div>
     </div>
 {% endblock %}

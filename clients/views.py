@@ -2,6 +2,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404
 
+from clients.models import ClientStatusHistory
 from core.constants import get_excluded_teacher_ids
 from core.models import Client
 
@@ -37,10 +38,30 @@ def client_list(request):
 def client_detail(request, client_id):
     client = get_object_or_404(Client, pk=client_id)
     status_choices = Client._meta.get_field('lifecycle_status').choices
+    status_labels = dict(status_choices)
+
+    reason_labels = {
+        'too_expensive': 'Дорого',
+        'other_school': 'Выбрали другую школу',
+        'format_not_suitable': 'Не подошёл формат',
+        'changed_mind': 'Передумали',
+        'could_not_contact': 'Не удалось связаться',
+        'stopped_lessons': 'Перестали заниматься',
+        'life_circumstances': 'Переезд / обстоятельства',
+        'other': 'Другое',
+    }
+
+    status_history = client.status_history.all()
+
+    for history in status_history:
+        history.old_status_label = status_labels.get(history.old_status, history.old_status)
+        history.new_status_label = status_labels.get(history.new_status, history.new_status)
+        history.reason_label = reason_labels.get(history.reason, history.reason)
 
     return render(request, 'clients/client_detail.html', {
         'client': client,
         'status_choices': status_choices,
+        'status_history': status_history,
     })
 
 
@@ -53,9 +74,28 @@ def update_client_status(request, client_id):
     new_status = request.POST.get('status')
 
     valid_statuses = dict(Client._meta.get_field('lifecycle_status').choices)
-    if new_status in valid_statuses:
-        client.lifecycle_status = new_status
-        client.save(update_fields=['lifecycle_status'])
+    if new_status not in valid_statuses:
+        return JsonResponse({'error': 'Invalid status'}, status=400)
+
+    old_status = client.lifecycle_status
+
+    if old_status == new_status:
         return JsonResponse({'status': 'ok'})
 
-    return JsonResponse({'error': 'Invalid status'}, status=400)
+    reason = request.POST.get('reason', '').strip()
+
+    if new_status in ('rejected', 'inactive') and not reason:
+        return JsonResponse({'error': 'Reason required'}, status=400)
+
+    ClientStatusHistory.objects.create(
+        client=client,
+        old_status=old_status,
+        new_status=new_status,
+        reason=reason,
+        changed_by=request.user
+    )
+
+    client.lifecycle_status = new_status
+    client.save(update_fields=['lifecycle_status'])
+
+    return JsonResponse({'status': 'ok'})
