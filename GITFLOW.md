@@ -69,8 +69,8 @@ git commit -m "hotfix: описание"
 ```bash
 git checkout master
 git merge hotfix/название-бага
-git push dokku-prod master
 git push github master
+git push production master
 ```
 
 После хотфикса синхронизировать develop:
@@ -88,9 +88,9 @@ git merge hotfix/название-бага
 git checkout master
 git merge develop
 git tag -a vX.Y.Z -m "vX.Y.Z: описание"
-git push dokku-prod master
 git push github master
 git push github --tags
+git push production master
 ```
 
 После релиза синхронизировать develop:
