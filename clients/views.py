@@ -2,12 +2,17 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404
 
+from core.constants import get_excluded_teacher_ids
 from core.models import Client
 
 
 @staff_member_required
 def client_list(request):
-    clients = Client.objects.all().order_by('-id')
+    excluded_teacher_ids = get_excluded_teacher_ids()
+
+    clients = Client.objects.exclude(
+        students__teacher__user__id__in=excluded_teacher_ids
+    ).distinct().order_by('-id')
 
     search = request.GET.get('search', '').strip()
     status = request.GET.get('status', '').strip()
