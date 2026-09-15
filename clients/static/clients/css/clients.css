@@ -1,0 +1,342 @@
+.clients-container {
+    width: 100%;
+    height: 100%;
+    padding: 30px 20px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    overflow: hidden;
+}
+
+.clients-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    flex-shrink: 0;
+}
+
+.clients-header h1 {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0;
+}
+
+.clients-filters {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+    flex-shrink: 0;
+}
+
+.clients-search {
+    flex: 1;
+}
+
+.clients-search input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 10px 14px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background: var(--header-bg);
+    color: var(--text-primary);
+    font-size: 14px;
+}
+
+.clients-search input::placeholder {
+    color: var(--text-secondary);
+}
+
+.clients-search input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+}
+
+.clients-status-filter select {
+    min-width: 160px;
+    padding: 10px 36px 10px 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background-color: var(--header-bg);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236b7280' stroke-width='2' fill='none'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    color: var(--text-primary);
+    font-size: 14px;
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+}
+
+.clients-status-filter select:focus {
+    outline: none;
+    border-color: var(--primary-color);
+}
+
+.clients-filter-button,
+.clients-reset-button {
+    height: 38px;
+    padding: 0 16px;
+    box-sizing: border-box;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    font-size: 14px;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.clients-filter-button {
+    border: 1px solid var(--primary-color);
+    background: var(--primary-color);
+    color: white;
+}
+
+.clients-reset-button {
+    border: 1px solid var(--border-color);
+    background: var(--header-bg);
+    color: var(--text-secondary);
+}
+
+.clients-reset-button:hover {
+    color: var(--text-primary);
+}
+
+.clients-table-wrapper {
+    width: 100%;
+    max-height: 100%;
+    background: var(--header-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    overflow: auto;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.clients-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+.clients-table thead {
+    background: var(--glass-bg);
+}
+
+.clients-table th {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    text-align: left;
+    padding: 16px 20px;
+    background: var(--bg);
+    color: var(--text-secondary);
+    font-weight: 600;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+}
+
+.clients-table:has(.empty-state) {
+    height: 100%;
+}
+
+.clients-table:has(.empty-state) .empty-state {
+    height: 100%;
+    box-sizing: border-box;
+    vertical-align: middle;
+}
+
+.clients-table td {
+    padding: 14px 20px;
+    color: var(--text-primary);
+    border-bottom: 1px solid var(--border-color);
+    vertical-align: top;
+}
+
+.clients-table tbody tr {
+    transition: background 0.15s;
+}
+
+.clients-table tbody tr:hover {
+    background: rgba(var(--primary-color-rgb), 0.04);
+}
+
+.clients-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.client-id {
+    width: 70px;
+    color: var(--text-secondary) !important;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: 12px;
+}
+
+.client-link {
+    color: #2066b0;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.client-link:hover {
+    text-decoration: underline;
+}
+
+.client-students {
+    min-width: 220px;
+}
+
+.client-student {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    margin-bottom: 4px;
+}
+
+.client-student:last-child {
+    margin-bottom: 0;
+}
+
+.client-student-name {
+    color: var(--text-primary);
+    font-weight: 500;
+}
+
+.client-student-teacher {
+    color: var(--text-secondary);
+    font-size: 12px;
+}
+
+.client-empty-value {
+    color: var(--text-secondary);
+    font-size: 13px;
+}
+
+.client-status {
+    display: inline-block;
+    padding: 4px 9px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 500;
+    white-space: nowrap;
+    border: 1px solid var(--border-color);
+}
+
+.empty-state {
+    text-align: center;
+    padding: 60px 20px !important;
+    color: var(--text-secondary);
+}
+
+.empty-state-icon {
+    font-size: 40px;
+    margin-bottom: 12px;
+    opacity: 0.6;
+}
+
+.empty-state-text {
+    font-size: 15px;
+}
+
+@media (max-width: 768px) {
+    .clients-container {
+        padding: 20px 12px;
+    }
+
+    .clients-header {
+        margin-bottom: 18px;
+    }
+
+    .clients-header h1 {
+        font-size: 22px;
+    }
+
+    .clients-filters {
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-bottom: 16px;
+    }
+
+    .clients-search {
+        flex: 1 1 100%;
+    }
+
+    .clients-search input {
+        height: 40px;
+    }
+
+    .clients-status-filter {
+        flex: 1;
+    }
+
+    .clients-status-filter select {
+        width: 100%;
+        min-width: 0;
+        height: 40px;
+    }
+
+    .clients-filter-button,
+    .clients-reset-button {
+        height: 40px;
+    }
+
+    .clients-table-wrapper {
+        border-radius: 10px;
+        overflow-x: auto;
+        overflow-y: auto;
+    }
+
+    .clients-table {
+        min-width: 650px;
+    }
+
+    .clients-table th {
+        padding: 13px 14px;
+        font-size: 11px;
+    }
+
+    .clients-table td {
+        padding: 12px 14px;
+    }
+
+    .client-id {
+        width: 55px;
+    }
+
+    .client-students {
+        min-width: 240px;
+    }
+}
+
+@media (max-width: 480px) {
+    .clients-container {
+        padding: 16px 10px;
+    }
+
+    .clients-header h1 {
+        font-size: 20px;
+    }
+
+    .clients-filters {
+        gap: 8px;
+    }
+
+    .clients-status-filter {
+        flex: 1 1 100%;
+    }
+
+    .clients-filter-button,
+    .clients-reset-button {
+        flex: 1;
+    }
+
+    .clients-table {
+        min-width: 620px;
+    }
+}

@@ -79,8 +79,28 @@ class Client(SafeDeleteModel):
     _safedelete_policy = SOFT_DELETE
     _safedelete_visibility = DELETED_VISIBLE_BY_PK
 
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')
     name = models.CharField(max_length=100, verbose_name='Имя родителя')
     email = models.EmailField(blank=True, verbose_name='Email')
+    lifecycle_status = models.CharField(
+        max_length=20,
+        choices=[('lead', 'Лид'), ('active', 'Активный'), ('inactive', 'Ушедший'), ('rejected', 'Отказ')],
+        default='lead',
+        verbose_name='Статус клиента'
+    )
+    source = models.CharField(
+        max_length=50,
+        blank=True,
+        choices=[
+            ('landing', 'Лендинг'),
+            ('avito', 'Авито'),
+            ('telegram', 'Telegram канал'),
+            ('referral', 'Рекомендация'),
+            ('other', 'Другое'),
+        ],
+        default='landing',
+        verbose_name='Источник'
+    )
 
     balance = models.IntegerField(
         default=0,

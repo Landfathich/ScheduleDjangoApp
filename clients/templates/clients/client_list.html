@@ -1,0 +1,78 @@
+{% extends "core/base.html" %}
+{% load static %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'clients/css/clients.css' %}">
+{% endblock %}
+
+{% block content %}
+    <div class="clients-container">
+        <div class="clients-header">
+            <h1>Клиенты</h1>
+        </div>
+        <form method="get" class="clients-filters">
+            <div class="clients-search">
+                <input type="text" name="search" value="{{ search }}" placeholder="Поиск клиента...">
+            </div>
+            <div class="clients-status-filter">
+                <select name="status">
+                    <option value="">Все статусы</option>
+                    {% for value, label in status_choices %}
+                        <option value="{{ value }}"
+                                {% if selected_status == value %}selected{% endif %}>{{ label }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <button type="submit" class="clients-filter-button">Найти</button>
+            {% if search or selected_status %}
+                <button type="button" class="clients-reset-button"
+                        onclick="window.location.href='{% url 'client-list' %}'">Сбросить
+                </button>
+            {% endif %}
+        </form>
+        <div class="clients-table-wrapper">
+            <table class="clients-table">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Клиент</th>
+                    <th>Ученики</th>
+                    <th>Статус</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for client in clients %}
+                    <tr>
+                        <td class="client-id">#{{ client.id }}</td>
+                        <td>
+                            <a href="{% url 'client-detail' client.id %}" class="client-link">{{ client.name }}</a>
+                        </td>
+                        <td class="client-students">
+                            {% for student in client.students.all %}
+                                <div class="client-student">
+                                    <span class="client-student-name">{{ student.name }}</span>
+                                    {% if student.teacher %}
+                                        <span class="client-student-teacher">— {{ student.teacher }}</span>
+                                    {% endif %}
+                                </div>
+                            {% empty %}
+                                <span class="client-empty-value">Нет учеников</span>
+                            {% endfor %}
+                        </td>
+                        <td>
+                            <span class="client-status client-status-{{ client.lifecycle_status }}">{{ client.get_lifecycle_status_display }}</span>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="4" class="empty-state">
+                            <div class="empty-state-icon">📭</div>
+                            <div class="empty-state-text">Клиенты не найдены</div>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,102 @@
+{% extends "core/base.html" %}
+{% load static %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'clients/css/client_detail.css' %}">
+{% endblock %}
+
+{% block content %}
+    <form style="display:none;">
+        {% csrf_token %}
+    </form>
+    <div class="client-detail-container">
+        <div class="client-detail-header">
+            <div class="client-detail-title">
+                <h1>{{ client.name }}</h1>
+                <form method="post" action="{% url 'update-client-status' client.id %}"
+                      class="client-detail-status-form">
+                    {% csrf_token %}
+                    <select class="client-detail-status-select" data-client-id="{{ client.id }}"
+                            data-current="{{ client.lifecycle_status }}">
+                        {% for value, label in status_choices %}
+                            <option value="{{ value }}" {% if client.lifecycle_status == value %}selected{% endif %}>
+                                {{ label }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </form>
+            </div>
+
+            <div class="client-detail-actions">
+                <a href="{% url 'admin:core_client_change' client.id %}" class="client-admin-button">В админку</a>
+            </div>
+        </div>
+
+        <div class="client-detail-layout">
+            <div class="client-detail-main">
+                <section class="client-detail-section">
+                    <h2>Контактная информация</h2>
+                    <div class="client-detail-info">
+                        <div class="client-detail-info-item">
+                            <span class="client-detail-label">Имя</span>
+                            <span class="client-detail-value">{{ client.name }}</span>
+                        </div>
+                        <div class="client-detail-info-item">
+                            <span class="client-detail-label">Email</span>
+                            <span class="client-detail-value">{{ client.email|default:"Не указан" }}</span>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="client-detail-section">
+                    <h2>Баланс</h2>
+                    <div class="client-balance">
+                        {{ client.balance }}
+                        {% if client.balance == 1 %}
+                            урок
+                        {% elif client.balance >= 2 and client.balance <= 4 %}
+                            урока
+                        {% else %}
+                            уроков
+                        {% endif %}
+                    </div>
+                </section>
+
+                <section class="client-detail-section">
+                    <h2>Ученики</h2>
+                    <div class="client-students">
+                        {% for student in client.students.all %}
+                            <div class="client-student-card">
+                                <div class="client-student-name">{{ student.name }}</div>
+                                {% if student.teacher %}
+                                    <div class="client-student-teacher">{{ student.teacher }}</div>
+                                {% else %}
+                                    <div class="client-student-teacher">Преподаватель не назначен</div>
+                                {% endif %}
+                            </div>
+                        {% empty %}
+                            <div class="client-detail-empty">Учеников пока нет</div>
+                        {% endfor %}
+                    </div>
+                </section>
+            </div>
+
+            <aside class="client-detail-history">
+                <h2>История</h2>
+                <div class="client-timeline">
+                    <div class="client-timeline-item">
+                        <div class="client-timeline-point"></div>
+                        <div class="client-timeline-content">
+                            <div class="client-timeline-title">Клиент добавлен</div>
+                            <div class="client-timeline-date">{{ client.created_at|date:"d.m.Y" }}</div>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    <script src="{% static 'clients/js/client_detail.js' %}"></script>
+{% endblock %}
