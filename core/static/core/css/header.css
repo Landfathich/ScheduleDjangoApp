@@ -51,7 +51,7 @@ header {
     gap: 10px;
 }
 
-.admin-btn {
+.header-btn {
     display: inline-flex;
     align-items: center;
     gap: 6px;
@@ -66,9 +66,31 @@ header {
     transition: all 0.2s;
 }
 
-.admin-btn:hover {
+.header-btn:hover {
     background: var(--header-bg);
     border-color: var(--primary-color);
+}
+
+.notification-btn {
+    justify-content: flex-start;
+    position: relative;
+}
+
+.web-notification-badge {
+    min-width: 20px;
+    height: 20px;
+    padding: 0 5px;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    background: var(--primary-color);
+    color: white;
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 20px;
+    text-align: center;
+    box-sizing: border-box;
 }
 
 nav {

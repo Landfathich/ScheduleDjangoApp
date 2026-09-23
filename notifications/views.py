@@ -2,16 +2,16 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.shortcuts import render
 from rest_framework import viewsets
 from rest_framework.decorators import action
-from rest_framework.permissions import IsAuthenticated, IsAdminUser
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from .models import Notification
 from .serializers import NotificationSerializer
 
 
-class NotificationViewSet(viewsets.ModelViewSet):
+class NotificationViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = NotificationSerializer
-    permission_classes = [IsAuthenticated, IsAdminUser]
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         return Notification.objects.filter(user=self.request.user)
