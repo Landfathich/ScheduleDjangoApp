@@ -2,22 +2,9 @@ header {
     box-shadow: 0 5px 10px rgba(0, 0, 0, 0.09);
 }
 
-::-webkit-scrollbar-track {
-    background: transparent;
-}
-
-::-webkit-scrollbar-thumb {
-    background-color: rgba(var(--primary-color-rgb), 0.17);
-}
-
-main {
-    overflow-y: auto;
-}
-
 .profile-container {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 20px;
     color: var(--text-primary);
 }
 

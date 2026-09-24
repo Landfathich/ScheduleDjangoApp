@@ -1,14 +1,13 @@
-{% extends 'core/base.html' %}
+{% extends 'tasks/base.html' %}
 {% load static %}
 
 {% block title %}Проекты | Kodama{% endblock %}
 
-{% block extra_css %}
-    <link rel="stylesheet" href="{% static 'tasks/css/base.css' %}">
+{% block tasks_extra_css %}
     <link rel="stylesheet" href="{% static 'tasks/css/project-list.css' %}">
 {% endblock %}
 
-{% block content %}
+{% block tasks_content %}
     <div class="kanban-container">
         <div class="kanban-header">
             <h1>Управление проектами</h1>

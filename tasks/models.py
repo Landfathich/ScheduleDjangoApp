@@ -71,11 +71,44 @@ class Task(models.Model):
         ('done', 'Завершено'),
     ]
 
+    PRIORITY_CHOICES = [
+        ('low', 'Низкий'),
+        ('normal', 'Обычный'),
+        ('high', 'Высокий'),
+        ('urgent', 'Срочный'),
+    ]
+
     title = models.CharField(max_length=200, verbose_name="Название")
     description = models.TextField(blank=True, verbose_name="Описание")
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='backlog')
 
-    project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name='tasks')
+    status = models.CharField(
+        max_length=20,
+        choices=STATUS_CHOICES,
+        default='backlog'
+    )
+
+    priority = models.CharField(
+        max_length=20,
+        choices=PRIORITY_CHOICES,
+        default='normal',
+        verbose_name="Приоритет"
+    )
+
+    due_date = models.DateTimeField(
+        null=True,
+        blank=True,
+        verbose_name="Срок выполнения"
+    )
+
+    project = models.ForeignKey(
+        Project,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='tasks',
+        verbose_name="Проект"
+    )
+
     column = models.ForeignKey(
         'ProjectColumn',
         on_delete=models.SET_NULL,
@@ -85,14 +118,25 @@ class Task(models.Model):
         verbose_name="Колонка"
     )
 
-    assignee = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True,
-                                 related_name='assigned_tasks', verbose_name="Исполнитель")
-    creator = models.ForeignKey(User, on_delete=models.CASCADE,
-                                related_name='created_tasks', verbose_name="Создатель")
+    assignee = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='assigned_tasks',
+        verbose_name="Исполнитель"
+    )
+
+    creator = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='created_tasks',
+        verbose_name="Создатель"
+    )
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    order = models.IntegerField(default=0)  # Для будущей сортировки
+    order = models.IntegerField(default=0)
 
     image = models.ImageField(
         upload_to='tasks/images/',

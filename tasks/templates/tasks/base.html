@@ -1,0 +1,30 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'tasks/css/base.css' %}">
+    {% block tasks_extra_css %}{% endblock %}
+{% endblock %}
+
+{% block content %}
+    <div class="tasks-container">
+        <div class="tasks-navigation">
+            <a href="{% url 'tasks:task_list' %}"
+               class="tasks-navigation-item {% if active_section == 'tasks' %}active{% endif %}">
+                Задачи
+            </a>
+
+            {% comment %}<a href="{% url 'tasks:task_deadlines' %}"
+               class="tasks-navigation-item {% if active_section == 'deadlines' %}active{% endif %}">
+                Сроки
+            </a>{% endcomment %}
+
+            <a href="{% url 'tasks:project_list' %}"
+               class="tasks-navigation-item {% if active_section == 'projects' %}active{% endif %}">
+                Проекты
+            </a>
+        </div>
+
+        {% block tasks_content %}{% endblock %}
+    </div>
+{% endblock %}

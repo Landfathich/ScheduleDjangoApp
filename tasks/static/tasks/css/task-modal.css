@@ -11,6 +11,10 @@
     backdrop-filter: blur(2px);
 }
 
+.modal.show {
+    display: block;
+}
+
 .modal-content {
     background-color: var(--header-bg);
     margin: 5% auto;
@@ -18,8 +22,11 @@
     border: 1px solid var(--border-color);
     border-radius: 12px;
     width: 500px;
+    max-height: 80vh;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
     overflow: hidden;
+    display: flex;
+    flex-direction: column;
 }
 
 .modal-header {
@@ -59,6 +66,7 @@
     background: var(--header-bg);
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     color: var(--text-primary);
+    overflow-y: auto;
 }
 
 .modal-actions {
@@ -200,7 +208,7 @@ label {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
-#imageViewModal {
+#imageViewerModal {
     display: none;
     position: fixed;
     top: 0;
@@ -211,7 +219,7 @@ label {
     z-index: 10001;
 }
 
-#imageViewModal .modal-content {
+#imageViewerModal .modal-content {
     background: transparent;
     border: none;
     box-shadow: none;
@@ -226,14 +234,14 @@ label {
     height: auto;
 }
 
-#fullSizeImage {
+#fullImage {
     max-width: 90vw;
     max-height: 90vh;
     display: block;
     border-radius: 8px;
 }
 
-#closeImageView {
+.close-image-viewer {
     color: white;
     font-size: 24px;
     position: fixed;
@@ -253,7 +261,7 @@ label {
     transition: all 0.2s;
 }
 
-#closeImageView:hover {
+.close-image-viewer:hover {
     background: rgba(255, 255, 255, 0.25);
 }
 
@@ -305,12 +313,12 @@ label {
         min-height: 100px;
     }
 
-    #imageViewModal .modal-content {
+    #imageViewerModal .modal-content {
         max-width: 98vw;
         max-height: 98vh;
     }
 
-    #fullSizeImage {
+    #fullImage {
         max-width: 98vw;
         max-height: 98vh;
     }

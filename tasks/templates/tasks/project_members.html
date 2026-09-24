@@ -1,15 +1,14 @@
-{% extends 'core/base.html' %}
+{% extends 'tasks/base.html' %}
 {% load static %}
 
 {% block title %}Участники проекта | Kodama{% endblock %}
 
 {% block extra_css %}
-    <link rel="stylesheet" href="{% static 'tasks/css/base.css' %}">
     <!-- Временно подключим Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 {% endblock %}
 
-{% block content %}
+{% block tasks_content %}
     <div class="container mt-4">
         <h2>Участники проекта: {{ project.name }}</h2>
 

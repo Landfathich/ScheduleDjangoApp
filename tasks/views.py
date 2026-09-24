@@ -12,6 +12,39 @@ from .models import Task, Project, ProjectColumn, ProjectMember
 
 
 @staff_member_required
+def task_list(request):
+    task_filter = request.GET.get('filter', 'all')
+
+    base_tasks = Task.objects.select_related(
+        'creator',
+        'assignee',
+        'project'
+    )
+
+    if task_filter == 'assigned':
+        tasks = base_tasks.filter(assignee=request.user)
+    elif task_filter == 'created':
+        tasks = base_tasks.filter(creator=request.user)
+    else:
+        tasks = base_tasks.filter(
+            models.Q(assignee=request.user) |
+            models.Q(creator=request.user)
+        ).distinct()
+
+    context = {
+        'tasks': tasks,
+        'current_filter': task_filter,
+        'active_section': 'tasks',
+        'users': User.objects.filter(is_active=True),
+        'user_projects': Project.objects.filter(
+            members=request.user
+        ),
+    }
+
+    return render(request, 'tasks/task_list.html', context)
+
+
+@staff_member_required
 def kanban_board(request):
     project_id = request.GET.get('project')
 
@@ -77,73 +110,105 @@ def update_task_status(request):
 @staff_member_required
 @csrf_exempt
 def create_task(request):
-    """Создание задачи через AJAX"""
     if request.method == 'POST':
         form = TaskForm(request.POST, request.FILES)
+
         if form.is_valid():
             task = form.save(commit=False)
             task.creator = request.user
 
-            # Привязываем к проекту
-            project_id = request.POST.get('project')
-            if project_id:
-                task.project = get_object_or_404(Project, id=project_id)
-
-                # Привязываем к первой колонке проекта
+            if task.project:
                 first_column = task.project.columns.order_by('order').first()
+
                 if first_column:
                     task.column = first_column
 
             task.save()
+
             return JsonResponse({'success': True})
-        return JsonResponse({'success': False, 'errors': form.errors})
-    return JsonResponse({'success': False, 'error': 'Invalid method'})
+
+        return JsonResponse({
+            'success': False,
+            'errors': form.errors
+        })
+
+    return JsonResponse({
+        'success': False,
+        'error': 'Invalid method'
+    })
 
 
 @staff_member_required
 @csrf_exempt
 def edit_task(request, task_id):
-    """Редактирование задачи через AJAX"""
     task = get_object_or_404(Task, id=task_id)
 
-    # Проверяем, что пользователь — участник проекта
-    if not task.project.members.filter(id=request.user.id).exists():
-        return JsonResponse({'success': False, 'error': 'Нет доступа к проекту'})
+    if task.project and not task.project.members.filter(
+            id=request.user.id
+    ).exists():
+        return JsonResponse({
+            'success': False,
+            'error': 'Нет доступа к проекту'
+        })
 
     if request.method == 'POST':
-        form = TaskForm(request.POST, request.FILES, instance=task)
+        form = TaskForm(
+            request.POST,
+            request.FILES,
+            instance=task
+        )
+
         if form.is_valid():
             form.save()
             return JsonResponse({'success': True})
-        return JsonResponse({'success': False, 'errors': form.errors})
-    return JsonResponse({'success': False, 'error': 'Invalid method'})
+
+        return JsonResponse({
+            'success': False,
+            'errors': form.errors
+        })
+
+    return JsonResponse({
+        'success': False,
+        'error': 'Invalid method'
+    })
 
 
 @staff_member_required
 @csrf_exempt
 def delete_task(request, task_id):
-    """Удаление задачи через AJAX"""
     task = get_object_or_404(Task, id=task_id)
 
-    # Проверяем, что пользователь — участник проекта
-    if not task.project.members.filter(id=request.user.id).exists():
-        return JsonResponse({'success': False, 'error': 'Нет доступа к проекту'})
+    if task.project and not task.project.members.filter(
+            id=request.user.id
+    ).exists():
+        return JsonResponse({
+            'success': False,
+            'error': 'Нет доступа к проекту'
+        })
 
     if request.method == 'POST':
         task.delete()
         return JsonResponse({'success': True})
-    return JsonResponse({'success': False, 'error': 'Invalid method'})
+
+    return JsonResponse({
+        'success': False,
+        'error': 'Invalid method'
+    })
 
 
 @staff_member_required
 def get_task_data(request, task_id):
-    """Получение данных задачи для модального окна"""
     task = get_object_or_404(Task, id=task_id)
 
     return JsonResponse({
         'title': task.title,
         'description': task.description,
         'assignee': task.assignee.id if task.assignee else None,
+        'project': task.project.id if task.project else None,
+        'project_name': task.project.name if task.project else None,
+        'column_name': task.column.name if task.column else None,
+        'due_date': task.due_date.strftime('%Y-%m-%dT%H:%M') if task.due_date else '',
+        'priority': task.priority,
         'image_url': task.image.url if task.image else None
     })
 
@@ -151,7 +216,7 @@ def get_task_data(request, task_id):
 @staff_member_required
 def project_list(request):
     projects = Project.objects.filter(members=request.user)
-    return render(request, 'tasks/project_list.html', {'projects': projects})
+    return render(request, 'tasks/project_list.html', {'projects': projects, 'active_section': 'projects', })
 
 
 @staff_member_required

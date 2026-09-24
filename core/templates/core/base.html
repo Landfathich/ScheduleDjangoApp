@@ -86,8 +86,8 @@
                     </span>
                     <span class="sidebar-text">Аналитика</span>
                 </a>
-                <a href="{% url 'tasks:kanban_board' %}"
-                   class="sidebar-item {% if request.resolver_match.view_name == 'tasks:kanban_board' %}active{% endif %}">
+                <a href="{% url 'tasks:task_list' %}"
+                   class="sidebar-item {% if request.resolver_match.view_name == 'tasks:task_list' %}active{% endif %}">
                     <span class="sidebar-icon">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                              stroke-width="2"

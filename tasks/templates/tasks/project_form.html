@@ -1,14 +1,13 @@
-{% extends 'core/base.html' %}
+{% extends 'tasks/base.html' %}
 {% load static %}
 
 {% block title %}{% if project %}Редактировать проект{% else %}Создать проект{% endif %} | Kodama{% endblock %}
 
 {% block extra_css %}
-    <link rel="stylesheet" href="{% static 'tasks/css/base.css' %}">
     <link rel="stylesheet" href="{% static 'tasks/css/project-form.css' %}">
 {% endblock %}
 
-{% block content %}
+{% block tasks_content %}
     <div class="kanban-container">
         <div class="kanban-header">
             <h1>{% if project %}Редактировать проект{% else %}Создать проект{% endif %}</h1>

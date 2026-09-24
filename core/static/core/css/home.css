@@ -5,6 +5,10 @@
 @import "modal/modal.css";
 @import "modal/balance-alert-modal.css";
 
+main {
+    padding: 0;
+}
+
 #custom-context-menu {
     position: fixed;
     color: var(--text-primary);

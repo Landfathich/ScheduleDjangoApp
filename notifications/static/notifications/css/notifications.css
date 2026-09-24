@@ -1,13 +1,3 @@
-main {
-    overflow-y: auto;
-}
-
-.notifications-page {
-    margin: 0 auto;
-    padding: 30px;
-    color: var(--text-primary);
-}
-
 .notifications-page h2 {
     font-size: 1.8rem;
     font-weight: 600;

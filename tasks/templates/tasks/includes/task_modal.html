@@ -1,0 +1,161 @@
+<div id="taskModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 id="modalTitle">Создать задачу</h3>
+            <span class="close">&times;</span>
+        </div>
+
+        <div class="modal-body">
+            <form id="taskForm" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                <div class="form-group">
+                    <label class="form-label">Название:</label>
+                    <input
+                            type="text"
+                            name="title"
+                            class="form-input"
+                            required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Описание:</label>
+                    <textarea
+                            name="description"
+                            class="form-textarea"
+                            rows="4"
+                    ></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Исполнитель:</label>
+                    <select name="assignee" class="form-select">
+                        <option value="">Не назначен</option>
+
+                        {% for user in users %}
+                            <option value="{{ user.id }}">
+                                {{ user.get_full_name|default:user.username }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Проект:</label>
+                    <select name="project" id="projectId" class="form-select">
+                        <option value="">Без проекта</option>
+
+                        {% for project in user_projects %}
+                            <option value="{{ project.id }}">
+                                {{ project.name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Срок выполнения:</label>
+                    <input
+                            type="datetime-local"
+                            name="due_date"
+                            class="form-input"
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Приоритет:</label>
+                    <select name="priority" class="form-select">
+                        <option value="low">Низкий</option>
+                        <option value="normal" selected>Обычный</option>
+                        <option value="high">Высокий</option>
+                        <option value="urgent">Срочный</option>
+                    </select>
+                </div>
+
+                <div id="taskContext" class="task-context" style="display: none;">
+                    <div id="taskProjectContext"></div>
+                    <div id="taskColumnContext"></div>
+                </div>
+
+                <div id="currentImage" style="display: none;">
+                    <label class="form-label">Текущее изображение:</label>
+
+                    <div
+                            id="imagePreview"
+                            style="position: relative; display: inline-block;"
+                    ></div>
+
+                    <div style="margin-top: 5px;">
+                        <label
+                                style="font-size: 11px; display: inline-flex; align-items: center; gap: 5px;"
+                        >
+                            <input
+                                    type="checkbox"
+                                    name="delete_image"
+                                    id="deleteImageCheckbox"
+                                    style="margin: 0;"
+                            >
+                            Удалить изображение
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Изображение:</label>
+                    <input
+                            type="file"
+                            name="image"
+                            class="form-input"
+                            accept="image/*"
+                    >
+                </div>
+
+                <input
+                        type="hidden"
+                        name="task_id"
+                        id="taskId"
+                >
+
+                <input
+                        type="hidden"
+                        id="currentUserId"
+                        value="{{ user.id }}"
+                >
+            </form>
+        </div>
+
+        <div class="modal-actions">
+            <button
+                    type="button"
+                    id="saveTaskBtn"
+                    class="btn btn-success"
+            >
+                Сохранить
+            </button>
+
+            <button
+                    type="button"
+                    id="deleteTaskBtn"
+                    class="btn btn-danger"
+                    style="display: none;"
+            >
+                Удалить
+            </button>
+
+            <button
+                    type="button"
+                    class="btn btn-cancel close-modal"
+            >
+                Отмена
+            </button>
+        </div>
+    </div>
+</div>
+
+<div id="imageViewerModal" class="modal">
+    <div class="modal-content image-viewer-content">
+        <span class="close-image-viewer">&times;</span>
+        <img id="fullImage" src="" alt="">
+    </div>
+</div>

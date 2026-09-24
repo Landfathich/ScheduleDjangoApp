@@ -4,11 +4,22 @@ from .models import Task, Project
 
 
 class TaskForm(forms.ModelForm):
-    delete_image = forms.BooleanField(required=False, label="Удалить изображение")
+    delete_image = forms.BooleanField(
+        required=False,
+        label="Удалить изображение"
+    )
 
     class Meta:
         model = Task
-        fields = ['title', 'description', 'assignee', 'image', 'project']
+        fields = [
+            'title',
+            'description',
+            'assignee',
+            'project',
+            'due_date',
+            'priority',
+            'image',
+        ]
         widgets = {
             'title': forms.TextInput(attrs={
                 'class': 'form-input',
@@ -22,20 +33,28 @@ class TaskForm(forms.ModelForm):
             'assignee': forms.Select(attrs={
                 'class': 'form-select'
             }),
+            'project': forms.Select(attrs={
+                'class': 'form-select'
+            }),
+            'due_date': forms.DateTimeInput(attrs={
+                'class': 'form-input',
+                'type': 'datetime-local'
+            }),
+            'priority': forms.Select(attrs={
+                'class': 'form-select'
+            }),
             'image': forms.ClearableFileInput(attrs={
                 'class': 'form-input'
             }),
-            'project': forms.HiddenInput()
         }
 
     def save(self, commit=True):
         task = super().save(commit=False)
 
-        # Если отмечен чекбокс удаления
         if self.cleaned_data.get('delete_image'):
             if task.image:
-                task.image.delete()  # удаляем файл
-                task.image = None  # очищаем поле
+                task.image.delete()
+                task.image = None
 
         if commit:
             task.save()
@@ -44,8 +63,14 @@ class TaskForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+
         self.fields['assignee'].required = False
         self.fields['assignee'].empty_label = "Не назначен"
+
+        self.fields['project'].required = False
+        self.fields['project'].empty_label = "Без проекта"
+
+        self.fields['priority'].required = False
 
 
 class ProjectForm(forms.ModelForm):

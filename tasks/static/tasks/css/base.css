@@ -175,3 +175,41 @@
     background: var(--glass-bg);
     border-color: var(--primary-color);
 }
+
+.tasks-container {
+    width: 100%;
+}
+
+.tasks-navigation {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-bottom: 20px;
+    padding: 4px;
+    background: var(--glass-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    width: fit-content;
+}
+
+.tasks-navigation-item {
+    display: block;
+    padding: 8px 14px;
+    border-radius: 7px;
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 1;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+
+.tasks-navigation-item:hover {
+    background: var(--gray-mix);
+    color: var(--text-primary);
+}
+
+.tasks-navigation-item.active {
+    background: var(--primary-color);
+    color: white;
+}

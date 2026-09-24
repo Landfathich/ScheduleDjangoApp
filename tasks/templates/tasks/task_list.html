@@ -1,0 +1,98 @@
+{% extends 'tasks/base.html' %}
+{% load static %}
+
+{% block title %}Задачи | Kodama{% endblock %}
+
+{% block tasks_extra_css %}
+    <link rel="stylesheet" href="{% static 'tasks/css/task-list.css' %}">
+    <link rel="stylesheet" href="{% static 'tasks/css/task-modal.css' %}">
+{% endblock %}
+
+{% block tasks_content %}
+    <div class="tasks-page">
+        <div class="tasks-header">
+            <div>
+                <h1>Задачи</h1>
+                <p>Задачи, связанные с вами</p>
+            </div>
+
+            <button id="createTaskBtn" class="btn">
+                + Создать задачу
+            </button>
+        </div>
+
+        <div class="tasks-filters">
+            <a href="?filter=all"
+               class="tasks-filter {% if current_filter == 'all' %}active{% endif %}">
+                Все мои
+            </a>
+
+            <a href="?filter=assigned"
+               class="tasks-filter {% if current_filter == 'assigned' %}active{% endif %}">
+                Мне поставили
+            </a>
+
+            <a href="?filter=created"
+               class="tasks-filter {% if current_filter == 'created' %}active{% endif %}">
+                Я поставил
+            </a>
+        </div>
+
+        <div class="tasks-list">
+            {% for task in tasks %}
+                <div class="task-row" data-task-id="{{ task.id }}">
+                    <div class="task-main">
+                        <div class="task-title">
+                            {{ task.title }}
+                        </div>
+
+                        {% if task.description %}
+                            <div class="task-description">
+                                {{ task.description|truncatewords:20 }}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="task-project">
+                        {% if task.project %}
+                            {{ task.project.name }}
+                        {% else %}
+                            Без проекта
+                        {% endif %}
+                    </div>
+
+                    <div class="task-assignee">
+                        {% if task.assignee %}
+                            {{ task.assignee.get_full_name|default:task.assignee.username }}
+                        {% else %}
+                            Не назначен
+                        {% endif %}
+                    </div>
+
+                    <div class="task-priority priority-{{ task.priority }}">
+                        {{ task.get_priority_display }}
+                    </div>
+
+                    <div class="task-due-date">
+                        {% if task.due_date %}
+                            {{ task.due_date|date:"d.m.Y H:i" }}
+                        {% else %}
+                            Без срока
+                        {% endif %}
+                    </div>
+                </div>
+            {% empty %}
+                <div class="tasks-empty">
+                    <h3>Задач пока нет</h3>
+                    <p>Здесь появятся задачи, которые вы поставили или получили.</p>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% include 'tasks/includes/task_modal.html' %}
+{% endblock %}
+
+{% block scripts %}
+    <script src="{% static 'tasks/js/task-modal.js' %}"></script>
+    <script src="{% static 'tasks/js/task-list.js' %}"></script>
+{% endblock %}

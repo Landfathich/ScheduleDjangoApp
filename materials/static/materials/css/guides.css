@@ -1,9 +1,3 @@
-main {
-    padding: 2rem;
-    display: block;
-    color: var(--text-primary);
-}
-
 .guides-container {
     max-width: 800px;
     margin: 0 auto;
