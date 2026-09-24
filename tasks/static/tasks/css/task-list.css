@@ -1,5 +1,6 @@
 .tasks-page {
     width: 100%;
+    padding-bottom: 15px;
 }
 
 .tasks-header {
@@ -15,7 +16,7 @@
 
 .tasks-header p {
     margin: 6px 0 0;
-    color: #777;
+    color: var(--text-secondary);
 }
 
 .tasks-filters {
@@ -28,17 +29,17 @@
     padding: 8px 14px;
     border-radius: 6px;
     text-decoration: none;
-    color: #555;
-    background: #f1f1f1;
+    color: var(--text-secondary);
+    background: var(--gray-mix);
 }
 
 .tasks-filter:hover {
-    background: #e7e7e7;
+    background: var(--header-bg);
 }
 
 .tasks-filter.active {
-    background: #333;
-    color: #fff;
+    background: var(--primary-color);
+    color: white;
 }
 
 .tasks-list {
@@ -53,31 +54,32 @@
     align-items: center;
     gap: 20px;
     padding: 16px 20px;
-    background: #fff;
-    border: 1px solid #e5e5e5;
+    background: var(--glass-bg);
+    border: 1px solid var(--border-color);
     border-radius: 8px;
     cursor: pointer;
 }
 
 .task-row:hover {
-    border-color: #ccc;
+    border-color: var(--gray-mix);
 }
 
 .task-title {
     font-weight: 600;
+    color: var(--text-primary);
 }
 
 .task-description {
     margin-top: 5px;
     font-size: 13px;
-    color: #777;
+    color: var(--text-secondary);
 }
 
 .task-project,
 .task-assignee,
 .task-due-date {
     font-size: 14px;
-    color: #555;
+    color: var(--text-secondary);
 }
 
 .task-priority {
@@ -86,23 +88,23 @@
 }
 
 .priority-low {
-    color: #777;
+    color: var(--text-secondary);
 }
 
 .priority-normal {
-    color: #555;
+    color: var(--text-primary);
 }
 
 .priority-high {
-    color: #d68a00;
+    color: var(--warning-color);
 }
 
 .priority-urgent {
-    color: #d33;
+    color: var(--danger-color);
 }
 
 .tasks-empty {
     padding: 60px 20px;
     text-align: center;
-    color: #777;
+    color: var(--text-secondary);
 }
