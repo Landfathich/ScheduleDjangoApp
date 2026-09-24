@@ -1,8 +1,9 @@
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.db import models
-from django.http import JsonResponse  # ← ДОБАВИТЬ
+from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
@@ -13,7 +14,7 @@ from .forms import TaskForm, ProjectForm
 from .models import Task, Project, ProjectColumn, ProjectMember
 
 
-@staff_member_required
+@login_required
 def task_list(request):
     task_filter = request.GET.get('filter', 'all')
 
@@ -46,7 +47,7 @@ def task_list(request):
     return render(request, 'tasks/task_list.html', context)
 
 
-@staff_member_required
+@login_required
 def task_deadlines(request):
     now = timezone.localtime()
     today = now.date()
@@ -164,7 +165,7 @@ def kanban_board(request):
     return render(request, 'tasks/kanban.html', context)
 
 
-@staff_member_required
+@login_required
 @require_http_methods(["POST"])
 @csrf_exempt
 def update_task_status(request):
@@ -185,9 +186,11 @@ def update_task_status(request):
     except Exception as e:
         return JsonResponse({'success': False, 'error': str(e)})
 
+
 from django.urls import reverse
 
-@staff_member_required
+
+@login_required
 @csrf_exempt
 def create_task(request):
     if request.method == 'POST':
@@ -249,10 +252,16 @@ def create_task(request):
     })
 
 
-@staff_member_required
+@login_required
 @csrf_exempt
 def edit_task(request, task_id):
     task = get_object_or_404(Task, id=task_id)
+
+    if task.creator != request.user and task.assignee != request.user:
+        return JsonResponse({
+            'success': False,
+            'error': 'Нет доступа к задаче'
+        })
 
     if task.project and not task.project.members.filter(
             id=request.user.id
@@ -284,7 +293,7 @@ def edit_task(request, task_id):
     })
 
 
-@staff_member_required
+@login_required
 @csrf_exempt
 def delete_task(request, task_id):
     task = get_object_or_404(Task, id=task_id)
@@ -307,9 +316,15 @@ def delete_task(request, task_id):
     })
 
 
-@staff_member_required
+@login_required
 def get_task_data(request, task_id):
-    task = get_object_or_404(Task, id=task_id)
+    task = get_object_or_404(
+        Task.objects.filter(
+            models.Q(assignee=request.user) |
+            models.Q(creator=request.user)
+        ).distinct(),
+        id=task_id
+    )
 
     return JsonResponse({
         'title': task.title,

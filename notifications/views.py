@@ -1,4 +1,4 @@
-from django.contrib.admin.views.decorators import staff_member_required
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from rest_framework import viewsets
 from rest_framework.decorators import action
@@ -35,7 +35,7 @@ class NotificationViewSet(viewsets.ReadOnlyModelViewSet):
         return Response({'count': count})
 
 
-@staff_member_required
+@login_required
 def notifications_page(request):
     telegram_account, _ = TelegramAccount.objects.get_or_create(
         user=request.user

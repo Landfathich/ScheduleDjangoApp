@@ -86,8 +86,9 @@
                     </span>
                     <span class="sidebar-text">Аналитика</span>
                 </a>
-                <a href="{% url 'tasks:task_list' %}"
-                   class="sidebar-item {% if request.resolver_match.view_name == 'tasks:task_list' %}active{% endif %}">
+            {% endif %}
+            <a href="{% url 'tasks:task_list' %}"
+               class="sidebar-item {% if request.resolver_match.view_name == 'tasks:task_list' %}active{% endif %}">
                     <span class="sidebar-icon">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                              stroke-width="2"
@@ -98,8 +99,9 @@
                                 height="7"/><rect
                                 x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
                     </span>
-                    <span class="sidebar-text">Задачи</span>
-                </a>
+                <span class="sidebar-text">Задачи</span>
+            </a>
+            {% if user.is_staff %}
                 <a href="{% url 'client-list' %}"
                    class="sidebar-item {% if request.resolver_match.url_name == 'client-list' %}active{% endif %}">
                     <span class="sidebar-icon">
@@ -168,13 +170,11 @@
                     <span class="header-btn-label">Админ</span>
                 </a>
             {% endif %}
-            {% if user.is_staff %}
-                <a href="{% url 'notifications_page' %}" id="notification-bell" class="header-btn notification-btn"
-                   title="Уведомления">
-                    <span id="web-notification-badge" class="web-notification-badge"></span>
-                    <span class="header-btn-label">Уведомления</span>
-                </a>
-            {% endif %}
+            <a href="{% url 'notifications_page' %}" id="notification-bell" class="header-btn notification-btn"
+               title="Уведомления">
+                <span id="web-notification-badge" class="web-notification-badge"></span>
+                <span class="header-btn-label">Уведомления</span>
+            </a>
         </div>
     </div>
 </header>
