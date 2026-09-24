@@ -1,0 +1,99 @@
+.deadlines-page {
+    width: 100%;
+}
+
+.deadlines-board {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(240px, 1fr));
+    gap: 12px;
+    width: 100%;
+    overflow-x: auto;
+    padding-bottom: 10px;
+}
+
+.deadline-column {
+    min-width: 240px;
+    background: var(--glass-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.deadline-column-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.deadline-column-header h2 {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.deadline-column-header span {
+    min-width: 20px;
+    padding: 2px 7px;
+    border-radius: 10px;
+    background: var(--gray-mix);
+    color: var(--text-secondary);
+    font-size: 12px;
+    text-align: center;
+}
+
+.deadline-column-body {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 10px;
+    min-height: 100px;
+}
+
+.deadline-task {
+    padding: 12px;
+    background: var(--header-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.deadline-task:hover {
+    border-color: var(--primary-color);
+}
+
+.deadline-task .task-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.deadline-task .task-description {
+    margin-top: 6px;
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+.deadline-task-meta {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    margin-top: 10px;
+    font-size: 11px;
+    color: var(--text-secondary);
+}
+
+.deadline-task .task-due-date {
+    margin-top: 8px;
+    font-size: 11px;
+    color: var(--text-secondary);
+}
+
+.deadline-empty {
+    padding: 20px 10px;
+    text-align: center;
+    color: var(--text-secondary);
+    font-size: 12px;
+}

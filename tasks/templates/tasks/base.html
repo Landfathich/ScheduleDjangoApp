@@ -14,10 +14,10 @@
                 Задачи
             </a>
 
-            {% comment %}<a href="{% url 'tasks:task_deadlines' %}"
+            <a href="{% url 'tasks:task_deadlines' %}"
                class="tasks-navigation-item {% if active_section == 'deadlines' %}active{% endif %}">
                 Сроки
-            </a>{% endcomment %}
+            </a>
 
             <a href="{% url 'tasks:project_list' %}"
                class="tasks-navigation-item {% if active_section == 'projects' %}active{% endif %}">

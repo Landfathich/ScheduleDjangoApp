@@ -1,0 +1,42 @@
+{% extends 'tasks/base.html' %}
+{% load static %}
+
+{% block title %}Сроки | Kodama{% endblock %}
+
+{% block tasks_extra_css %}
+    <link rel="stylesheet" href="{% static 'tasks/css/task-list.css' %}">
+    <link rel="stylesheet" href="{% static 'tasks/css/deadlines.css' %}">
+    <link rel="stylesheet" href="{% static 'tasks/css/task-modal.css' %}">
+{% endblock %}
+
+{% block tasks_content %}
+    <div class="deadlines-page">
+        <div class="tasks-header">
+            <div>
+                <h1>Сроки</h1>
+                <p>Задачи, сгруппированные по срокам</p>
+            </div>
+
+            <button id="createTaskBtn" class="btn">
+                + Создать задачу
+            </button>
+        </div>
+
+        <div class="deadlines-board">
+            {% include 'tasks/includes/deadline_group.html' with title='Просрочены' tasks=overdue %}
+            {% include 'tasks/includes/deadline_group.html' with title='На сегодня' tasks=today_tasks %}
+            {% include 'tasks/includes/deadline_group.html' with title='На этой неделе' tasks=this_week %}
+            {% include 'tasks/includes/deadline_group.html' with title='На следующей неделе' tasks=next_week %}
+            {% include 'tasks/includes/deadline_group.html' with title='Без срока' tasks=no_due %}
+            {% include 'tasks/includes/deadline_group.html' with title='Больше двух недель' tasks=more_than_two_weeks %}
+            {% include 'tasks/includes/deadline_group.html' with title='Завершены' tasks=completed %}
+        </div>
+    </div>
+
+    {% include 'tasks/includes/task_modal.html' %}
+{% endblock %}
+
+{% block scripts %}
+    <script src="{% static 'tasks/js/task-modal.js' %}"></script>
+    <script src="{% static 'tasks/js/task-list.js' %}"></script>
+{% endblock %}

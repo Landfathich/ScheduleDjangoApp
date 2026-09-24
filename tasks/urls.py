@@ -6,9 +6,12 @@ app_name = 'tasks'
 
 urlpatterns = [
     path('', views.task_list, name='task_list'),
+
+    path('deadlines/', views.task_deadlines, name='task_deadlines'),
+    path('projects/', views.project_list, name='project_list'),
+
     path('kanban/', views.kanban_board, name='kanban_board'),
 
-    path('projects/', views.project_list, name='project_list'),
     path('projects/create/', views.create_project, name='create_project'),
     path('projects/edit/<int:project_id>/', views.edit_project, name='edit_project'),
     path('projects/delete/<int:project_id>/', views.delete_project, name='delete_project'),

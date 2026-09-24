@@ -6,7 +6,7 @@ from django.http import JsonResponse  # ← ДОБАВИТЬ
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
-
+from django.utils import timezone
 from .forms import TaskForm, ProjectForm
 from .models import Task, Project, ProjectColumn, ProjectMember
 
@@ -42,6 +42,83 @@ def task_list(request):
     }
 
     return render(request, 'tasks/task_list.html', context)
+
+
+@staff_member_required
+def task_deadlines(request):
+    now = timezone.localtime()
+    today = now.date()
+
+    base_tasks = Task.objects.select_related(
+        'creator',
+        'assignee',
+        'project'
+    ).filter(
+        models.Q(assignee=request.user) |
+        models.Q(creator=request.user)
+    ).distinct()
+
+    overdue = base_tasks.filter(
+        due_date__lt=now
+    ).exclude(status='done')
+
+    today_tasks = base_tasks.filter(
+        due_date__date=today,
+        due_date__gte=now
+    ).exclude(status='done')
+
+    week_start = today - timezone.timedelta(days=today.weekday())
+    week_end = week_start + timezone.timedelta(days=6)
+
+    this_week = base_tasks.filter(
+        due_date__date__gte=week_start,
+        due_date__date__lte=week_end
+    ).exclude(status='done').exclude(
+        id__in=overdue.values('id')
+    ).exclude(
+        id__in=today_tasks.values('id')
+    )
+
+    next_week_start = week_start + timezone.timedelta(days=7)
+    next_week_end = next_week_start + timezone.timedelta(days=6)
+
+    next_week = base_tasks.filter(
+        due_date__date__gte=next_week_start,
+        due_date__date__lte=next_week_end
+    ).exclude(status='done')
+
+    no_due = base_tasks.filter(
+        due_date__isnull=True
+    ).exclude(status='done')
+
+    more_than_two_weeks = base_tasks.filter(
+        due_date__gt=now + timezone.timedelta(days=14)
+    ).exclude(status='done')
+
+    completed = base_tasks.filter(
+        status='done'
+    )
+
+    context = {
+        'active_section': 'deadlines',
+        'overdue': overdue,
+        'today_tasks': today_tasks,
+        'this_week': this_week,
+        'next_week': next_week,
+        'no_due': no_due,
+        'more_than_two_weeks': more_than_two_weeks,
+        'completed': completed,
+        'users': User.objects.filter(is_active=True),
+        'user_projects': Project.objects.filter(
+            members=request.user
+        ),
+    }
+
+    return render(
+        request,
+        'tasks/deadlines.html',
+        context
+    )
 
 
 @staff_member_required
