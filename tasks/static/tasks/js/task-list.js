@@ -8,4 +8,10 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     });
+
+    const taskId = new URLSearchParams(window.location.search).get('task');
+
+    if (taskId && window.taskModal) {
+        window.taskModal.openModal(taskId);
+    }
 });

@@ -4,9 +4,11 @@ from django.contrib.auth.models import User
 from django.db import models
 from django.http import JsonResponse  # ← ДОБАВИТЬ
 from django.shortcuts import render, get_object_or_404, redirect
+from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
-from django.utils import timezone
+
+from notifications.services import create_notification
 from .forms import TaskForm, ProjectForm
 from .models import Task, Project, ProjectColumn, ProjectMember
 
@@ -183,6 +185,7 @@ def update_task_status(request):
     except Exception as e:
         return JsonResponse({'success': False, 'error': str(e)})
 
+from django.urls import reverse
 
 @staff_member_required
 @csrf_exempt
@@ -201,6 +204,37 @@ def create_task(request):
                     task.column = first_column
 
             task.save()
+
+            if task.assignee:
+                task_url = request.build_absolute_uri(
+                    reverse('tasks:task_list')
+                ) + f'?task={task.id}'
+
+                description = task.description or 'Нет описания'
+                project = task.project.name if task.project else 'Без проекта'
+                due_date = (
+                    timezone.localtime(task.due_date).strftime('%d.%m.%Y %H:%M')
+                    if task.due_date
+                    else 'Без срока'
+                )
+                creator = (
+                        task.creator.get_full_name()
+                        or task.creator.username
+                )
+
+                create_notification(
+                    user=task.assignee,
+                    title='Вам поставили новую задачу',
+                    body=(
+                        f'Название: {task.title}\n'
+                        f'Поставил: {creator}\n'
+                        f'Описание: {description}\n'
+                        f'Проект: {project}\n'
+                        f'Срок: {due_date}\n'
+                        f'Приоритет: {task.get_priority_display()}\n\n'
+                        f'Открыть задачу:\n{task_url}'
+                    )
+                )
 
             return JsonResponse({'success': True})
 
