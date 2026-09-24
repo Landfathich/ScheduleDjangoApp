@@ -4,23 +4,51 @@
 {% block title %}Уведомления{% endblock %}
 
 {% block extra_css %}
-    <link rel="stylesheet" href="{% static "notifications/css/notifications.css" %}">
+    <link rel="stylesheet" href="{% static 'notifications/css/notifications.css' %}">
 {% endblock %}
 
 {% block content %}
     <div class="notifications-page">
-        <h2>Уведомления</h2>
-        <button id="mark-all-read" class="btn">Отметить все прочитанными</button>
-        {% if telegram_account.is_active and telegram_account.chat_id %}
-            <span class="telegram-status connected">Telegram подключён</span>
-        {% else %}
-            <a href="https://t.me/kodama_school_bot?start={{ telegram_account.link_token }}"
-               class="btn">
-                Подключить Telegram
-            </a>
-        {% endif %}
+        <div class="notifications-header">
+            <div>
+                <h2>Уведомления</h2>
+                <p>Здесь появляются важные события, связанные с вами.</p>
+            </div>
+
+            <div class="notifications-actions">
+                <button id="mark-all-read" class="btn">
+                    Отметить все прочитанными
+                </button>
+
+
+                <div class="notifications-settings">
+                    {% if telegram_account.is_active and telegram_account.chat_id %}
+                        <span class="telegram-status connected">
+                    Telegram подключён
+                </span>
+                    {% else %}
+                        <a href="https://t.me/kodama_school_bot?start={{ telegram_account.link_token }}"
+                           class="btn">
+                            Подключить Telegram
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+
+        </div>
+
         <div id="notifications-list"></div>
     </div>
 
+    <div id="notification-modal" class="notification-modal">
+        <div class="notification-modal-content">
+            <button class="notification-modal-close" type="button">&times;</button>
+
+            <div id="notification-modal-content"></div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
     <script src="{% static 'notifications/js/notifications.js' %}"></script>
 {% endblock %}
