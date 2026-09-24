@@ -54,10 +54,13 @@ header {
 .header-btn {
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     gap: 6px;
     background: var(--glass-bg);
     color: var(--text-primary);
     padding: 6px 10px;
+    min-height: 32px;
+    box-sizing: border-box;
     border-radius: 6px;
     text-decoration: none;
     font-size: 12px;
@@ -66,31 +69,36 @@ header {
     transition: all 0.2s;
 }
 
+.header-btn svg {
+    width: 20px;
+    height: 20px;
+    flex: 0 0 20px;
+}
+
 .header-btn:hover {
     background: var(--header-bg);
     border-color: var(--primary-color);
 }
 
 .notification-btn {
-    justify-content: flex-start;
     position: relative;
+    justify-content: center;
 }
 
 .web-notification-badge {
-    min-width: 20px;
-    height: 20px;
-    padding: 0 5px;
+    position: absolute;
+    top: -3px;
+    right: -3px;
+    width: 9px;
+    height: 9px;
+    min-width: 0;
+    padding: 0;
+    border-radius: 50%;
+    background-color: var(--danger-color);
+    border: 2px solid var(--header-bg);
+    box-sizing: content-box;
     display: none;
-    align-items: center;
-    justify-content: center;
-    border-radius: 6px;
-    background: var(--primary-color);
-    color: white;
-    font-size: 11px;
-    font-weight: 600;
-    line-height: 20px;
-    text-align: center;
-    box-sizing: border-box;
+    pointer-events: none;
 }
 
 nav {

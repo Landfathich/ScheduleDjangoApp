@@ -19,29 +19,53 @@
         <div id="week-info">
             <div id="week-info-left">
                 <div class="button-wrapper">
-                    <button id="settings-button" title="Настройки" class="icon-button icon-rotate">
-                        <span>⚙️</span>
+                    <button id="settings-button" title="Настройки" class="icon-button">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                             stroke-width="2">
+                            <circle cx="12" cy="12" r="3"></circle>
+                            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09a1.65 1.65 0 0 0-1.51-1 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                        </svg>
                     </button>
                 </div>
+
                 {% if user.is_staff %}
                     <div class="button-wrapper">
-                        <button id="teachers-button" title="Преподаватели" class="icon-button icon-float">
-                            <span>‍👨‍🏫</span>
+                        <button id="teachers-button" title="Преподаватели" class="icon-button">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
+                                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="9" cy="8" r="3"/>
+                                <path d="M3 20v-1a6 6 0 0 1 12 0v1"/>
+                                <circle cx="17" cy="9" r="2.5"/>
+                                <path d="M16 15a5 5 0 0 1 5 5"/>
+                            </svg>
                         </button>
                     </div>
 
                     <div class="button-wrapper">
                         <button id="payments-button" title="Выплаты преподавателям"
-                                class="icon-button icon-float">
-                            <span>‍💰</span>
+                                class="icon-button">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
+                                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M4 7a2 2 0 0 1 2-2h13v14H6a2 2 0 0 1-2-2V7z"/>
+                                <path d="M4 8h15"/>
+                                <path d="M16 13h3"/>
+                                <circle cx="16" cy="13" r=".5" fill="currentColor"/>
+                            </svg>
                         </button>
                         <span id="payments-counter" class="notification-badge">0</span>
                     </div>
 
                     <div class="button-wrapper">
                         <button id="balance-alert-button" title="Требует оплаты уроков"
-                                class="icon-button icon-float">
-                            <span>🔔</span>
+                                class="icon-button">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
+                                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="9" cy="7" r="3"/>
+                                <path d="M3 21v-2a6 6 0 0 1 12 0v2"/>
+                                <path d="M18 3l4 7h-8l4-7z"/>
+                                <line x1="18" y1="6" x2="18" y2="8"/>
+                                <circle cx="18" cy="9.5" r=".5" fill="currentColor"/>
+                            </svg>
                         </button>
                         <span id="balance-alert-counter" class="notification-badge">0</span>
                     </div>

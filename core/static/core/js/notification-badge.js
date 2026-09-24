@@ -4,14 +4,17 @@ async function updateNotificationBadge() {
         const data = await response.json();
         const badge = document.getElementById('web-notification-badge');
 
+        if (!badge) {
+            return;
+        }
+
         if (data.count > 0) {
-            badge.textContent = data.count;
-            badge.style.display = 'flex';
+            badge.style.display = 'block';
         } else {
             badge.style.display = 'none';
         }
     } catch (e) {
-        console.error('Не удалось получить количество уведомлений:', e);
+        console.error('Не удалось проверить уведомления:', e);
     }
 }
 
