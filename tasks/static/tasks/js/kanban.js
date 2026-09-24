@@ -159,8 +159,9 @@ class SimpleKanban {
             });
         }
 
-        const closeButtons =
-            document.querySelectorAll('.close-column-modal');
+        const closeButtons = document.querySelectorAll(
+            '#closeColumnModal, #cancelColumnBtn'
+        );
 
         closeButtons.forEach((button) => {
             button.addEventListener('click', () => {
@@ -186,6 +187,24 @@ class SimpleKanban {
             });
         }
 
+        const moveColumnLeftButton =
+            document.getElementById('moveColumnLeftBtn');
+
+        if (moveColumnLeftButton) {
+            moveColumnLeftButton.addEventListener('click', () => {
+                this.moveColumn('left');
+            });
+        }
+
+        const moveColumnRightButton =
+            document.getElementById('moveColumnRightBtn');
+
+        if (moveColumnRightButton) {
+            moveColumnRightButton.addEventListener('click', () => {
+                this.moveColumn('right');
+            });
+        }
+
         const columnModal = document.getElementById('columnModal');
 
         if (columnModal) {
@@ -196,9 +215,9 @@ class SimpleKanban {
             });
         }
 
-        document.querySelectorAll('.edit-column').forEach((button) => {
+        document.querySelectorAll('.edit-column-btn').forEach((button) => {
             button.addEventListener('click', () => {
-                const columnId = button.dataset.columnId;
+                const columnId = button.closest('.kanban-column').dataset.columnId;
 
                 this.openColumnModal(columnId);
             });
@@ -213,6 +232,51 @@ class SimpleKanban {
         });
     }
 
+    async moveColumn(direction) {
+        const columnId =
+            document.getElementById('editColumnId').value;
+
+        if (!columnId) {
+            return;
+        }
+
+        const csrfToken = this.getCsrfToken();
+
+        try {
+            const response = await fetch(
+                '/tasks/move-column/',
+                {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': csrfToken,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        column_id: columnId,
+                        direction: direction
+                    })
+                }
+            );
+
+            const result = await response.json();
+
+            if (result.success) {
+                window.location.reload();
+                return;
+            }
+
+            console.error(
+                'Ошибка перемещения колонки:',
+                result.error
+            );
+        } catch (error) {
+            console.error(
+                'Ошибка запроса:',
+                error
+            );
+        }
+    }
+
     openCreateColumnModal() {
         const modal = document.getElementById('columnModal');
 
@@ -220,7 +284,7 @@ class SimpleKanban {
             return;
         }
 
-        document.getElementById('columnId').value = '';
+        document.getElementById('editColumnId').value = '';
         document.getElementById('columnName').value = '';
         document.getElementById('columnColor').value = '#cccccc';
 
@@ -242,7 +306,7 @@ class SimpleKanban {
 
         try {
             const response = await fetch(
-                `/tasks/projects/column/${columnId}/`
+                `/tasks/get-column-data/${columnId}/`
             );
 
             const data = await response.json();
@@ -251,7 +315,7 @@ class SimpleKanban {
                 return;
             }
 
-            document.getElementById('columnId').value =
+            document.getElementById('editColumnId').value =
                 columnId;
 
             document.getElementById('columnName').value =
@@ -285,7 +349,7 @@ class SimpleKanban {
 
     async saveColumn() {
         const columnId =
-            document.getElementById('columnId').value;
+            document.getElementById('editColumnId').value;
 
         const name =
             document.getElementById('columnName').value;
@@ -294,7 +358,7 @@ class SimpleKanban {
             document.getElementById('columnColor').value;
 
         const projectId =
-            document.getElementById('projectId').value;
+            document.getElementById('projectSelect').value;
 
         const csrfToken = this.getCsrfToken();
 
@@ -302,12 +366,19 @@ class SimpleKanban {
             ? '/tasks/update-column/'
             : '/tasks/create-column/';
 
-        const body = new URLSearchParams({
-            column_id: columnId,
-            project_id: projectId,
-            name: name,
-            color: color
-        });
+        const body = JSON.stringify(
+            columnId
+                ? {
+                    column_id: columnId,
+                    name: name,
+                    color: color
+                }
+                : {
+                    project_id: projectId,
+                    name: name,
+                    color: color
+                }
+        );
 
         try {
             const response = await fetch(
@@ -316,8 +387,7 @@ class SimpleKanban {
                     method: 'POST',
                     headers: {
                         'X-CSRFToken': csrfToken,
-                        'Content-Type':
-                            'application/x-www-form-urlencoded'
+                        'Content-Type': 'application/json'
                     },
                     body: body
                 }
@@ -344,7 +414,7 @@ class SimpleKanban {
 
     async deleteColumnFromModal() {
         const columnId =
-            document.getElementById('columnId').value;
+            document.getElementById('editColumnId').value;
 
         if (!columnId) {
             return;
@@ -367,10 +437,9 @@ class SimpleKanban {
                     method: 'POST',
                     headers: {
                         'X-CSRFToken': csrfToken,
-                        'Content-Type':
-                            'application/x-www-form-urlencoded'
+                        'Content-Type': 'application/json'
                     },
-                    body: new URLSearchParams({
+                    body: JSON.stringify({
                         column_id: columnId
                     })
                 }

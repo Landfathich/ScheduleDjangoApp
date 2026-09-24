@@ -125,6 +125,22 @@ def task_deadlines(request):
 
 
 @staff_member_required
+def get_column_data(request, column_id):
+    column = get_object_or_404(
+        ProjectColumn.objects.filter(
+            project__members=request.user
+        ),
+        id=column_id
+    )
+
+    return JsonResponse({
+        'success': True,
+        'name': column.name,
+        'color': column.color,
+    })
+
+
+@staff_member_required
 def kanban_board(request):
     project_id = request.GET.get('project')
 
@@ -161,6 +177,7 @@ def kanban_board(request):
         'users': User.objects.filter(is_active=True),
         'current_project': current_project,
         'user_projects': user_projects,
+        'active_section': 'projects'
     }
     return render(request, 'tasks/kanban.html', context)
 
@@ -364,7 +381,7 @@ def create_project(request):
             return redirect('tasks:project_list')
     else:
         form = ProjectForm()
-    return render(request, 'tasks/project_form.html', {'form': form})
+    return render(request, 'tasks/project_form.html', {'form': form, 'active_section': 'projects'})
 
 
 @staff_member_required
@@ -385,7 +402,8 @@ def edit_project(request, project_id):
 
     return render(request, 'tasks/project_form.html', {
         'form': form,
-        'project': project
+        'project': project,
+        'active_section': 'projects'
     })
 
 
@@ -562,6 +580,7 @@ def project_members(request, project_id):
         'project': project,
         'members': members,
         'all_users': User.objects.filter(is_active=True),
+        'active_section': 'projects'
     }
     return render(request, 'tasks/project_members.html', context)
 

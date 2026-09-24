@@ -1,0 +1,165 @@
+.project-members-page {
+    width: 100%;
+    padding-bottom: 15px;
+}
+
+.project-members-header {
+    margin-bottom: 20px;
+}
+
+.project-members-header h2 {
+    margin: 0;
+    color: var(--text-primary);
+    font-size: 20px;
+}
+
+.project-members-card {
+    margin-bottom: 20px;
+    background: var(--glass-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.project-members-card-header {
+    padding: 12px 16px;
+    background: var(--header-bg);
+    border-bottom: 1px solid var(--border-color);
+    color: var(--text-primary);
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.project-members-card-body {
+    padding: 16px;
+}
+
+.member-form {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 180px 130px;
+    align-items: end;
+    gap: 12px;
+}
+
+.member-form-field label {
+    display: block;
+    margin-bottom: 5px;
+    color: var(--text-primary);
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.member-form-field select {
+    width: 100%;
+    padding: 8px 10px;
+    box-sizing: border-box;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background: var(--bg);
+    color: var(--text-primary);
+    font-size: 13px;
+}
+
+.member-form-field select:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(var(--primary-color-rgb), 0.1);
+}
+
+.member-form .btn {
+    width: 100%;
+}
+
+.members-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.member-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border-color);
+    color: var(--text-primary);
+}
+
+.member-item:last-child {
+    border-bottom: none;
+}
+
+.member-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+}
+
+.member-info strong {
+    color: var(--text-primary);
+    font-size: 13px;
+}
+
+.member-badge {
+    padding: 3px 7px;
+    border-radius: 5px;
+    background: var(--gray-mix);
+    color: var(--text-primary);
+    font-size: 11px;
+}
+
+.member-badge-info {
+    background: var(--info-color);
+    color: white;
+}
+
+.member-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-shrink: 0;
+}
+
+.member-added-by {
+    color: var(--text-secondary);
+    font-size: 12px;
+}
+
+.btn-small {
+    padding: 6px 10px;
+    font-size: 11px;
+}
+
+.members-empty {
+    padding: 30px 16px;
+    text-align: center;
+    color: var(--text-secondary);
+    font-size: 13px;
+}
+
+.project-members-back {
+    margin-top: 4px;
+}
+
+@media (max-width: 768px) {
+    .member-form {
+        grid-template-columns: 1fr;
+    }
+
+    .member-item {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .member-actions {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .project-members-header h2 {
+        font-size: 18px;
+    }
+}

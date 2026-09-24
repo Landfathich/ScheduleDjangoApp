@@ -9,7 +9,7 @@ urlpatterns = [
 
     path('deadlines/', views.task_deadlines, name='task_deadlines'),
     path('projects/', views.project_list, name='project_list'),
-
+    path('get-column-data/<int:column_id>/', views.get_column_data, name='get_column_data'),
     path('kanban/', views.kanban_board, name='kanban_board'),
 
     path('projects/create/', views.create_project, name='create_project'),

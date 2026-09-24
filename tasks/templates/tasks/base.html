@@ -19,10 +19,12 @@
                 Сроки
             </a>
 
-            <a href="{% url 'tasks:project_list' %}"
-               class="tasks-navigation-item {% if active_section == 'projects' %}active{% endif %}">
-                Проекты
-            </a>
+            {% if user.is_staff %}
+                <a href="{% url 'tasks:project_list' %}"
+                   class="tasks-navigation-item {% if active_section == 'projects' %}active{% endif %}">
+                    Проекты
+                </a>
+            {% endif %}
         </div>
 
         {% block tasks_content %}{% endblock %}
