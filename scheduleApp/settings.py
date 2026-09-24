@@ -7,13 +7,15 @@ import dj_database_url
 import environ
 from django.conf.global_settings import DATABASES
 
-env = environ.Env()
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+env = environ.Env()
+environ.Env.read_env(BASE_DIR / '.env')
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DJANGO_DEBUG', 'True') == 'True'
+TELEGRAM_BOT_TOKEN = env('TELEGRAM_BOT_TOKEN')
 
 # SECURITY WARNING: keep the secret key used in production secret!
 # Если это collectstatic, используем дефолтный ключ
@@ -80,6 +82,7 @@ INSTALLED_APPS = [
     'django.contrib.humanize',
     'finance.apps.FinanceConfig',
     'notifications',
+    'telegram_bot.apps.TelegramBotConfig'
 ]
 
 if DEBUG:

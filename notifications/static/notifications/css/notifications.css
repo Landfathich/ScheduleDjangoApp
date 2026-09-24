@@ -3,7 +3,6 @@ main {
 }
 
 .notifications-page {
-    max-width: 600px;
     margin: 0 auto;
     padding: 30px;
     color: var(--text-primary);
@@ -30,6 +29,36 @@ main {
 #mark-all-read:hover {
     background: var(--primary-hover);
     transform: translateY(-1px);
+}
+
+.telegram-status {
+    display: inline-flex;
+    align-items: center;
+    margin-bottom: 20px;
+    padding: 10px 20px;
+    background: var(--glass-bg);
+    color: var(--text-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    font-weight: 500;
+    height: 40px;
+    box-sizing: border-box;
+}
+
+.notifications-page > .btn {
+    display: inline-flex;
+    align-items: center;
+    margin-bottom: 20px;
+    padding: 10px 20px;
+    height: 40px;
+    box-sizing: border-box;
+    text-decoration: none;
+}
+
+.telegram-status.connected {
+    background: var(--glass-bg);
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
 }
 
 #notifications-list {

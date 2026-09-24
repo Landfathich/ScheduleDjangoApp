@@ -11,6 +11,14 @@
     <div class="notifications-page">
         <h2>Уведомления</h2>
         <button id="mark-all-read" class="btn">Отметить все прочитанными</button>
+        {% if telegram_account.is_active and telegram_account.chat_id %}
+            <span class="telegram-status connected">Telegram подключён</span>
+        {% else %}
+            <a href="https://t.me/kodama_school_bot?start={{ telegram_account.link_token }}"
+               class="btn">
+                Подключить Telegram
+            </a>
+        {% endif %}
         <div id="notifications-list"></div>
     </div>
 

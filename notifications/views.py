@@ -5,6 +5,7 @@ from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
+from telegram_bot.models import TelegramAccount
 from .models import Notification
 from .serializers import NotificationSerializer
 
@@ -36,4 +37,14 @@ class NotificationViewSet(viewsets.ReadOnlyModelViewSet):
 
 @staff_member_required
 def notifications_page(request):
-    return render(request, 'notifications/notifications_list.html')
+    telegram_account, _ = TelegramAccount.objects.get_or_create(
+        user=request.user
+    )
+
+    return render(
+        request,
+        'notifications/notifications_list.html',
+        {
+            'telegram_account': telegram_account
+        }
+    )
