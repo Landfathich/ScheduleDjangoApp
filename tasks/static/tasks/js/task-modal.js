@@ -91,6 +91,13 @@ class TaskModal {
 
         this.hideTaskContext();
 
+        const taskCreator = document.getElementById('taskCreator');
+
+        if (taskCreator) {
+            taskCreator.style.display = 'none';
+            taskCreator.textContent = '';
+        }
+
         if (defaultProjectId) {
             const projectSelect = document.getElementById('projectId');
 
@@ -137,6 +144,13 @@ class TaskModal {
                 task.priority || 'normal';
 
             this.displayTaskContext(task);
+
+            const taskCreator = document.getElementById('taskCreator');
+
+            if (taskCreator && task.creator_name) {
+                taskCreator.textContent = `Поставил: ${task.creator_name}`;
+                taskCreator.style.display = 'block';
+            }
 
             if (task.image_url) {
                 this.displayCurrentImage(task.image_url);

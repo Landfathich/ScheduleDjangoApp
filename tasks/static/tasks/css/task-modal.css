@@ -265,6 +265,31 @@ label {
     background: rgba(255, 255, 255, 0.25);
 }
 
+.task-context {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-top: 4px;
+    margin-bottom: 16px;
+    padding: 10px 12px;
+    background: var(--glass-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    color: var(--text-secondary);
+    font-size: 13px;
+}
+
+.task-creator-info {
+    margin-top: 4px;
+    margin-bottom: 16px;
+    padding: 10px 12px;
+    background: var(--glass-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    color: var(--text-secondary);
+    font-size: 13px;
+}
+
 @media (max-width: 768px) {
     .modal-content {
         width: 95%;

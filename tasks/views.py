@@ -333,6 +333,7 @@ def get_task_data(request, task_id):
         'project': task.project.id if task.project else None,
         'project_name': task.project.name if task.project else None,
         'column_name': task.column.name if task.column else None,
+        'creator_name': task.creator.get_full_name() or task.creator.username,
         'due_date': task.due_date.strftime('%Y-%m-%dT%H:%M') if task.due_date else '',
         'priority': task.priority,
         'image_url': task.image.url if task.image else None

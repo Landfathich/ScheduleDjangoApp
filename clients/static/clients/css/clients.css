@@ -177,7 +177,7 @@
 }
 
 .client-link {
-    color: #2066b0;
+    color: var(--primary-color);
     text-decoration: none;
     font-weight: 600;
 }

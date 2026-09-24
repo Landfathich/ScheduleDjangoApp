@@ -39,6 +39,15 @@
         </div>
 
         <div class="tasks-list">
+            <div class="tasks-list-header">
+                <div>Задача</div>
+                <div>Проект</div>
+                <div>Исполнитель</div>
+                <div>Приоритет</div>
+                <div>Срок</div>
+                <div>Постановщик</div>
+            </div>
+
             {% for task in tasks %}
                 <div class="task-row" data-task-id="{{ task.id }}">
                     <div class="task-main">
@@ -78,6 +87,14 @@
                             {{ task.due_date|date:"d.m.Y H:i" }}
                         {% else %}
                             Без срока
+                        {% endif %}
+                    </div>
+
+                    <div class="task-creator">
+                        {% if task.creator %}
+                            {{ task.creator.get_full_name|default:task.creator.username }}
+                        {% else %}
+                            —
                         {% endif %}
                     </div>
                 </div>
