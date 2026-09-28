@@ -1,57 +1,3 @@
-.monthly-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 0;
-    border-bottom: 1px solid var(--border-color);
-}
-
-.monthly-row.net {
-    border-bottom: none;
-    margin-top: 10px;
-    padding-top: 15px;
-    border-top: 2px solid var(--border-color);
-}
-
-.monthly-label {
-    color: var(--text-secondary);
-    font-size: 0.95em;
-}
-
-.monthly-value {
-    font-weight: 600;
-    font-size: 1.1em;
-}
-
-.monthly-value.income {
-    color: #27ae60;
-}
-
-.monthly-value.expense {
-    color: var(--danger-color);
-}
-
-.monthly-categories {
-    padding: 10px 0;
-}
-
-.monthly-category-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 5px 0;
-    font-size: 0.9em;
-}
-
-.monthly-category-label {
-    color: var(--text-secondary);
-}
-
-.monthly-category-value {
-    color: var(--text-primary);
-    font-weight: 500;
-}
-
 .stats-container {
     margin: 0 auto;
     color: var(--text-primary);
@@ -68,6 +14,56 @@
     margin-bottom: 15px;
 }
 
+.month-switcher {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 20px;
+    white-space: nowrap;
+}
+
+.month-arrow,
+.month-today-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 36px;
+    box-sizing: border-box;
+    border: 1px solid var(--primary-color);
+    border-radius: 6px;
+    text-decoration: none;
+    color: var(--primary-color);
+    background: transparent;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.month-arrow {
+    width: 36px;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.month-today-btn {
+    padding: 0 14px;
+}
+
+.month-arrow:hover,
+.month-today-btn:hover {
+    background: var(--primary-color);
+    color: white;
+    text-decoration: none;
+}
+
+.month-current {
+    min-width: 130px;
+    text-align: center;
+    color: var(--text-primary);
+    font-size: 1.1em;
+    font-weight: 600;
+}
+
 .stats {
     column-width: 340px;
     column-gap: 16px;
@@ -75,57 +71,20 @@
 }
 
 .stat-card {
-    width: 100%;
-    margin-bottom: 16px;
-    break-inside: avoid;
-}
-
-.month-switcher {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 15px;
-    margin-bottom: 15px;
-}
-
-.month-arrow {
-    text-decoration: none;
-    color: var(--primary-color);
-    font-size: 20px;
-    font-weight: bold;
-    padding: 5px 10px;
-    border: 1px solid var(--primary-color);
-    border-radius: 5px;
-    transition: all 0.3s ease;
-}
-
-.month-arrow:hover {
-    background: var(--primary-color);
-    color: white;
-}
-
-.month-current {
-    font-size: 1.1em;
-    font-weight: 600;
-    color: var(--text-primary);
-    min-width: 120px;
-    text-align: center;
-}
-
-/* Общие стили карточек */
-.stat-card {
     --accent-color: var(--primary-color);
 
     position: relative;
-    border-radius: 10px;
-    padding: 20px;
     width: 100%;
+    margin-bottom: 16px;
+    padding: 20px;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
     min-width: 0;
+    break-inside: avoid;
     background: var(--header-bg);
     border: 1px solid var(--border-color);
+    border-radius: 10px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     overflow: hidden;
 }
@@ -149,6 +108,14 @@
     flex-shrink: 0;
 }
 
+.card-period {
+    margin-top: -8px;
+    margin-bottom: 15px;
+    color: var(--text-secondary);
+    font-size: 0.85em;
+    text-align: center;
+}
+
 .card-content {
     flex: 1;
     min-height: 280px;
@@ -169,13 +136,8 @@
     display: none;
 }
 
-.toggle-details-section {
-    flex-shrink: 0;
-    text-align: center;
-}
-
-
 /* Финансовая карточка */
+
 .finance-balance {
     text-align: center;
 }
@@ -275,7 +237,64 @@
     color: white;
 }
 
+/* Помесячный отчёт */
+
+.monthly-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.monthly-row.net {
+    border-bottom: none;
+    margin-top: 10px;
+    padding-top: 15px;
+    border-top: 2px solid var(--border-color);
+}
+
+.monthly-label {
+    color: var(--text-secondary);
+    font-size: 0.95em;
+}
+
+.monthly-value {
+    font-weight: 600;
+    font-size: 1.1em;
+}
+
+.monthly-value.income {
+    color: #27ae60;
+}
+
+.monthly-value.expense {
+    color: var(--danger-color);
+}
+
+.monthly-categories {
+    padding: 10px 0;
+}
+
+.monthly-category-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px 0;
+    font-size: 0.9em;
+}
+
+.monthly-category-label {
+    color: var(--text-secondary);
+}
+
+.monthly-category-value {
+    color: var(--text-primary);
+    font-weight: 500;
+}
+
 /* Карточка преподавателей */
+
 .chart-container {
     position: relative;
     width: 200px;
@@ -331,6 +350,7 @@
 }
 
 /* Детализация преподавателей */
+
 .teachers-list {
     max-height: 300px;
     overflow-y: auto;
@@ -378,36 +398,8 @@
     padding: 20px;
 }
 
-/* Кнопки переключения */
-.toggle-details-btn {
-    background: none;
-    border: 1px solid var(--primary-color);
-    color: var(--primary-color);
-    padding: 10px 20px;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 14px;
-    transition: all 0.3s ease;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.toggle-details-btn:hover {
-    background: var(--primary-color);
-    color: white;
-}
-
-.toggle-icon {
-    transition: transform 0.3s ease;
-    font-size: 12px;
-}
-
-.toggle-details-btn.expanded .toggle-icon {
-    transform: rotate(180deg);
-}
-
 /* Модальное окно */
+
 .modal {
     display: none;
     position: fixed;
@@ -454,6 +446,7 @@
 }
 
 /* Форма */
+
 #expenseForm {
     padding: 20px;
 }
@@ -521,6 +514,7 @@
 }
 
 /* Уведомление */
+
 .notification {
     position: fixed;
     top: 20px;
@@ -546,6 +540,13 @@
 }
 
 /* Адаптивность */
+
+@media (max-width: 1100px) {
+    .stats {
+        column-count: 2;
+    }
+}
+
 @media (max-width: 768px) {
     .stats-container {
         padding: 5px;
@@ -554,8 +555,7 @@
     }
 
     .stats {
-        grid-template-columns: 1fr;
-        gap: 12px;
+        column-count: 1;
     }
 
     .stat-card {
@@ -565,16 +565,17 @@
     .balance-value {
         font-size: 1.8em;
     }
-}
 
-@media (max-width: 1100px) {
-    .stats {
-        column-count: 2;
+    .month-switcher {
+        gap: 6px;
     }
-}
 
-@media (max-width: 768px) {
-    .stats {
-        column-count: 1;
+    .month-current {
+        min-width: 110px;
+        font-size: 1em;
+    }
+
+    .month-today-btn {
+        padding: 0 10px;
     }
 }

@@ -11,6 +11,14 @@
         <!-- Заголовок -->
         <h1 class="stats-header">📊 Аналитика школы</h1>
 
+        <!-- Общий выбор месяца -->
+        <div class="month-switcher">
+            <a href="?month={{ monthly_report.prev_month }}" class="month-arrow">←</a>
+            <a href="?month={% now 'Y-m' %}" class="month-today-btn">Сегодня</a>
+            <span class="month-current">{{ monthly_report.month }}</span>
+            <a href="?month={{ monthly_report.next_month }}" class="month-arrow">→</a>
+        </div>
+
         <div class="stats">
             <!-- Финансы -->
             <div class="stat-card finance" style="--accent-color: #f39c12;">
@@ -49,11 +57,6 @@
             <!-- Помесячный отчёт -->
             <div class="stat-card monthly-report" style="--accent-color: #27ae60;">
                 <h2>📅 Отчёт за {{ monthly_report.month }}</h2>
-                <div class="month-switcher">
-                    <a href="?month={{ monthly_report.prev_month }}" class="month-arrow">←</a>
-                    <span class="month-current">{{ monthly_report.month }}</span>
-                    <a href="?month={{ monthly_report.next_month }}" class="month-arrow">→</a>
-                </div>
 
                 <div class="card-content">
                     <div class="monthly-row">
@@ -80,8 +83,8 @@
                     <div class="monthly-row net">
                         <span class="monthly-label">Чистый кэш флоу</span>
                         <span class="monthly-value {% if monthly_report.net_cash_flow >= 0 %}income{% else %}expense{% endif %}">
-                {{ monthly_report.net_cash_flow|floatformat:0|intcomma }} ₽
-            </span>
+                            {{ monthly_report.net_cash_flow|floatformat:0|intcomma }} ₽
+                        </span>
                     </div>
                 </div>
             </div>
@@ -89,6 +92,7 @@
             <!-- Занятость преподавателей -->
             <div class="stat-card teachers-load" style="--accent-color: #3498db;">
                 <h2>👨‍🏫 Занятость преподавателей</h2>
+                <div class="card-period">За прошлую неделю</div>
 
                 <div class="card-content">
                     <div class="chart-container">
@@ -123,15 +127,10 @@
                     </div>
                 </div>
             </div>
+
             <!-- Клиенты и лиды -->
             <div class="stat-card clients-analytics" style="--accent-color: #9b59b6;">
                 <h2>👥 Клиенты и лиды</h2>
-
-                <div class="month-switcher">
-                    <a href="?month={{ monthly_report.prev_month }}" class="month-arrow">←</a>
-                    <span class="month-current">{{ monthly_report.month }}</span>
-                    <a href="?month={{ monthly_report.next_month }}" class="month-arrow">→</a>
-                </div>
 
                 <div class="card-content">
 
@@ -140,36 +139,37 @@
                     <div class="monthly-row">
                         <span class="monthly-label">Новые клиенты</span>
                         <span class="monthly-value">
-                {{ clients_stats.new_clients }}
-            </span>
+                            {{ clients_stats.new_clients }}
+                        </span>
                     </div>
 
                     <div class="monthly-row">
                         <span class="monthly-label">Стали активными</span>
                         <span class="monthly-value income">
-                {{ clients_stats.converted_to_active }}
-            </span>
+                            {{ clients_stats.converted_to_active }}
+                        </span>
                     </div>
 
                     <div class="monthly-row">
                         <span class="monthly-label">Отказы</span>
                         <span class="monthly-value expense">
-                {{ clients_stats.rejected_clients }}
-            </span>
+                            {{ clients_stats.rejected_clients }}
+                        </span>
                     </div>
 
                     <div class="monthly-row">
                         <span class="monthly-label">Ушли</span>
                         <span class="monthly-value expense">
-                {{ clients_stats.inactive_clients }}
-            </span>
+                            {{ clients_stats.inactive_clients }}
+                        </span>
                     </div>
 
                     <div class="monthly-row net">
                         <span class="monthly-label">Прирост активной базы</span>
                         <span class="monthly-value {% if clients_stats.active_base_growth >= 0 %}income{% else %}expense{% endif %}">
-                {% if clients_stats.active_base_growth > 0 %}+{% endif %}{{ clients_stats.active_base_growth }}
-            </span>
+                            {% if clients_stats.active_base_growth > 0 %}
+                                +{% endif %}{{ clients_stats.active_base_growth }}
+                        </span>
                     </div>
 
                     <div class="clients-section-title">Сейчас</div>
@@ -177,36 +177,36 @@
                     <div class="monthly-row">
                         <span class="monthly-label">Лиды в работе</span>
                         <span class="monthly-value">
-                {{ clients_stats.current_leads }}
-            </span>
+                            {{ clients_stats.current_leads }}
+                        </span>
                     </div>
 
                     <div class="monthly-row">
                         <span class="monthly-label">Активные клиенты</span>
                         <span class="monthly-value income">
-                {{ clients_stats.current_active }}
-            </span>
+                            {{ clients_stats.current_active }}
+                        </span>
                     </div>
 
                     <div class="monthly-row">
                         <span class="monthly-label">Ушедшие</span>
                         <span class="monthly-value">
-                {{ clients_stats.current_inactive }}
-            </span>
+                            {{ clients_stats.current_inactive }}
+                        </span>
                     </div>
 
                     <div class="monthly-row">
                         <span class="monthly-label">Отказы</span>
                         <span class="monthly-value">
-                {{ clients_stats.current_rejected }}
-            </span>
+                            {{ clients_stats.current_rejected }}
+                        </span>
                     </div>
 
                     <div class="clients-conversion">
                         <span class="clients-conversion-label">Конверсия лид → клиент</span>
                         <span class="clients-conversion-value">
-                {{ clients_stats.conversion_rate }}%
-            </span>
+                            {{ clients_stats.conversion_rate }}%
+                        </span>
                     </div>
 
                 </div>
@@ -216,12 +216,6 @@
             <div class="stat-card sources-analytics" style="--accent-color: #e67e22;">
                 <h2>📍 Источники клиентов</h2>
 
-                <div class="month-switcher">
-                    <a href="?month={{ monthly_report.prev_month }}" class="month-arrow">←</a>
-                    <span class="month-current">{{ monthly_report.month }}</span>
-                    <a href="?month={{ monthly_report.next_month }}" class="month-arrow">→</a>
-                </div>
-
                 <div class="card-content">
                     {% if sources_stats %}
                         {% for source in sources_stats %}
@@ -229,22 +223,22 @@
                                 <div class="source-header">
                                     <span class="source-name">{{ source.name }}</span>
                                     <span class="source-conversion">
-                            {{ source.conversion_rate }}%
-                        </span>
+                                        Конверсия: {{ source.conversion_rate }}%
+                                    </span>
                                 </div>
 
                                 <div class="source-stats">
-                        <span>
-                            Лидов: <strong>{{ source.new_leads }}</strong>
-                        </span>
+                                    <span>
+                                        Лидов: <strong>{{ source.new_leads }}</strong>
+                                    </span>
 
                                     <span>
-                            Клиентов: <strong>{{ source.converted }}</strong>
-                        </span>
+                                        Клиентов: <strong>{{ source.converted }}</strong>
+                                    </span>
 
                                     <span>
-                            Активных сейчас: <strong>{{ source.active_clients }}</strong>
-                        </span>
+                                        Активных сейчас: <strong>{{ source.active_clients }}</strong>
+                                    </span>
                                 </div>
                             </div>
                         {% endfor %}
