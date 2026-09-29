@@ -12,7 +12,7 @@ class SchoolExpense(models.Model):
         ('advertising', 'Реклама'),
         ('software', 'Софт/Подписки'),
         ('taxes', 'Налоги'),
-        ('salary', 'Зарплата'),
+        ('salary', 'Зарплата сотруднику'),
         ('other', 'Другое'),
     ]
 
