@@ -280,6 +280,17 @@
                     <input type="text" name="description" maxlength="200" required>
                 </div>
                 <div class="form-group">
+                    <label>Получатель:</label>
+                    <select name="recipient">
+                        <option value="">Не указан</option>
+                        {% for user in expense_recipients %}
+                            <option value="{{ user.id }}">
+                                {{ user.get_full_name|default:user.username }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
                     <label>Дата расхода:</label>
                     <input type="date" name="expense_date" value="{{ today|date:'Y-m-d' }}" required>
                 </div>

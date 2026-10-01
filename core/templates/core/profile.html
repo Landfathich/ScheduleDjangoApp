@@ -9,7 +9,6 @@
 
 {% block content %}
     <div class="profile-container">
-        <!-- Шапка профиля -->
         <div class="profile-header">
             <div class="avatar-section">
                 <div class="avatar-placeholder">
@@ -17,38 +16,26 @@
                         <img src="{{ request.user.teacher.avatar.url }}" alt="Аватар" class="avatar-img">
                     {% else %}
                         <span class="avatar-initials">{{ request.user.first_name|first|upper }}{{ request.user.last_name|first|upper }}</span>
-                    {% endif %}
-                </div>
-                <div class="user-info">
-                    <h1>{{ request.user.get_full_name|default:request.user.username }}</h1>
-                    <span class="user-role">
-                        {% if request.user.role == 'teacher' %}Преподаватель{% endif %}
-                        {% if request.user.role == 'admin' %}Администратор{% endif %}
-                        {% if request.user.role == 'client' %}Клиент{% endif %}
-                    </span>
+                    {% endif %} </div>
+                <div class="user-info"><h1>{{ request.user.get_full_name|default:request.user.username }}</h1> <span
+                        class="user-role">
+{% if request.user.role == 'teacher' %}Преподаватель{% endif %}
+                    {% if request.user.role == 'admin' %}Администратор{% endif %}
+                    {% if request.user.role == 'client' %}Клиент{% endif %} </span>
                     {% if request.user.teacher and request.user.teacher.status %}
                         <span class="status-badge {{ request.user.teacher.status }}">{{ request.user.teacher.get_status_display }}</span>
-                    {% endif %}
-                </div>
+                    {% endif %} </div>
             </div>
         </div>
 
-        <!-- Навигация табами -->
         <div class="profile-tabs">
             <nav class="tabs-navigation">
                 <button type="button" class="tab-btn active" data-tab="main">Основное</button>
                 <button type="button" class="tab-btn" data-tab="appearance">Оформление</button>
-                {% comment %} {% if request.user.role == 'teacher' or request.user.is_staff %}
-                    <button type="button" class="tab-btn" data-tab="teaching">Преподавание</button>
-                    <button type="button" class="tab-btn" data-tab="finance">Финансы и статистика</button>
-                {% endif %}
-                {% if request.user.is_staff %}
-                    <button type="button" class="tab-btn" data-tab="activity">Активность</button>
-                {% endif %}{% endcomment %}
+                <button type="button" class="tab-btn" data-tab="finance">Выплаты</button>
             </nav>
 
             <div class="tabs-content">
-                <!-- Вкладка Основное -->
                 <div class="tab-pane active" id="main-tab">
                     <form method="post" class="profile-form">
                         {% csrf_token %}
@@ -56,38 +43,30 @@
                         <div class="form-grid">
                             <div class="form-section">
                                 <h3>Личная информация</h3>
+
                                 <div class="form-group">
                                     <label for="{{ form.first_name.id_for_label }}">Имя</label>
                                     {{ form.first_name }}
                                 </div>
+
                                 <div class="form-group">
                                     <label for="{{ form.last_name.id_for_label }}">Фамилия</label>
                                     {{ form.last_name }}
                                 </div>
+
                                 <div class="form-group">
                                     <label for="{{ form.email.id_for_label }}">Email</label>
                                     {{ form.email }}
                                 </div>
-                                {% comment %}<div class="form-group">
-                                    <label for="phone">Телефон</label>
-                                    <input type="tel" id="phone" name="phone"
-                                           value="{{ request.user.teacher.phone|default:'' }}"
-                                           placeholder="+7 (999) 999-99-99">
-                                </div>
-                                <div class="form-group">
-                                    <label for="telegram">Telegram</label>
-                                    <input type="text" id="telegram" name="telegram"
-                                           value="{{ request.user.teacher.telegram|default:'' }}"
-                                           placeholder="@username">
-                                </div>{% endcomment %}
                             </div>
 
                             <div class="form-section">
                                 <h3>Данные для уроков</h3>
+
                                 <div class="conference-links">
                                     <div class="link-field">
                                         <label for="zoom_link">
-                                            <img src="data:image/png;base64,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"
+                                            <img src="data:image/png;base64,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"
                                                  class="platform-icon" alt="Zoom">
                                             Zoom
                                         </label>
@@ -107,12 +86,6 @@
                                                placeholder="https://meet.google.com/ваш-код">
                                     </div>
                                 </div>
-
-                                {% comment %}<div class="form-group">
-                                    <label for="about">О себе</label>
-                                    <textarea id="about" name="about" rows="4"
-                                              placeholder="Краткая информация о себе для администраторов">{{ request.user.teacher.about|default:'' }}</textarea>
-                                </div>{% endcomment %}
                             </div>
                         </div>
 
@@ -123,6 +96,7 @@
                         </div>
                     </form>
                 </div>
+
                 <div class="tab-pane" id="appearance-tab">
                     <div class="form-section">
                         <h3>Тема</h3>
@@ -139,6 +113,7 @@
                             </label>
                         </div>
                     </div>
+
                     <div class="form-section">
                         <h3>Акцентный цвет</h3>
                         <div class="accent-options">
@@ -165,38 +140,49 @@
                         </div>
                     </div>
                 </div>
-                {% comment %}
-                <!-- Вкладка Преподавание -->
-                <div class="tab-pane" id="teaching-tab">
-                    <div class="teaching-content">
-                        <!-- Блок будет заполняться через AJAX/JavaScript -->
-                        <div class="loading-state">Пока здесь пусто.</div>
-                    </div>
-                </div>
 
-                <!-- Вкладка Финансы и статистика -->
                 <div class="tab-pane" id="finance-tab">
-                    <div class="finance-content">
-                        <!-- Блок будет заполняться через AJAX/JavaScript -->
-                        <div class="loading-state">Пока здесь пусто.</div>
+                    <div class="form-section">
+                        <h3>Мои выплаты</h3>
+
+                        {% if school_expenses or teacher_payments %}
+                            <div class="finance-payments-list">
+                                {% for expense in school_expenses %}
+                                    <div class="finance-payment">
+                                        <div>
+                                            <strong>{{ expense.get_category_display }}</strong>
+                                            <div>{{ expense.description }}</div>
+                                            <small>{{ expense.expense_date|date:"d.m.Y" }}</small>
+                                        </div>
+                                        <strong>{{ expense.amount|floatformat:0 }} ₽</strong>
+                                    </div>
+                                {% endfor %}
+
+                                {% for payment in teacher_payments %}
+                                    <div class="finance-payment">
+                                        <div>
+                                            <strong>Зарплата преподавателя</strong>
+                                            <div>{{ payment.lessons_count }} уроков</div>
+                                            <small>{{ payment.payment_date|date:"d.m.Y" }}</small>
+                                        </div>
+                                        <strong>{{ payment.amount|floatformat:0 }} ₽</strong>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <div class="loading-state">Выплат пока нет.</div>
+                        {% endif %}
                     </div>
                 </div>
-
-                <!-- Вкладка Активность -->
-                <div class="tab-pane" id="activity-tab">
-                    <div class="activity-content">
-                        <!-- Блок будет заполняться через AJAX/JavaScript -->
-                        <div class="loading-state">Пока здесь пусто.</div>
-                    </div>
-                </div>{% endcomment %}
             </div>
         </div>
     </div>
+
+
 {% endblock %}
 
 {% block scripts %}
     <script>
-        // Передаем данные из Django в JavaScript
         const userData = {
             userId: {{ request.user.id }},
             teacherId: {% if request.user.teacher %}{{ request.user.teacher.id }}{% else %}null{% endif %},
@@ -204,7 +190,6 @@
             username: "{{ request.user.username|escapejs }}",
             currentTab: "main"
         };
-        console.log(`UserId: ${userData.userId}, TeacherId: ${userData.teacherId}`);
-    </script>
+        console.log(`UserId: ${userData.userId}, TeacherId: ${userData.teacherId}`); </script>
     <script src="{% static 'core/js/profile.js' %}" type="module"></script>
 {% endblock %}

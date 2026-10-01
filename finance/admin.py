@@ -14,7 +14,7 @@ class SchoolExpenseAdmin(admin.ModelAdmin):
 
     fieldsets = (
         ('Основная информация', {
-            'fields': ('category', 'amount', 'description', 'expense_date')
+            'fields': ('category', 'amount', 'description', 'recipient', 'initiator', 'expense_date')
         }),
         ('Системная информация', {
             'fields': ('created_at',),
@@ -22,7 +22,7 @@ class SchoolExpenseAdmin(admin.ModelAdmin):
         }),
     )
 
-    readonly_fields = ['created_at']
+    readonly_fields = ['created_at', 'initiator', 'expense_date']
 
     def category_display(self, obj):
         return obj.get_category_display()

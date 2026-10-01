@@ -24,6 +24,8 @@ class SchoolExpenseCreateView(CreateView):
     fields = ['category', 'amount', 'description', 'expense_date']
 
     def form_valid(self, form):
+        form.instance.recipient_id = self.request.POST.get('recipient') or None
+        form.instance.initiator = self.request.user if self.request.user.is_authenticated else None
         expense = form.save()
         if self.request.headers.get('X-Requested-With') == 'XMLHttpRequest':
             return JsonResponse({
@@ -47,6 +49,12 @@ class StatsDashboardView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+
+        context['expense_recipients'] = User.objects.filter(
+            is_active=True
+        ).exclude(
+            groups__name='Студенты'
+        ).distinct().order_by('first_name', 'last_name', 'username')
 
         # Берём последний снапшот — это актуальное состояние школы
         snapshot = FinanceSnapshot.objects.order_by('-created_at').first()

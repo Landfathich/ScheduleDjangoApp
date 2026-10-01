@@ -6,6 +6,7 @@ header {
     max-width: 1200px;
     margin: 0 auto;
     color: var(--text-primary);
+    padding-bottom: 15px;
 }
 
 .profile-header {
@@ -339,6 +340,36 @@ header {
     border-color: var(--text-primary);
     box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px currentColor;
     transform: scale(1.15);
+}
+
+.finance-payments-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.finance-payment {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 14px 16px;
+    border: 1px solid var(--gray-mix);
+    border-radius: 10px;
+}
+
+.finance-payment strong {
+    display: block;
+    color: var(--text-primary);
+}
+
+.finance-payment small {
+    color: var(--text-secondary);
+}
+
+.finance-payment > strong {
+    white-space: nowrap;
+    font-size: 16px;
 }
 
 /* Адаптивность */

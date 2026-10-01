@@ -35,6 +35,22 @@ class SchoolExpense(models.Model):
         verbose_name='Дата расхода'
     )
     created_at = models.DateTimeField(auto_now_add=True)
+    initiator = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name='initiated_school_expenses',
+        verbose_name='Инициатор'
+    )
+    recipient = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name='received_school_expenses',
+        verbose_name='Получатель'
+    )
 
     class Meta:
         verbose_name = 'Расход школы'

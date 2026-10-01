@@ -79,7 +79,6 @@ def profile(request):
         if form.is_valid():
             user = form.save()
 
-            # Обновляем ссылки преподавателя
             if hasattr(user, 'teacher'):
                 user.teacher.zoom_link = request.POST.get('zoom_link', '').strip() or None
                 user.teacher.google_meet_link = request.POST.get('google_meet_link', '').strip() or None
@@ -89,7 +88,23 @@ def profile(request):
     else:
         form = ProfileForm(instance=request.user)
 
-    return render(request, 'core/profile.html', {'form': form})
+    from finance.models import SchoolExpense
+
+    school_expenses = SchoolExpense.objects.filter(
+        recipient=request.user
+    ).order_by('-expense_date')
+
+    teacher_payments = []
+    if hasattr(request.user, 'teacher'):
+        teacher_payments = request.user.teacher.payments.filter(
+            is_paid=True
+        ).order_by('-payment_date')
+
+    return render(request, 'core/profile.html', {
+        'form': form,
+        'school_expenses': school_expenses,
+        'teacher_payments': teacher_payments,
+    })
 
 
 @staff_member_required
