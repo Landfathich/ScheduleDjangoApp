@@ -82,6 +82,10 @@ class Client(SafeDeleteModel):
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')
     name = models.CharField(max_length=100, verbose_name='Имя родителя')
     email = models.EmailField(blank=True, verbose_name='Email')
+    notes = models.TextField(
+        blank=True,
+        verbose_name='Примечания'
+    )
     lifecycle_status = models.CharField(
         max_length=20,
         choices=[('lead', 'Лид'), ('active', 'Активный'), ('inactive', 'Ушедший'), ('rejected', 'Отказ')],

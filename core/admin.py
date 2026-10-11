@@ -76,7 +76,7 @@ class PhoneNumberInline(admin.TabularInline):
 class StudentInline(admin.TabularInline):
     model = Student
     extra = 0
-    fields = ('name', 'teacher')
+    fields = ('name', 'teacher', 'notes')
     autocomplete_fields = ['teacher']
 
 
@@ -89,7 +89,7 @@ class BalanceOperationInline(TabularInlinePaginated):
 
 
 class ClientAdminMixin:
-    list_display = ('name', 'students', 'teachers', 'balance', 'email', 'primary_phone')
+    list_display = ('name', 'students', 'teachers', 'balance', 'email', 'notes', 'primary_phone')
     readonly_fields = ('balance',)
     search_fields = ('name__icontains', 'email__icontains', 'phone_numbers__number')
     inlines = [PhoneNumberInline, StudentInline, BalanceOperationInline]
