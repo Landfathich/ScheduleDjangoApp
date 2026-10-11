@@ -45,6 +45,10 @@
                             <span class="client-detail-label">Email</span>
                             <span class="client-detail-value">{{ client.email|default:"Не указан" }}</span>
                         </div>
+                        <div class="client-detail-info-item">
+                            <span class="client-detail-label">Источник</span>
+                            <span class="client-detail-value">{{ client.get_source_display|default:"Не указан" }}</span>
+                        </div>
                     </div>
                     {% if client.notes %}
                         <div class="client-notes">
