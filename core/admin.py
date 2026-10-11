@@ -76,7 +76,7 @@ class PhoneNumberInline(admin.TabularInline):
 class StudentInline(admin.TabularInline):
     model = Student
     extra = 0
-    fields = ('name', 'teacher', 'notes')
+    fields = ('name', 'age', 'teacher', 'notes')
     autocomplete_fields = ['teacher']
 
 
@@ -136,7 +136,7 @@ class DeletedClientAdmin(ClientAdminMixin, SafeDeleteAdmin):
 
 @admin.register(Student)
 class StudentAdmin(admin.ModelAdmin):
-    list_display = ('name', 'client', 'teacher', 'family_balance')
+    list_display = ('name', 'age', 'client', 'teacher', 'family_balance')
     list_select_related = ('client', 'teacher')
     search_fields = ('name__icontains', 'client__name__icontains')
 

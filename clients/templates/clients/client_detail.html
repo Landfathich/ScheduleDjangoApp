@@ -74,6 +74,9 @@
                         {% for student in client.students.all %}
                             <div class="client-student-card">
                                 <div class="client-student-name">{{ student.name }}</div>
+                                {% if student.age != None %}
+                                    <div class="client-student-age">Возраст: {{ student.age }}</div>
+                                {% endif %}
                                 {% if student.teacher %}
                                     <div class="client-student-teacher">{{ student.teacher }}</div>
                                 {% else %}

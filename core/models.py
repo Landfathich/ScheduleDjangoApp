@@ -216,6 +216,11 @@ class Student(models.Model):
         blank=True
     )
     name = models.CharField(max_length=100, verbose_name='Имя ученика')
+    age = models.PositiveSmallIntegerField(
+        'Возраст',
+        null=True,
+        blank=True,
+    )
     notes = models.TextField(blank=True, verbose_name='Примечания')
 
     @property

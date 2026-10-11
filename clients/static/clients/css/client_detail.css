@@ -334,6 +334,12 @@
     overflow-wrap: anywhere;
 }
 
+.client-student-age {
+    margin-top: 5px;
+    color: var(--text-secondary);
+    font-size: 13px;
+}
+
 @media (max-width: 900px) {
     .client-detail-layout {
         grid-template-columns: 1fr;
