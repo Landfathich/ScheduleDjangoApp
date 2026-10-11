@@ -46,6 +46,12 @@
                             <span class="client-detail-value">{{ client.email|default:"Не указан" }}</span>
                         </div>
                     </div>
+                    {% if client.notes %}
+                        <div class="client-notes">
+                            <span class="client-detail-label">Примечания</span>
+                            <div class="client-notes-text">{{ client.notes|linebreaksbr }}</div>
+                        </div>
+                    {% endif %}
                 </section>
 
                 <section class="client-detail-section">
@@ -73,6 +79,12 @@
                                 {% else %}
                                     <div class="client-student-teacher">Преподаватель не назначен</div>
                                 {% endif %}
+                                {% if student.notes %}
+                                    <div class="client-notes">
+                                        <span class="client-detail-label">Примечания</span>
+                                        <div class="client-notes-text">{{ student.notes|linebreaksbr }}</div>
+                                    </div>
+                                {% endif %}
                             </div>
                         {% empty %}
                             <div class="client-detail-empty">Учеников пока нет</div>
@@ -82,7 +94,7 @@
             </div>
 
             <aside class="client-detail-history">
-                <h2>История</h2>
+                <h2>История по статусам</h2>
                 <div class="client-timeline">
                     {% for history in status_history %}
                         <div class="client-timeline-item">

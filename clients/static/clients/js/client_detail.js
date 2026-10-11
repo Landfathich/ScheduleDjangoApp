@@ -103,5 +103,4 @@ document.querySelectorAll('.client-detail-status-select').forEach(select => {
 
         sendStatus(status, reason);
     });
-
 });
