@@ -88,7 +88,13 @@ class Client(SafeDeleteModel):
     )
     lifecycle_status = models.CharField(
         max_length=20,
-        choices=[('lead', 'Лид'), ('active', 'Активный'), ('inactive', 'Ушедший'), ('rejected', 'Отказ')],
+        choices=[
+            ('lead', 'Лид'),
+            ('active', 'Активный'),
+            ('paused', 'На паузе'),
+            ('inactive', 'Ушедший'),
+            ('rejected', 'Отказ'),
+        ],
         default='lead',
         verbose_name='Статус клиента'
     )

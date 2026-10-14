@@ -48,7 +48,15 @@ def client_detail(request, client_id):
         'changed_mind': 'Передумали',
         'could_not_contact': 'Не удалось связаться',
         'stopped_lessons': 'Перестали заниматься',
-        'life_circumstances': 'Переезд / обстоятельства',
+        'lost_interest': 'Потеряли интерес к занятиям',
+        'did_not_want_to_continue': 'Не захотели продолжать обучение',
+        'life_circumstances': 'Жизненные обстоятельства',
+        'long_break': 'Длительный перерыв без планов вернуться',
+        'vacation': 'Отпуск / каникулы',
+        'temporary_circumstances': 'Временные обстоятельства',
+        'lesson_not_liked': 'Не понравился вводный урок',
+        'financial_difficulties': 'Финансовые трудности',
+        'temporary_loss_of_interest': 'Временная потеря интереса',
         'other': 'Другое',
     }
 
