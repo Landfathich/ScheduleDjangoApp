@@ -103,4 +103,84 @@ document.querySelectorAll('.client-detail-status-select').forEach(select => {
 
         sendStatus(status, reason);
     });
+
+    const balanceOperationModal = document.getElementById('balanceOperationModal');
+
+    if (balanceOperationModal) {
+        const openButton = document.getElementById('balanceOperationOpen');
+        const cancelButton = document.getElementById('balanceOperationCancel');
+        const form = document.getElementById('balanceOperationForm');
+        const operationType = document.getElementById('balanceOperationType');
+        const amountInput = document.getElementById('balanceOperationAmount');
+        const hint = document.getElementById('balanceOperationHint');
+        const error = document.getElementById('balanceOperationError');
+        const submitButton = document.getElementById('balanceOperationSubmit');
+        const balanceElement = document.getElementById('clientBalance');
+
+        function updateBalanceHint() {
+            hint.textContent = operationType.value === 'correction'
+                ? 'Укажите новый итоговый баланс клиента.'
+                : 'Укажите количество уроков.';
+        }
+
+        function closeBalanceModal() {
+            balanceOperationModal.classList.add('hidden');
+            form.reset();
+            error.textContent = '';
+            updateBalanceHint();
+        }
+
+        openButton.addEventListener('click', function () {
+            error.textContent = '';
+            updateBalanceHint();
+            balanceOperationModal.classList.remove('hidden');
+        });
+
+        cancelButton.addEventListener('click', closeBalanceModal);
+        balanceOperationModal.addEventListener('click', function (event) {
+            if (event.target === balanceOperationModal) {
+                closeBalanceModal();
+            }
+        });
+        operationType.addEventListener('change', updateBalanceHint);
+
+        form.addEventListener('submit', function (event) {
+            event.preventDefault();
+            error.textContent = '';
+
+            const clientId = document.querySelector('.client-detail-status-select').dataset.clientId;
+            const formData = new FormData(form);
+
+            submitButton.disabled = true;
+
+            fetch('/clients/' + clientId + '/balance-operation/', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRFToken': getCookie('csrftoken')
+                }
+            })
+                .then(response => response.json().then(data => {
+                    if (!response.ok) {
+                        throw new Error(data.error || 'Не удалось создать операцию.');
+                    }
+                    return data;
+                }))
+                .then(data => {
+                    if (data.status !== 'ok') {
+                        throw new Error(data.error || 'Не удалось создать операцию.');
+                    }
+
+                    window.location.reload();
+                })
+                .catch(err => {
+                    error.textContent = err.message;
+                })
+                .finally(() => {
+                    submitButton.disabled = false;
+                });
+        });
+
+        updateBalanceHint();
+    }
 });

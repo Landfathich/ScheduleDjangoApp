@@ -8,4 +8,5 @@ urlpatterns = [
     path('api/leads/', LeadCreateAPIView.as_view(), name='api-lead-create'),
     path('<int:client_id>/', views.client_detail, name='client-detail'),
     path('<int:client_id>/status/', views.update_client_status, name='update-client-status'),
+    path('<int:client_id>/balance-operation/', views.create_balance_operation, name='create-balance-operation'),
 ]

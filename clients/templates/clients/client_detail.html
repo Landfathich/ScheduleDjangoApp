@@ -59,8 +59,11 @@
                 </section>
 
                 <section class="client-detail-section">
-                    <h2>Баланс</h2>
-                    <div class="client-balance">
+                    <div class="client-balance-header">
+                        <h2>Баланс</h2>
+                        <button type="button" id="balanceOperationOpen">Изменить баланс</button>
+                    </div>
+                    <div class="client-balance" id="clientBalance">
                         {{ client.balance }}
                         {% if client.balance == 1 %}
                             урок
@@ -151,6 +154,34 @@
                 <button type="button" id="statusReasonCancel">Отмена</button>
                 <button type="button" id="statusReasonConfirm">Подтвердить</button>
             </div>
+        </div>
+    </div>
+
+    <div id="balanceOperationModal" class="status-reason-modal hidden">
+        <div class="status-reason-modal-content">
+            <h3>Операция с балансом</h3>
+
+            <form id="balanceOperationForm">
+                {% csrf_token %}
+
+                <label for="balanceOperationType">Тип операции</label>
+                <select id="balanceOperationType" name="operation_type" required>
+                    <option value="add">Пополнение</option>
+                    <option value="spend">Списание</option>
+                    <option value="correction">Корректировка</option>
+                </select>
+
+                <label for="balanceOperationAmount">Количество уроков</label>
+                <input type="number" id="balanceOperationAmount" name="amount" step="1" required>
+
+                <div id="balanceOperationHint"></div>
+                <div id="balanceOperationError"></div>
+
+                <div class="status-reason-actions">
+                    <button type="button" id="balanceOperationCancel">Отмена</button>
+                    <button type="submit" id="balanceOperationSubmit">Создать операцию</button>
+                </div>
+            </form>
         </div>
     </div>
 {% endblock %}

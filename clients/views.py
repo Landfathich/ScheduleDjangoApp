@@ -1,10 +1,11 @@
 from django.contrib.admin.views.decorators import staff_member_required
+from django.core.exceptions import ValidationError
 from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404
 
 from clients.models import ClientStatusHistory
 from core.constants import get_excluded_teacher_ids
-from core.models import Client
+from core.models import BalanceOperation, Client
 
 
 @staff_member_required
@@ -99,3 +100,37 @@ def update_client_status(request, client_id):
     client.save(update_fields=['lifecycle_status'])
 
     return JsonResponse({'status': 'ok'})
+
+
+@staff_member_required
+def create_balance_operation(request, client_id):
+    if request.method != 'POST':
+        return JsonResponse({'error': 'Method not allowed'}, status=405)
+
+    client = get_object_or_404(Client, pk=client_id)
+    operation_type = request.POST.get('operation_type', '').strip()
+    amount_raw = request.POST.get('amount', '').strip()
+
+    valid_types = dict(BalanceOperation.OPERATION_TYPES)
+    if operation_type not in valid_types:
+        return JsonResponse({'error': 'Некорректный тип операции'}, status=400)
+
+    try:
+        amount = int(amount_raw)
+    except (TypeError, ValueError):
+        return JsonResponse({'error': 'Введите целое количество уроков'}, status=400)
+
+    try:
+        operation = BalanceOperation.objects.create(
+            client=client,
+            operation_type=operation_type,
+            amount=amount,
+        )
+    except (ValueError, ValidationError) as error:
+        return JsonResponse({'error': str(error)}, status=400)
+
+    return JsonResponse({
+        'status': 'ok',
+        'balance': operation.balance_after,
+        'operation': operation.get_operation_type_display(),
+    })
