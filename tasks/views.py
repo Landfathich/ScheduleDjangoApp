@@ -44,6 +44,18 @@ def task_list(request):
     else:
         tasks = base_tasks
 
+    tasks = tasks.order_by(
+        models.Case(
+            models.When(priority='urgent', then=0),
+            models.When(priority='high', then=1),
+            models.When(priority='normal', then=2),
+            models.When(priority='low', then=3),
+            default=4,
+            output_field=models.IntegerField(),
+        ),
+        '-created_at',
+    )
+
     context = {
         'tasks': tasks,
         'current_filter': task_filter,
@@ -69,7 +81,18 @@ def task_deadlines(request):
     ).filter(
         models.Q(assignee=request.user) |
         models.Q(project__members=request.user)
-    ).distinct()
+    ).distinct().order_by(
+        models.Case(
+            models.When(priority='urgent', then=0),
+            models.When(priority='high', then=1),
+            models.When(priority='normal', then=2),
+            models.When(priority='low', then=3),
+            default=4,
+            output_field=models.IntegerField(),
+        ),
+        'due_date',
+        '-created_at',
+    )
 
     overdue = base_tasks.filter(
         due_date__lt=now
@@ -171,7 +194,17 @@ def kanban_board(request):
             tasks = Task.objects.filter(
                 project=current_project,
                 column=column
-            ).select_related('assignee', 'creator').order_by('-created_at')
+            ).select_related('assignee', 'creator').order_by(
+                models.Case(
+                    models.When(priority='urgent', then=0),
+                    models.When(priority='high', then=1),
+                    models.When(priority='normal', then=2),
+                    models.When(priority='low', then=3),
+                    default=4,
+                    output_field=models.IntegerField(),
+                ),
+                '-created_at',
+            )
 
             tasks_by_status[column.id] = {
                 'name': column.name,
@@ -257,8 +290,8 @@ def create_task(request):
                     else 'Без срока'
                 )
                 creator = (
-                    task.creator.get_full_name()
-                    or task.creator.username
+                        task.creator.get_full_name()
+                        or task.creator.username
                 )
 
                 create_notification(
@@ -647,8 +680,8 @@ def add_member(request, project_id):
     user = get_object_or_404(User, id=user_id)
 
     if ProjectMember.objects.filter(
-        project=project,
-        user=user
+            project=project,
+            user=user
     ).exists():
         return JsonResponse({
             'success': False,

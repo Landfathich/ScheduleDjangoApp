@@ -145,6 +145,36 @@
     padding: 5px;
 }
 
+.kanban-task-title {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+}
+
+.priority-dot {
+    flex: 0 0 8px;
+    width: 8px;
+    height: 8px;
+    margin-top: 5px;
+    border-radius: 50%;
+}
+
+.priority-dot.priority-urgent {
+    background: #ef4444;
+}
+
+.priority-dot.priority-high {
+    background: #f59e0b;
+}
+
+.priority-dot.priority-normal {
+    background: #64748b;
+}
+
+.priority-dot.priority-low {
+    background: #94a3b8;
+}
+
 @media (max-width: 768px) {
     .kanban-container {
         padding: 10px;

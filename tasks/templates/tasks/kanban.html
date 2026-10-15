@@ -86,7 +86,12 @@
                         <div class="task-list" data-column-id="{{ column_data.column_id }}">
                             {% for task in column_data.tasks %}
                                 <div class="task-card" draggable="true" data-task-id="{{ task.id }}">
-                                    <div class="task-title">{{ task.title }}</div>
+                                    <div class="task-title kanban-task-title">
+    <span class="priority-dot priority-{{ task.priority }}"
+          title="Приоритет: {{ task.get_priority_display }}"
+          aria-label="Приоритет: {{ task.get_priority_display }}"></span>
+                                        <span>{{ task.title }}</span>
+                                    </div>
 
                                     {% if task.description %}
                                         <div class="task-description">

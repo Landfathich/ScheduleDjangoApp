@@ -7,9 +7,14 @@
     <div class="deadline-column-body">
         {% for task in tasks %}
             <div class="deadline-task task-row" data-task-id="{{ task.id }}">
-                <div class="task-title">
-                    {{ task.title }}
+
+                <div class="task-title deadline-task-title">
+                    <span class="priority-dot priority-{{ task.priority }}"
+                          title="Приоритет: {{ task.get_priority_display }}"
+                          aria-label="Приоритет: {{ task.get_priority_display }}"></span>
+                    <span>{{ task.title }}</span>
                 </div>
+
 
                 {% if task.description %}
                     <div class="task-description">
