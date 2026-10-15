@@ -1,3 +1,4 @@
+
 {% extends 'tasks/base.html' %}
 {% load static %}
 
@@ -72,6 +73,14 @@
                 <p>Выберите проект из списка выше, чтобы просматривать задачи.</p>
             </div>
         {% else %}
+            <!-- Подсказка для мобильных устройств -->
+            <div class="mobile-kanban-hint" role="note">
+                <span class="mobile-kanban-hint__icon" aria-hidden="true">☝️</span>
+                <span>
+                    Чтобы переместить задачу, зажмите её карточку примерно на полсекунды.
+                </span>
+            </div>
+
             <div class="kanban-board">
                 {% for column_id, column_data in tasks_by_status.items %}
                     <div class="kanban-column" data-column-id="{{ column_data.column_id }}">
@@ -168,6 +177,7 @@
 
     {% include 'tasks/includes/task_modal.html' %}
 
+    <!-- Модальное окно управления колонками -->
     <div id="columnModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -222,10 +232,69 @@
         </div>
     </div>
 
+    <!-- Просмотр изображения -->
     <div id="imageViewModal" class="modal" style="display: none;">
         <div class="modal-content">
             <span class="close" id="closeImageView">&times;</span>
-            <img id="fullSizeImage">
+            <img id="fullSizeImage" alt="Полноразмерное изображение">
+        </div>
+    </div>
+
+    <!-- Мобильное перемещение задачи -->
+    <div id="mobileMoveTaskModal" class="mobile-move-modal" hidden>
+        <div
+                class="mobile-move-modal__backdrop"
+                data-mobile-move-close
+                aria-hidden="true"
+        ></div>
+
+        <div
+                class="mobile-move-modal__dialog"
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="mobileMoveTaskTitle"
+                tabindex="-1"
+        >
+            <div class="mobile-move-modal__header">
+                <h2 id="mobileMoveTaskTitle">Переместить задачу</h2>
+
+                <button
+                        type="button"
+                        class="mobile-move-modal__close"
+                        data-mobile-move-close
+                        aria-label="Закрыть окно"
+                >
+                    &times;
+                </button>
+            </div>
+
+            <p class="mobile-move-modal__description">
+                Выберите колонку, в которую нужно переместить задачу.
+            </p>
+
+            <div
+                    id="mobileMoveTaskOptions"
+                    class="mobile-move-modal__options"
+                    aria-label="Доступные колонки"
+            ></div>
+
+            <p
+                    id="mobileMoveTaskError"
+                    class="mobile-move-modal__error"
+                    role="alert"
+                    aria-live="polite"
+                    hidden
+            ></p>
+
+            <div class="mobile-move-modal__footer">
+                <button
+                        type="button"
+                        class="mobile-move-modal__cancel"
+                        data-mobile-move-close
+                >
+                    Отмена
+                </button>
+            </div>
         </div>
     </div>
 {% endblock %}
