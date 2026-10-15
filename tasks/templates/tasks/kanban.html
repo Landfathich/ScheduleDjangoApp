@@ -11,59 +11,65 @@
 {% block tasks_content %}
     <div class="kanban-container">
         <div class="kanban-header">
-            <div style="display: flex; align-items: center; gap: 15px;">
+            <div class="kanban-header-main">
                 <h1>Канбан-доска задач</h1>
-                {% if user.is_staff %}
+
+                {% if user.is_staff and user_projects %}
                     <div class="project-selector">
-                        {% if user_projects %}
-                            <form method="get" action="{% url 'tasks:kanban_board' %}" style="display: inline;">
-                                <select name="project" id="projectSelect" class="form-select"
-                                        onchange="this.form.submit()">
-                                    {% for project in user_projects %}
-                                        <option value="{{ project.id }}"
-                                                {% if project.id == current_project.id %}selected{% endif %}>
-                                            {{ project.name }}
-                                        </option>
-                                    {% endfor %}
-                                </select>
-                            </form>
-                            <a href="{% url 'tasks:project_list' %}" class="btn" style="margin-left: 10px;">
-                                Управление проектами
+                        <form method="get" action="{% url 'tasks:kanban_board' %}">
+                            <select name="project" id="projectSelect" class="form-select"
+                                    onchange="this.form.submit()">
+                                {% for project in user_projects %}
+                                    <option value="{{ project.id }}"
+                                            {% if project.id == current_project.id %}selected{% endif %}>
+                                        {{ project.name }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </form>
+
+                        <a href="{% url 'tasks:project_list' %}" class="btn">
+                            Управление проектами
+                        </a>
+
+                        {% if current_project %}
+                            <a href="{% url 'tasks:project_members' current_project.id %}" class="btn">
+                                Участники
                             </a>
-                            {% if current_project %}
-                                <a href="{% url 'tasks:project_members' current_project.id %}" class="btn"
-                                   style="margin-left: 5px;">
-                                    👥 Участники
-                                </a>
-                            {% endif %}
                         {% endif %}
                     </div>
                 {% endif %}
             </div>
 
             {% if current_project %}
-                <button
-                        id="createTaskBtn"
-                        class="btn"
-                        data-default-project="{{ current_project.id|default:'' }}"
-                >
-                    + Создать задачу
-                </button>
+                <div class="kanban-header-actions">
+                    <button
+                            id="createTaskBtn"
+                            class="btn"
+                            data-default-project="{{ current_project.id|default:'' }}"
+                    >
+                        Создать задачу
+                    </button>
+
+                    <button id="createColumnBtn" class="btn btn-success">
+                        Добавить колонку
+                    </button>
+                </div>
             {% endif %}
         </div>
 
         {% if not user_projects and user.is_staff %}
-            <div class="no-projects" style="text-align: center; padding: 40px;">
+            <div class="no-projects">
                 <h3>У вас нет проектов</h3>
-                <p>Создайте первый проект чтобы начать работу с задачами</p>
+                <p>Создайте первый проект, чтобы начать работу с задачами.</p>
                 <a href="{% url 'tasks:create_project' %}" class="btn btn-success">
-                    + Создать первый проект
+                    Создать первый проект
                 </a>
             </div>
         {% elif not current_project %}
-            <div class="no-project-selected" style="text-align: center; padding: 40px;">
+            <div class="no-project-selected">
                 <h3>Проект не выбран</h3>
-                <p>Выберите проект из списка выше чтобы просматривать задачи</p>
+                <p>Выберите проект из списка выше, чтобы просматривать задачи.</p>
             </div>
         {% else %}
             <div class="kanban-board">
@@ -71,14 +77,34 @@
                     <div class="kanban-column" data-column-id="{{ column_data.column_id }}">
                         <div class="column-header"
                              style="background: linear-gradient(to bottom, {{ column_data.color }}80, {{ column_data.color }});">
-                            <div style="display: flex; justify-content: space-between; align-items: center;">
-                                <span style="display: flex; align-items: center; gap: 4px;">
+                            <div class="column-header-content">
+                                <div class="column-title-group">
                                     <span class="column-name">{{ column_data.name }}</span>
                                     <span class="column-count">{{ column_data.tasks|length }}</span>
-                                </span>
-                                <button class="edit-column-btn"
-                                        style="background: none; border: none; color: white; cursor: pointer; padding: 2px 4px;">
-                                    ✏️
+                                </div>
+
+                                <button
+                                        type="button"
+                                        class="edit-column-btn"
+                                        aria-label="Редактировать колонку {{ column_data.name }}"
+                                        title="Редактировать колонку"
+                                >
+                                    <svg
+                                            class="icon icon-edit"
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            viewBox="0 0 24 24"
+                                            width="16"
+                                            height="16"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            stroke-width="2"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            aria-hidden="true"
+                                    >
+                                        <path d="M12 20h9"/>
+                                        <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L8 18l-4 1 1-4Z"/>
+                                    </svg>
                                 </button>
                             </div>
                         </div>
@@ -87,9 +113,11 @@
                             {% for task in column_data.tasks %}
                                 <div class="task-card" draggable="true" data-task-id="{{ task.id }}">
                                     <div class="task-title kanban-task-title">
-    <span class="priority-dot priority-{{ task.priority }}"
-          title="Приоритет: {{ task.get_priority_display }}"
-          aria-label="Приоритет: {{ task.get_priority_display }}"></span>
+                                        <span
+                                                class="priority-dot priority-{{ task.priority }}"
+                                                title="Приоритет: {{ task.get_priority_display }}"
+                                                aria-label="Приоритет: {{ task.get_priority_display }}"
+                                        ></span>
                                         <span>{{ task.title }}</span>
                                     </div>
 
@@ -100,72 +128,95 @@
                                     {% endif %}
 
                                     <div class="task-footer">
-                <span>
-                    {% if task.assignee %}
-                        {{ task.assignee.first_name|default:task.assignee.username }}
-                    {% else %}
-                        Не назначен
-                    {% endif %}
-                </span>
-                                        <span class="edit-link">✏️</span>
+                                        <span>
+                                            {% if task.assignee %}
+                                                {{ task.assignee.first_name|default:task.assignee.username }}
+                                            {% else %}
+                                                Не назначен
+                                            {% endif %}
+                                        </span>
+                                        <span class="edit-link" aria-label="Редактировать задачу"
+                                              title="Редактировать задачу">
+                                            <svg
+                                                    class="icon icon-edit"
+                                                    xmlns="http://www.w3.org/2000/svg"
+                                                    viewBox="0 0 24 24"
+                                                    width="16"
+                                                    height="16"
+                                                    fill="none"
+                                                    stroke="currentColor"
+                                                    stroke-width="2"
+                                                    stroke-linecap="round"
+                                                    stroke-linejoin="round"
+                                                    aria-hidden="true"
+                                            >
+                                                <path d="M12 20h9"/>
+                                                <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L8 18l-4 1 1-4Z"/>
+                                            </svg>
+                                        </span>
                                     </div>
                                 </div>
                             {% empty %}
-                                <!-- Если задач нет, можно ничего не показывать или показать подсказку -->
+                                <!-- Колонка пока без задач -->
                             {% endfor %}
                         </div>
                     </div>
                 {% endfor %}
-            </div>
-            <div style="text-align: center; margin: 20px 0;">
-                <button id="createColumnBtn" class="btn btn-success" style="padding: 10px 30px; font-size: 16px;">
-                    + Добавить колонку
-                </button>
             </div>
         {% endif %}
     </div>
 
     {% include 'tasks/includes/task_modal.html' %}
 
-    <!-- Модальное окно для редактирования колонки -->
     <div id="columnModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
                 <h3 id="columnModalTitle">Редактировать колонку</h3>
                 <span class="close" id="closeColumnModal">&times;</span>
             </div>
+
             <div class="modal-body">
-                <!-- Блок перемещения -->
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px solid #ddd;">
-                    <span style="font-weight: bold;">Порядок колонки:</span>
+                <div class="column-order-controls">
+                    <span>Порядок колонки:</span>
                     <div>
                         <button type="button" id="moveColumnLeftBtn" class="btn"
-                                style="font-size: 18px; padding: 5px 10px;" title="Переместить влево">←
+                                title="Переместить влево">←
                         </button>
                         <button type="button" id="moveColumnRightBtn" class="btn"
-                                style="font-size: 18px; padding: 5px 10px;" title="Переместить вправо">→
+                                title="Переместить вправо">→
                         </button>
                     </div>
                 </div>
 
                 <form id="columnForm">
                     {% csrf_token %}
+
                     <div class="form-group">
-                        <label class="form-label">Название колонки:</label>
+                        <label class="form-label" for="columnName">Название колонки:</label>
                         <input type="text" name="name" id="columnName" class="form-input" required>
                     </div>
+
                     <div class="form-group">
-                        <label class="form-label">Цвет колонки:</label>
-                        <input type="color" name="color" id="columnColor" class="form-input" style="height: 40px;">
+                        <label class="form-label" for="columnColor">Цвет колонки:</label>
+                        <input type="color" name="color" id="columnColor" class="form-input column-color-input">
                     </div>
+
                     <input type="hidden" name="column_id" id="editColumnId">
                 </form>
             </div>
-            <div class="modal-actions" style="display: flex; justify-content: space-between;">
-                <button type="button" id="deleteColumnBtn" class="btn btn-danger">Удалить колонку</button>
+
+            <div class="modal-actions column-modal-actions">
+                <button type="button" id="deleteColumnBtn" class="btn btn-danger">
+                    Удалить колонку
+                </button>
+
                 <div>
-                    <button type="button" id="saveColumnBtn" class="btn btn-success">Сохранить</button>
-                    <button type="button" class="btn btn-cancel close-modal" id="cancelColumnBtn">Отмена</button>
+                    <button type="button" id="saveColumnBtn" class="btn btn-success">
+                        Сохранить
+                    </button>
+                    <button type="button" class="btn btn-cancel close-modal" id="cancelColumnBtn">
+                        Отмена
+                    </button>
                 </div>
             </div>
         </div>

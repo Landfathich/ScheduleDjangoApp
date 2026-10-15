@@ -1,8 +1,22 @@
+.tasks-container {
+    height: 80vh;
+    min-height: 0;
+}
+
+.kanban-container {
+    height: 93%;
+    min-height: 0;
+}
+
 .kanban-board {
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
+    height: 100%;
+    min-height: 0;
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(240px, 1fr);
     gap: 10px;
-    max-height: 700px;
+    overflow-x: auto;
+    overflow-y: hidden;
 }
 
 .kanban-column {
@@ -10,24 +24,19 @@
     border: 1px solid var(--border-color);
     border-radius: 12px;
     display: flex;
+    min-height: 0;
     max-height: 700px;
     flex-direction: column;
     overflow: hidden;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
 }
 
-[data-theme="dark"] .kanban-column {
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid var(--border-color);
-}
-
-[data-theme="dark"] .task-card {
-    background: rgba(255, 255, 255, 0.06);
-    border: 1px solid var(--border-color);
-}
-
-[data-theme="dark"] .task-card:hover {
-    background: rgba(255, 255, 255, 0.1);
+.task-list {
+    min-height: 0;
+    flex: 1;
+    padding: 8px;
+    overflow-y: auto;
+    background: transparent;
 }
 
 .column-header {
@@ -39,23 +48,56 @@
     background: var(--primary-color);
 }
 
-.column-count {
-    background: white;
-    color: var(--primary-color);
-    padding: 2px 6px;
-    border-radius: 10px;
-    font-size: 11px;
-    font-weight: 600;
-    float: right;
+.column-header-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    min-width: 0;
 }
 
-.task-list {
-    min-height: 300px;
-    flex: 1;
-    padding: 8px;
-    overflow-y: auto;
-    background: transparent;
+.column-title-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
 }
+
+.column-name {
+    overflow-wrap: anywhere;
+}
+
+.column-count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 24px;
+    height: 24px;
+    padding: 0;
+    border-radius: 50%;
+    background: var(--header-bg);
+    color: var(--primary-color);
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 1;
+}
+
+.edit-column-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.edit-column-btn svg,
+.icon-edit {
+    display: block;
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+}
+
 
 .task-card {
     background: var(--liquid-glass);
@@ -68,6 +110,7 @@
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     transition: all 0.2s ease;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    overflow-wrap: anywhere;
 }
 
 .task-card:hover {
@@ -95,60 +138,25 @@
     margin-bottom: 6px;
     line-height: 1.3;
     font-size: 11px;
+    overflow-wrap: anywhere;
 }
 
 .task-footer {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: 8px;
     color: var(--text-secondary);
     font-size: 10px;
     margin-top: 6px;
     opacity: 0.7;
 }
 
-/* Селектор проектов */
-.project-selector {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 8px 12px;
-}
-
-.project-selector select {
-    background: var(--bg);
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    padding: 8px 12px;
-    font-size: 13px;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    min-width: 180px;
-    color: var(--text-primary);
-}
-
-.project-selector select:focus {
-    outline: none;
-    border-color: var(--primary-color);
-}
-
-/* Стили для модального окна колонки */
-#columnModal .modal-content {
-    max-width: 400px;
-}
-
-#columnModal .form-group {
-    margin-bottom: 15px;
-}
-
-#columnModal input[type="color"] {
-    width: 100%;
-    padding: 5px;
-}
-
 .kanban-task-title {
     display: flex;
     align-items: flex-start;
     gap: 8px;
+    min-width: 0;
 }
 
 .priority-dot {
@@ -175,16 +183,99 @@
     background: #94a3b8;
 }
 
+/* Header */
+.kanban-header-main {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    min-width: 0;
+}
+
+.kanban-header-actions {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+/* Project selector */
+.project-selector {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+}
+
+.project-selector select {
+    background: var(--bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 13px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    min-width: 180px;
+    color: var(--text-primary);
+}
+
+.project-selector select:focus {
+    outline: none;
+    border-color: var(--primary-color);
+}
+
+/* Column controls */
+.column-order-controls {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.column-color-input {
+    width: 100%;
+}
+
+.column-modal-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+}
+
+.no-projects,
+.no-project-selected {
+    color: var(--text-secondary);
+}
+
+/* Column modal */
+#columnModal .modal-content {
+    max-width: 400px;
+}
+
+#columnModal .form-group {
+    margin-bottom: 15px;
+}
+
+#columnModal input[type="color"] {
+    width: 100%;
+    padding: 5px;
+}
+
+/* Mobile layout */
 @media (max-width: 768px) {
     .kanban-container {
         padding: 10px;
-        overflow-x: auto;
+        overflow-x: hidden;
     }
 
     .kanban-board {
-        grid-template-columns: 1fr;
+        grid-auto-flow: row;
+        grid-auto-columns: auto;
+        grid-template-columns: minmax(0, 1fr);
         gap: 10px;
-        min-width: 300px;
+        min-width: 0;
+        max-height: none;
+        overflow-x: hidden;
+        overflow-y: visible;
     }
 
     .kanban-column {
@@ -202,6 +293,14 @@
     .task-card {
         padding: 10px;
         font-size: 13px;
+        cursor: pointer;
+        user-select: none;
+        -webkit-user-select: none;
+        transition: transform 0.2s;
+    }
+
+    .task-card:active {
+        transform: scale(0.98);
     }
 
     .task-title {
@@ -224,6 +323,12 @@
         width: 100%;
     }
 
+    .kanban-header-main,
+    .kanban-header-actions {
+        align-items: stretch;
+        width: 100%;
+    }
+
     .project-selector {
         flex-direction: column;
         width: 100%;
@@ -231,7 +336,8 @@
     }
 
     .project-selector select {
-        min-width: 100%;
+        width: 100%;
+        min-width: 0;
     }
 
     .project-selector form {
@@ -242,27 +348,20 @@
         width: 100%;
         text-align: center;
     }
-}
 
-/* Touch-интерфейс */
-@media (max-width: 768px) {
-    .task-card {
-        cursor: pointer;
-        user-select: none;
-        -webkit-user-select: none;
-        transition: transform 0.2s;
+    .column-modal-actions {
+        flex-direction: column;
+        align-items: stretch;
     }
 
-    .task-card:active {
-        transform: scale(0.98);
+    .column-modal-actions .btn {
+        width: 100%;
     }
 
+    /* Touch interface */
     .move-modal {
         position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
+        inset: 0;
         background: rgba(0, 0, 0, 0.6);
         display: flex;
         align-items: center;
@@ -277,9 +376,10 @@
         border-radius: 12px;
         width: 100%;
         max-width: 280px;
+        max-height: calc(100vh - 40px);
+        overflow-y: auto;
         box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
         font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-        overflow: hidden;
     }
 
     .move-modal-content > div {
@@ -321,7 +421,7 @@
     }
 
     .status-option.current-status {
-        background: rgba(var(--primary-color-rgb), 0.15);
+        background: var(--glass-bg);
         border-color: var(--primary-color);
         color: var(--primary-color);
         font-weight: 600;
