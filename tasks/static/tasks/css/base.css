@@ -209,3 +209,9 @@
     background: var(--primary-color);
     color: white;
 }
+
+@media (max-width: 768px) {
+    .tasks-navigation {
+        margin-bottom: 5px;
+    }
+}

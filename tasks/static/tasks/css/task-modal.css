@@ -103,7 +103,7 @@
     border-radius: 8px;
     font-size: 13px;
     box-sizing: border-box;
-    background: var(--bg);
+    background-color: var(--bg);
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     color: var(--text-primary);
     transition: border-color 0.2s;

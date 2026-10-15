@@ -159,3 +159,63 @@
 .deadlines-page #createTaskBtn {
     flex-shrink: 0;
 }
+
+
+@media (max-width: 768px) {
+    .deadlines-page {
+        width: 100%;
+        max-width: 100%;
+        height: auto;
+        min-width: 0;
+    }
+
+    .deadlines-page .tasks-header {
+        align-items: flex-start;
+        gap: 12px;
+        margin-bottom: 16px;
+    }
+
+    .deadlines-page .tasks-header h1 {
+        font-size: 22px;
+    }
+
+    .deadlines-page #createTaskBtn {
+        max-width: 50%;
+        white-space: normal;
+    }
+
+    .deadlines-board {
+        display: flex;
+        flex-direction: column;
+        overflow: visible;
+        min-height: 0;
+        gap: 12px;
+    }
+
+    .deadline-column {
+        width: 100%;
+        min-width: 0;
+        height: auto;
+        max-height: 500px;
+    }
+
+    .deadline-column-header {
+        padding: 12px;
+    }
+
+    .deadline-column-body {
+        flex: initial;
+        overflow: visible;
+        overflow-y: auto;
+        padding: 8px;
+    }
+
+    .deadline-task {
+        min-width: 0;
+        padding: 12px;
+    }
+
+    .deadline-task-meta {
+        flex-wrap: wrap;
+    }
+}

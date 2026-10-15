@@ -1,81 +1,97 @@
+
 .projects-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-    gap: 15px;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));
+    gap: 16px;
     margin-top: 20px;
 }
 
 .project-card {
-    background: var(--header-bg);
+    min-width: 0;
+    background: var(--glass-bg);
     border: 1px solid var(--border-color);
     border-radius: 12px;
-    padding: 0;
-    position: relative;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     overflow: hidden;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-    transition: all 0.2s ease;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .project-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border-color: var(--primary-color);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
 }
 
 .project-color {
-    height: 6px;
+    height: 4px;
     background: var(--primary-color);
 }
 
 .project-info {
-    padding: 16px;
+    padding: 18px;
 }
 
 .project-name {
-    margin: 0 0 8px 0;
+    margin: 0 0 8px;
     color: var(--text-primary);
-    font-size: 15px;
+    font-size: 16px;
     font-weight: 600;
+    overflow-wrap: anywhere;
 }
 
 .project-description {
+    margin: 0 0 16px;
     color: var(--text-secondary);
-    font-size: 12px;
-    margin: 0 0 10px 0;
-    line-height: 1.4;
+    font-size: 13px;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
 }
 
 .project-stats {
     display: flex;
+    flex-wrap: wrap;
     justify-content: space-between;
-    color: var(--text-secondary);
-    font-size: 11px;
+    gap: 8px 16px;
+    padding-top: 12px;
     border-top: 1px solid var(--border-color);
-    padding-top: 10px;
+    color: var(--text-secondary);
+    font-size: 12px;
 }
 
 .project-actions {
-    padding: 10px 16px;
-    background: var(--glass-bg);
-    border-top: 1px solid var(--border-color);
     display: flex;
+    flex-wrap: wrap;
     gap: 8px;
+    padding: 12px 18px;
+    border-top: 1px solid var(--border-color);
+    background: var(--header-bg);
 }
 
 .project-actions .btn {
-    flex: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1 1 auto;
+    min-width: 0;
+    padding: 8px 12px;
+    font-size: 12px;
     text-align: center;
-    font-size: 11px;
-    padding: 6px 10px;
+    text-decoration: none;
 }
 
-/* Сообщения */
+.project-actions form {
+    display: flex;
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.project-actions form .btn {
+    width: 100%;
+}
+
 .alert {
     padding: 10px 14px;
     margin-bottom: 15px;
     border-radius: 8px;
     font-size: 13px;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
 .alert-success {
@@ -90,22 +106,64 @@
     color: var(--danger-color);
 }
 
+.no-projects {
+    padding: 40px 20px;
+    text-align: center;
+    color: var(--text-secondary);
+}
+
+.no-projects h3 {
+    color: var(--text-primary);
+}
+
 @media (max-width: 768px) {
-    .projects-grid {
-        grid-template-columns: 1fr;
-        gap: 10px;
+    .kanban-header {
+        align-items: flex-start;
+        flex-wrap: wrap;
+        gap: 12px;
     }
 
-    .project-card {
-        margin-bottom: 10px;
+    .kanban-header h1 {
+        font-size: 22px;
+    }
+
+    .kanban-header > .btn {
+        width: 100%;
+        text-align: center;
+    }
+
+    .projects-grid {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 12px;
+        margin-top: 16px;
+        padding-bottom: 15px;
+    }
+
+    .project-info {
+        padding: 14px;
     }
 
     .project-actions {
-        flex-direction: column;
-        gap: 6px;
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+        padding: 12px 14px;
     }
 
     .project-actions .btn {
         width: 100%;
+        min-height: 38px;
+        padding: 8px;
+        font-size: 12px;
+    }
+
+    .project-actions form {
+        width: 100%;
+    }
+}
+
+@media (max-width: 380px) {
+    .project-actions {
+        grid-template-columns: minmax(0, 1fr);
     }
 }

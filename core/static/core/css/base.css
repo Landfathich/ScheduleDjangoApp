@@ -108,3 +108,9 @@ select {
     appearance: none;
     -webkit-appearance: none;
 }
+
+@media (max-width: 768px) {
+    main {
+        padding: 10px 5px;
+    }
+}
