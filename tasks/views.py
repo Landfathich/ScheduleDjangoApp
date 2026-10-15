@@ -9,9 +9,9 @@ from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 
-from notifications.services import create_notification
 from .forms import TaskForm, ProjectForm
 from .models import Task, Project, ProjectColumn, ProjectMember
+from .services import notify_task_assignee
 
 
 def user_can_access_task(task, user):
@@ -248,15 +248,30 @@ def update_task_status(request):
             project=task.project
         )
 
+        old_column = task.column
+
+        if old_column == new_column:
+            return JsonResponse({'success': True})
+
         task.column = new_column
         task.save()
 
+        from .services import notify_task_column_changed
+
+        notify_task_column_changed(
+            task=task,
+            request=request,
+            old_column=old_column,
+            new_column=new_column
+        )
+
         return JsonResponse({'success': True})
+
     except Exception as e:
-        return JsonResponse({'success': False, 'error': str(e)})
-
-
-from django.urls import reverse
+        return JsonResponse({
+            'success': False,
+            'error': str(e)
+        })
 
 
 @login_required
@@ -277,36 +292,12 @@ def create_task(request):
 
             task.save()
 
-            if task.assignee:
-                task_url = request.build_absolute_uri(
-                    reverse('tasks:task_list')
-                ) + f'?task={task.id}'
-
-                description = task.description or 'Нет описания'
-                project = task.project.name if task.project else 'Без проекта'
-                due_date = (
-                    timezone.localtime(task.due_date).strftime('%d.%m.%Y %H:%M')
-                    if task.due_date
-                    else 'Без срока'
-                )
-                creator = (
-                        task.creator.get_full_name()
-                        or task.creator.username
-                )
-
-                create_notification(
-                    user=task.assignee,
-                    title='Вам поставили новую задачу',
-                    body=(
-                        f'Название: {task.title}\n'
-                        f'Поставил: {creator}\n'
-                        f'Описание: {description}\n'
-                        f'Проект: {project}\n'
-                        f'Срок: {due_date}\n'
-                        f'Приоритет: {task.get_priority_display()}\n\n'
-                        f'Открыть задачу:\n{task_url}'
-                    )
-                )
+            notify_task_assignee(
+                task=task,
+                request=request,
+                title='Вам поставили новую задачу',
+                exclude_user=request.user
+            )
 
             return JsonResponse({'success': True})
 
@@ -340,26 +331,34 @@ def edit_task(request, task_id):
             'error': 'Нет доступа к проекту'
         })
 
-    if request.method == 'POST':
-        form = TaskForm(
-            request.POST,
-            request.FILES,
-            instance=task
-        )
+    if request.method != 'POST':
+        return JsonResponse({
+            'success': False,
+            'error': 'Invalid method'
+        })
 
-        if form.is_valid():
-            form.save()
-            return JsonResponse({'success': True})
+    form = TaskForm(
+        request.POST,
+        request.FILES,
+        instance=task
+    )
 
+    if not form.is_valid():
         return JsonResponse({
             'success': False,
             'errors': form.errors
         })
 
-    return JsonResponse({
-        'success': False,
-        'error': 'Invalid method'
-    })
+    updated_task = form.save()
+
+    notify_task_assignee(
+        task=updated_task,
+        request=request,
+        title='Задача обновлена',
+        exclude_user=request.user
+    )
+
+    return JsonResponse({'success': True})
 
 
 @login_required
@@ -403,7 +402,7 @@ def get_task_data(request, task_id):
         'project_name': task.project.name if task.project else None,
         'column_name': task.column.name if task.column else None,
         'creator_name': task.creator.get_full_name() or task.creator.username,
-        'due_date': task.due_date.strftime('%Y-%m-%dT%H:%M') if task.due_date else '',
+        'due_date': timezone.localtime(task.due_date).strftime('%Y-%m-%dT%H:%M') if task.due_date else '',
         'priority': task.priority,
         'image_url': task.image.url if task.image else None
     })
