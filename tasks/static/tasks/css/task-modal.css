@@ -12,20 +12,24 @@
 }
 
 .modal.show {
-    display: block;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .modal-content {
     background-color: var(--header-bg);
-    margin: 5% auto;
+    margin: 0;
     padding: 0;
     border: 1px solid var(--border-color);
     border-radius: 12px;
     width: 500px;
+    max-width: calc(100% - 32px);
     max-height: 80vh;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
     overflow: hidden;
     display: flex;
+    height: fit-content;
     flex-direction: column;
 }
 
