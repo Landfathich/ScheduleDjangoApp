@@ -24,6 +24,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import generics, filters
 from rest_framework.permissions import IsAuthenticated
 
+from notifications.services import create_notification
 from .constants import get_excluded_teacher_ids
 from .forms import LoginForm
 from .forms import ProfileForm
@@ -219,13 +220,15 @@ def create_user_success(request):
 
     # Формируем текст для копирования
     site_url = request.build_absolute_uri('/')[:-1]
-    copy_text = f"""Данные для входа в систему Kodama:
-
-Логин: {user_data['username']}
-Пароль: {user_data['password']}
-Ссылка для входа: {site_url}
-
-После первого входа рекомендуется сменить пароль."""
+    copy_text = f"""
+                    Данные для входа в систему Kodama:
+                
+                    Логин: {user_data['username']}
+                    Пароль: {user_data['password']}
+                    Ссылка для входа: {site_url}
+                    
+                    После первого входа рекомендуется сменить пароль.
+                """
 
     return render(request, 'admin/create_user_success.html', {
         'user_data': user_data,
@@ -347,6 +350,38 @@ def cancel_lesson(request, lesson_id):
         lesson.canceled_at = now()
 
         lesson.save()
+
+        # Уведомляем преподавателя, если урок отменил не он сам
+        if request.user != lesson.teacher.user:
+            student_name = lesson.student.name
+
+            date = (
+                lesson.date.strftime('%d.%m.%Y')
+                if lesson.date else 'Не указана'
+            )
+            time = (
+                lesson.time.strftime('%H:%M')
+                if lesson.time else 'Не указано'
+            )
+
+            body_parts = [
+                f'👨‍🎓 Ученик: {student_name}',
+                f'📚 Курс: {lesson.course}',
+                f'📅 Дата: {date}',
+                f'🕒 Время: {time}',
+            ]
+
+            if lesson.cancel_reason:
+                body_parts.extend([
+                    '',
+                    f'📝 Причина отмены: {lesson.cancel_reason}',
+                ])
+
+            create_notification(
+                user=lesson.teacher.user,
+                title='❌ Урок отменён',
+                body='\n'.join(body_parts),
+            )
 
         response_data = {
             'status': 'success',

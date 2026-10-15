@@ -81,7 +81,7 @@ INSTALLED_APPS = [
     'pwa',
     'django.contrib.humanize',
     'finance.apps.FinanceConfig',
-    'notifications',
+    'notifications.apps.NotificationsConfig',
     'telegram_bot.apps.TelegramBotConfig'
 ]
 

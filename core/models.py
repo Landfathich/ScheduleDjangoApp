@@ -1,15 +1,18 @@
 import logging
 from datetime import datetime, timedelta, time
 
+from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
-from django.db import models, transaction
+from django.db import models
+from django.db import transaction
 from django.utils import timezone
 from phonenumber_field.modelfields import PhoneNumberField
 from safedelete import SOFT_DELETE, DELETED_VISIBLE_BY_PK
 from safedelete.models import SafeDeleteModel
 
 from materials.models import Course
+from notifications.services import create_notification
 
 logger = logging.getLogger(__name__)
 
@@ -81,6 +84,14 @@ class Client(SafeDeleteModel):
 
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')
     name = models.CharField(max_length=100, verbose_name='Имя родителя')
+    manager = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='managed_clients',
+        verbose_name='Ответственный менеджер',
+    )
     email = models.EmailField(blank=True, verbose_name='Email')
     notes = models.TextField(
         blank=True,
@@ -305,11 +316,12 @@ class BalanceOperation(models.Model):
 
     def save(self, *args, **kwargs):
         self.clean()
+        is_new = self.pk is None
         with transaction.atomic():
             # Блокируем клиента для изменения
             client = Client.objects.select_for_update().get(pk=self.client.pk)
 
-            if not self.pk:  # Только для новых операций
+            if is_new:  # Только для новых операций
                 self.balance_before = client.balance
 
                 if self.operation_type == 'spend':
@@ -335,6 +347,30 @@ class BalanceOperation(models.Model):
                 client.save()
 
             super().save(*args, **kwargs)
+
+            if (
+                    is_new
+                    and self.operation_type == 'spend'
+                    and self.balance_after <= 0
+                    and client.manager_id
+            ):
+                manager = client.manager
+                client_name = client.name
+                balance = self.balance_after
+                client_url = f'https://schedule.kodamaclass.com/clients/{client.pk}/'
+
+                transaction.on_commit(
+                    lambda: create_notification(
+                        user=manager,
+                        title='⚠️ Заканчиваются уроки',
+                        body='\n'.join([
+                            f'👤 Клиент: {client_name}',
+                            f'💰 Баланс уроков: {balance}',
+                            '📞 Пора связаться с родителями для пополнения баланса.',
+                            f'🔗 Карточка клиента: {client_url}',
+                        ]),
+                    )
+                )
 
     class Meta:
         verbose_name = 'Операция с балансом'
@@ -485,7 +521,7 @@ class Lesson(models.Model):
         if not next_date or not next_time:
             return None
 
-        return Lesson.objects.create(
+        next_lesson = Lesson(
             student=self.student,
             student_name=self.student.name,
             teacher=self.teacher,
@@ -500,6 +536,11 @@ class Lesson(models.Model):
             previous_comment=self.lesson_notes,
             platform=self.platform,
         )
+
+        next_lesson._skip_new_lesson_notification = True
+        next_lesson.save()
+
+        return next_lesson
 
     def calculate_next_date_and_time(self):
         try:
