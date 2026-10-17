@@ -27,7 +27,7 @@
                     Telegram подключён
                 </span>
                     {% else %}
-                        <a href="https://t.me/kodama_school_bot?start={{ telegram_account.link_token }}"
+                        <a href="https://t.me/{{ TELEGRAM_BOT_USERNAME }}?start={{ telegram_account.link_token }}"
                            class="btn">
                             Подключить Telegram
                         </a>

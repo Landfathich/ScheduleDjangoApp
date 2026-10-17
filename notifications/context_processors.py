@@ -7,3 +7,12 @@ def unread_notifications_count(request):
     else:
         count = 0
     return {'unread_notifications_count': count}
+
+
+from django.conf import settings
+
+
+def telegram_bot_username(request):
+    return {
+        'TELEGRAM_BOT_USERNAME': settings.TELEGRAM_BOT_USERNAME
+    }

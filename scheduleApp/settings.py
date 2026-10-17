@@ -20,6 +20,10 @@ TELEGRAM_INTERNAL_API_SECRET = env(
     'TELEGRAM_INTERNAL_API_SECRET',
     default=''
 )
+TELEGRAM_BOT_USERNAME = os.getenv(
+    'TELEGRAM_BOT_USERNAME',
+    'kodama_school_bot'
+)
 
 # SECURITY WARNING: keep the secret key used in production secret!
 # Если это collectstatic, используем дефолтный ключ
@@ -120,6 +124,7 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 'core.context_processors.user_preferences',
                 'notifications.context_processors.unread_notifications_count',
+                'notifications.context_processors.telegram_bot_username',
             ],
         },
     },
