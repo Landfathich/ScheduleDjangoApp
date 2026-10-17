@@ -29,3 +29,21 @@ class TelegramAccount(models.Model):
 
     def __str__(self):
         return f'{self.user} — Telegram'
+
+
+class TelegramOutboundMessage(models.Model):
+    chat_id = models.BigIntegerField()
+    text = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    sent_at = models.DateTimeField(null=True, blank=True)
+    attempts = models.PositiveIntegerField(default=0)
+    last_error = models.TextField(blank=True)
+
+    class Meta:
+        ordering = ['created_at']
+        verbose_name = 'Сообщение Telegram'
+        verbose_name_plural = 'Сообщения Telegram'
+
+    def __str__(self):
+        status = 'отправлено' if self.sent_at else 'ожидает отправки'
+        return f'Telegram {self.chat_id}: {status}'

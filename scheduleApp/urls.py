@@ -16,6 +16,7 @@ urlpatterns = [
     # path('chat/', include('chat.urls')),
     # path('webpush/', include('webpush.urls')),
     path('clients/', include('clients.urls')),
+    path('api/internal/telegram/', include('telegram_bot.urls')),
 ]
 
 if settings.DEBUG:

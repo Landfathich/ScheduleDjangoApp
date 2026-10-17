@@ -1,33 +1,34 @@
 import logging
 
-from django.contrib.auth import get_user_model
+from notifications.models import Notification
+from telegram_bot.models import TelegramAccount, TelegramOutboundMessage
 
-from telegram_bot.services import send_telegram_to_user
-from .models import Notification
-
-User = get_user_model()
 logger = logging.getLogger(__name__)
 
 
-def create_notification(user, title: str, body: str) -> Notification:
-    if isinstance(user, int):
-        user = User.objects.get(pk=user)
-
+def create_notification(user, title, body):
     notification = Notification.objects.create(
         user=user,
         title=title,
-        body=body
+        body=body,
     )
 
     try:
-        send_telegram_to_user(
-            user,
-            f'{title}\n\n{body}'
+        account = TelegramAccount.objects.get(
+            user=user,
+            is_active=True,
         )
+
+        if account.chat_id:
+            TelegramOutboundMessage.objects.create(
+                chat_id=account.chat_id,
+                text=f'{title}\n\n{body}',
+            )
+    except TelegramAccount.DoesNotExist:
+        pass
     except Exception:
         logger.exception(
-            'Не удалось отправить уведомление в Telegram для пользователя %s',
-            user.pk
+            'Не удалось поставить уведомление в очередь Telegram'
         )
 
     return notification
